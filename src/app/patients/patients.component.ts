@@ -25,4 +25,8 @@ export class PatientsComponent{
         this.data = data;
       });
   };
+
+  modifyPatient(dni:string){
+    window.location.href = "/modify-patient";
+  }
 }
