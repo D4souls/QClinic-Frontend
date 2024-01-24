@@ -1,0 +1,25 @@
+<section class="flex flex-row flex-shrink px-6 gap-4">
+    @for (patient of data; track data.dni){
+        <div class="flex flex-col rounded-md min-w-80 max-w-96 border-2 p-4">
+          <div class="flex flex-row gap-2 items-center">
+            <img
+              src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
+              height="60"
+              width="60"
+              alt="User profile example"
+              class="rounded-full"
+            />
+            
+              <div class="flex flex-col">
+                  <div class="flex flex-row gap-2 items-center">
+                      <span class="font-semibold text-xl">{{patient.firstname}} {{patient.lastname}}</span>
+                      <button>
+                          <i class='bx bxs-edit'></i>
+                      </button>
+                  </div>
+                  <span class="text-sm text-gray-500">{{patient.city}}</span>
+              </div>
+          </div>
+        </div>
+    }
+</section>
