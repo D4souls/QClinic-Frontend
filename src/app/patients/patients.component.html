@@ -1,25 +1,32 @@
-<section class="flex flex-row flex-shrink px-6 gap-4">
+@if (data.length > 0){
+  <section class="flex flex-row flex-shrink px-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500">
     @for (patient of data; track data.dni){
-        <div class="flex flex-col rounded-md min-w-80 max-w-96 border-2 p-4">
-          <div class="flex flex-row gap-2 items-center">
-            <img
-              src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
-              height="60"
-              width="60"
-              alt="{{patient.dni}}_avatar"
-              class="rounded-full"
-            />
-            
-              <div class="flex flex-col">
-                  <div class="flex flex-row gap-2 items-center">
-                      <span class="font-semibold text-xl">{{patient.firstname}} {{patient.lastname}}</span>
-                      <button (click)="modifyPatient(patient.dni)">
-                          <i class='bx bxs-edit'></i>
-                      </button>
-                  </div>
-                  <span class="text-sm text-gray-500">{{patient.city}}</span>
-              </div>
-          </div>
+      <div class="flex flex-col rounded-md min-w-80 max-w-96 border-2 p-4">
+        <div class="flex flex-row gap-2 items-center">
+          <img
+            src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
+            height="60"
+            width="60"
+            alt="{{patient.dni}}_avatar"
+            class="rounded-full"
+          />
+          
+            <div class="flex flex-col">
+                <div class="flex flex-row gap-2 items-center">
+                    <span class="font-semibold text-xl">{{patient.firstname}} {{patient.lastname}}</span>
+                    <button (click)="modifyPatient(patient.dni)">
+                        <i class='bx bxs-edit'></i>
+                    </button>
+                </div>
+                <span class="text-sm text-gray-500">{{patient.city}}</span>
+            </div>
         </div>
+      </div>
     }
-</section>
+  </section>
+}
+@else {
+  <section class="flex flex-col h-96 justify-center items-center animate-fade animate-ease-in-out animate-fill-both animate-duration-500">
+    <p class="text-gray-400">Ups! There are no patients...</p>
+  </section>
+}
