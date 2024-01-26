@@ -1,1 +1,31 @@
-<p>modify-patient works!</p>
+@if (load){
+    @for (data of modifyUserService.userDNI; track modifyUserService.userDNI){
+        <section class="flex flex-row flex-shrink p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500">
+            <div class="flex flex-col justify-center items-center">
+                <form>
+                    <label for="">
+                        DNI: <input type="text" name="dni" id="dni" value={{data.dni}} readonly>
+                    </label>
+                    <label for="">
+                        First name: <input type="text" name="firstname" id="firstname" value="{{data.firstname}}">
+                    </label>
+                    <label for="">
+                        Last name: <input type="text" name="lastname" id="lastname" value="{{data.lastname}}">
+                    </label>
+                    <label for="">
+                        City: <input type="text" name="city" id="city" value="{{data.city}}">
+                    </label>
+                    <label for="">
+                        Email: <input type="text" name="email" id="email" value="{{data.email}}">
+                    </label>
+                    <button class="flex flex-row justify-center items-center bg-green-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
+                        Save changes
+                    </button>
+                    <button (click)="discardChanges()" class="bg-red-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
+                        Discard changes
+                    </button>
+                </form>
+            </div>
+        </section>
+    }
+}
