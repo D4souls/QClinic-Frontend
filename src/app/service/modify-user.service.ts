@@ -7,9 +7,9 @@ export class ModifyUserService {
 
   constructor() { }
 
-  userDNI: string[] = [];
+  userDNI: any[] = [];
 
-  shareData(obj: string){
+  shareData(obj: Object){
     this.userDNI.pop();
     this.userDNI.push(obj);
   }
