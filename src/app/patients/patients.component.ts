@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
+import { ModifyUserService } from '../service/modify-user.service';
+import { Route, Router } from '@angular/router';
 
 @Component({
   selector: 'app-patients',
@@ -9,7 +11,8 @@ import { Component, inject } from '@angular/core';
   styleUrl: './patients.component.css'
 })
 export class PatientsComponent{
-  name: string = "";
+
+  constructor(public modifyUserService: ModifyUserService, private router: Router) {};
 
   httpClient = inject(HttpClient);
   data: any = [];
@@ -26,7 +29,10 @@ export class PatientsComponent{
       });
   };
 
-  modifyPatient(dni:string){
-    window.location.href = "/modify-patient";
+  modifyPatient(dni: string):void{
+    this.modifyUserService.shareData(dni);
+    console.info(this.modifyUserService.userDNI);
+    this.router.navigate(['/modify-patient']);
+    // window.location.href = '/modify-patient';
   }
 }
