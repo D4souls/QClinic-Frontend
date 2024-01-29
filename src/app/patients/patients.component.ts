@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Route, Router } from '@angular/router';
+import { PatientApiService } from '../service/patient-api.service';
 
 @Component({
   selector: 'app-patients',
@@ -12,7 +13,11 @@ import { Route, Router } from '@angular/router';
 })
 export class PatientsComponent{
 
-  constructor(public modifyUserService: ModifyUserService, private router: Router) {};
+  constructor(
+    public modifyUserService: ModifyUserService, 
+    private router: Router, 
+    private patientapiservice: PatientApiService
+  ) {};
 
   httpClient = inject(HttpClient);
   data: any = [];
@@ -22,7 +27,7 @@ export class PatientsComponent{
   }
 
   getUser(): void {
-    this.httpClient.get('http://localhost/api/patients.php')
+    this.patientapiservice.getPatientData()
       .subscribe((data: any) => {
         console.log(data);
         this.data = data;
@@ -31,8 +36,6 @@ export class PatientsComponent{
 
   modifyPatient(dni: string):void{
     this.modifyUserService.shareData(dni);
-    console.info(this.modifyUserService.userDNI);
     this.router.navigate(['/modify-patient']);
-    // window.location.href = '/modify-patient';
   }
 }
