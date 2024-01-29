@@ -2,8 +2,14 @@
 <section
   class="flex flex-col p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
-  <form (submit)="onSubmit($event)" class="flex flex-row items-center gap-4 focus:outline-none">
-    <label for="filterPatient" class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 flex flex-row items-center gap-2">
+  <form
+    (submit)="onSubmit($event)"
+    class="flex flex-row items-center gap-4 focus:outline-none"
+  >
+    <label
+      for="filterPatient"
+      class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
+    >
       <i class="bx bx-search-alt"></i>
       <input
         type="text"
@@ -15,12 +21,18 @@
         (keyup.enter)="filterPatients(filter.value)"
       />
     </label>
-    <button (click)="filterPatients(filter.value)" type="button">Search</button>
+    <button
+      class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out"
+      (click)="filterPatients(filter.value)"
+      type="button"
+    >
+      Search
+    </button>
   </form>
 
-  <div class="flex flex-row gap-4 justify-center items-center">
+  <div class="flex flex-row gap-4 items-center">
     @for (patient of filteredPatient; track data.dni){
-    <div class="flex flex-col rounded-md min-w-80 max-w-96 border-2 p-4">
+    <div class="flex flex-col rounded-md border-2 p-4">
       <div class="flex flex-row gap-2 items-center">
         <img
           src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"

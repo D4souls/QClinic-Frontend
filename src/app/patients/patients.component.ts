@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
 import { PatientApiService } from '../service/patient-api.service';
@@ -19,7 +19,6 @@ export class PatientsComponent implements OnInit {
     public modifyUserService: ModifyUserService,
     private router: Router,
     public patientapiservice: PatientApiService,
-    private httpClient: HttpClient
   ) {}
 
   ngOnInit(): void {
