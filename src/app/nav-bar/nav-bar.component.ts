@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpClient } from '@angular/common/http';
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { PatientApiService } from '../service/patient-api.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -11,21 +12,27 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent {
-  name: string = "";
+  
+  name = "Sergio"
 
-  httpClient = inject(HttpClient);
-  data: any = {};
+  //? NEED LOGIN DATA TO USE THIS
 
-  ngOnInit(): void {
-    this.getUser();
-  }
+  // data: any = [];
 
-  getUser(): void {
-    this.httpClient.get('http://localhost/api/example.json')
-      .subscribe((data: any) => {
-        console.log(data);
-        this.data = data;
-        this.name = data[0].firstname;
-      });
-  };
+  // constructor(
+  //   public patientApiService: PatientApiService,
+  // ){}
+
+  // ngOnInit(): void {
+  //   this.getUserName();
+  // }
+
+  // getUserName(): void {
+  //   this.patientApiService.getPatientData().subscribe((data: any) => {
+  //     console.log(data);
+  //     this.data = data;
+  //   });
+  // }
+
+  
 }
