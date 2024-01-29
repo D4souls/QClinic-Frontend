@@ -2,33 +2,40 @@
 <section
   class="flex flex-col p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
-  <form
-    (submit)="onSubmit($event)"
-    class="flex flex-row items-center gap-4 focus:outline-none"
-  >
-    <label
-      for="filterPatient"
-      class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
+  <div class="flex flex-row items-center">
+    <form
+      (submit)="onSubmit($event)"
+      class="flex flex-row items-center gap-4 focus:outline-none"
     >
-      <i class="bx bx-search-alt"></i>
-      <input
-        type="text"
-        name="filterPatient"
-        placeholder="Search patient"
-        #filter
-        size="10"
-        class="bg-transparent"
-        (keyup.enter)="filterPatients(filter.value)"
-      />
-    </label>
-    <button
-      class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out"
-      (click)="filterPatients(filter.value)"
-      type="button"
+      <label
+        for="filterPatient"
+        class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
+      >
+        <i class="bx bx-search-alt"></i>
+        <input
+          type="text"
+          name="filterPatient"
+          placeholder="Search patient"
+          #filter
+          size="10"
+          class="bg-transparent"
+          (keyup.enter)="filterPatients(filter.value)"
+        />
+      </label>
+      <button
+        class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out"
+        (click)="filterPatients(filter.value)"
+        type="button"
+      >
+        Search
+      </button>
+    </form>
+    <a
+      class="ml-auto border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out cursor-pointer"
+      (click)="newPatient()"
+      >New patient</a
     >
-      Search
-    </button>
-  </form>
+  </div>
 
   <div class="flex flex-row gap-4 items-center">
     @for (patient of filteredPatient; track data.dni){

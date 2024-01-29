@@ -38,6 +38,10 @@ export class PatientsComponent implements OnInit {
     this.router.navigate(['/modify-patient']);
   }
 
+  newPatient(): void {
+    this.router.navigate(['/create-patient']);
+  }
+
   filterPatients(name: string): void {
     if (!name) {
       this.filteredPatient = this.data;
