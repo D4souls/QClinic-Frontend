@@ -12,6 +12,6 @@ export class PatientApiService {
   data: any = [];
 
   getPatientData(): Observable<any>{
-    return this.httpclient.get('http://localhost/api/patients.php');
+    return this.httpclient.get('http://localhost:8080/patients');
   }
 }
