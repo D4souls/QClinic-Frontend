@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -9,6 +9,7 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
+import { PatientApiService } from '../service/patient-api.service';
 
 @Component({
   selector: 'app-create-patient',
@@ -17,69 +18,84 @@ import Swal from 'sweetalert2';
   templateUrl: './create-patient.component.html',
   styleUrl: './create-patient.component.css',
 })
-export class CreatePatientComponent {
+export class CreatePatientComponent implements OnInit{
+  constructor(private router: Router, private apiPatient: PatientApiService) {}
 
-  constructor(private router: Router){}
+  ngOnInit(): void {
+      this.getDoctors()
+  }
 
   createPatientForm = new FormGroup({
     patientDNI: new FormControl('', Validators.required),
     patientName: new FormControl('', Validators.required),
     patientLastname: new FormControl('', Validators.required),
-    patientPhone: new FormControl('', Validators.required),
+    // patientPhone: new FormControl('', Validators.required),
     patientEmail: new FormControl('', Validators.required),
     patientCity: new FormControl('', Validators.required),
-    patientGender: new FormControl('', Validators.required),
-    patientDirection: new FormControl('', Validators.required),
+    // patientGender: new FormControl('', Validators.required),
+    // patientDirection: new FormControl('', Validators.required),
+    patientPassword: new FormControl('', Validators.required),
+    patientDoctor: new FormControl('', Validators.required),
   });
 
-  response: string | null = null;
-
   createPatient() {
-    fetch('http://localhost/api/createUser.php', {
-      method: 'POST',
-      body: JSON.stringify({
-        dni: this.createPatientForm.value.patientDNI,
-        firstname: this.createPatientForm.value.patientName,
-        lastname: this.createPatientForm.value.patientLastname,
-        telefono: this.createPatientForm.value.patientPhone,
-        email: this.createPatientForm.value.patientEmail,
-        city: this.createPatientForm.value.patientCity,
-        genero: this.createPatientForm.value.patientGender,
-        direccion: this.createPatientForm.value.patientDirection,
-      }),
-      headers: {
-        'Content-type': 'application/json; charset=UTF-8',
-      },
-    })
-      .then((response) => response.text())
-      .then((text) => {
-        
-        if(text){
+    const dataPatient = {
+      dni: this.createPatientForm.value.patientDNI,
+      firstname: this.createPatientForm.value.patientName,
+      lastname: this.createPatientForm.value.patientLastname,
+      city: this.createPatientForm.value.patientCity,
+      email: this.createPatientForm.value.patientEmail,
+      // telefono: this.createPatientForm.value.patientPhone,
+      // genero: this.createPatientForm.value.patientGender,
+      // direccion: this.createPatientForm.value.patientDirection,
+      assignedDoctor: this.createPatientForm.value.patientDoctor,
+      password: this.createPatientForm.value.patientPassword,
+
+    };
+
+    this.apiPatient.createPatient(dataPatient).subscribe(
+      (response: any) => {
+        if (response.message) {
           Swal.fire({
             title: 'Patient created!',
             showDenyButton: true,
-            confirmButtonText: "Return to patients",
-            denyButtonText: "Create more"
+            confirmButtonText: 'Return to patients',
+            denyButtonText: 'Create more',
           }).then((result) => {
             if (result.isConfirmed) {
-              setTimeout(()=>{
-                this.router.navigate(['/patients']);
-              }, 1000);
+              this.router.navigate(['/patients']);
             } else if (result.isDenied) {
-              setTimeout(()=>{
+              setTimeout(() => {
                 this.router.navigate(['/create-patient']);
               }, 1000);
             }
           });
         } else {
           Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: text,
+            icon: 'error',
+            title: 'Oops...',
+            text: response.message,
           });
         }
-
-      })
-      .catch((error) => console.error('Error en la solicitud:', error));
+      },
+      (error) => {
+        console.error('Error en la solicitud:', error.error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: error.error.data,
+        });
+      }
+    );
   }
+
+  doctors: any = []
+
+  getDoctors(){
+    this.apiPatient.getDoctors().subscribe((data) => {
+      this.doctors = data
+      console.log(this.doctors);
+    })
+  }
+
 }

@@ -1,7 +1,6 @@
 <section
   class="flex flex-col items-center justify-center animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
-<span>{{response}}</span>
   <form
     class="flex flex-col gap-4"
     [formGroup]="createPatientForm"
@@ -34,7 +33,7 @@
         formControlName="patientLastname"
       />
     </label>
-    <label for="patientPhone">
+    <!-- <label for="patientPhone">
       Phone number:
       <input
         type="text"
@@ -42,7 +41,7 @@
         placeholder="Phone"
         formControlName="patientPhone"
       />
-    </label>
+    </label> -->
     <label for="patientEmail">
       Email:
       <input
@@ -61,7 +60,7 @@
         formControlName="patientCity"
       />
     </label>
-    <label for="patientGender">
+    <!-- <label for="patientGender">
       Gender:
       <input
         type="text"
@@ -78,6 +77,24 @@
         placeholder="Direction"
         formControlName="patientDirection"
       />
+    </label> -->
+    <label for="patientPassword">
+      Password:
+      <input
+        type="password"
+        id="patientPassword"
+        placeholder="Direction"
+        formControlName="patientPassword"
+      />
+    </label>
+    <label for="patientDoctor">
+      Doctor:
+      <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor">
+        <option value="" disabled selected>Select Doctor</option>
+        @for (doctorData of doctors; track doctors.dni){
+          <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
+        }
+      </select>
     </label>
     <button type="submit" [disabled]="!createPatientForm.valid">Create</button>
   </form>
