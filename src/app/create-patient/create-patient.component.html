@@ -1,1 +1,84 @@
-<p>create-patient works!</p>
+<section
+  class="flex flex-col items-center justify-center animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
+>
+<span>{{response}}</span>
+  <form
+    class="flex flex-col gap-4"
+    [formGroup]="createPatientForm"
+    (ngSubmit)="createPatient()"
+  >
+    <label for="patientDNI">
+      DNI:
+      <input
+        type="text"
+        id="patientDNI"
+        placeholder="DNI"
+        formControlName="patientDNI"
+      />
+    </label>
+    <label for="patientName">
+      Name:
+      <input
+        type="text"
+        id="patientName"
+        placeholder="First name"
+        formControlName="patientName"
+      />
+    </label>
+    <label for="patientLastname">
+      Last name:
+      <input
+        type="text"
+        id="patientLastname"
+        placeholder="Last name"
+        formControlName="patientLastname"
+      />
+    </label>
+    <label for="patientPhone">
+      Phone number:
+      <input
+        type="text"
+        id="patientPhone"
+        placeholder="Phone"
+        formControlName="patientPhone"
+      />
+    </label>
+    <label for="patientEmail">
+      Email:
+      <input
+        type="email"
+        id="patientEmail"
+        placeholder="Email"
+        formControlName="patientEmail"
+      />
+    </label>
+    <label for="patientCity">
+      City:
+      <input
+        type="text"
+        id="patientCity"
+        placeholder="City"
+        formControlName="patientCity"
+      />
+    </label>
+    <label for="patientGender">
+      Gender:
+      <input
+        type="text"
+        id="patientGender"
+        placeholder="Gender"
+        formControlName="patientGender"
+      />
+    </label>
+    <label for="patientDirection">
+      Direction:
+      <input
+        type="text"
+        id="patientDirection"
+        placeholder="Direction"
+        formControlName="patientDirection"
+      />
+    </label>
+    <button type="submit" [disabled]="!createPatientForm.valid">Create</button>
+  </form>
+</section>
