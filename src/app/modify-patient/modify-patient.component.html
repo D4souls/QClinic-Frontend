@@ -1,31 +1,32 @@
 @if (load){
     @for (data of modifyUserService.userDNI; track modifyUserService.userDNI){
         <section class="flex flex-row flex-shrink p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500">
-            <div class="flex flex-col justify-center items-center">
-                <form>
+                <form [formGroup]="createPatientForm" (ngSubmit)="saveChanges()">
                     <label for="">
-                        DNI: <input type="text" name="dni" id="dni" value={{data.dni}} readonly>
+                        DNI: <input type="text" name="dni" id="dni" readonly formControlName="patientDNI">
                     </label>
                     <label for="">
-                        First name: <input type="text" name="firstname" id="firstname" value="{{data.firstname}}">
+                        First name: <input type="text" name="firstname" id="firstname" formControlName="patientName">
                     </label>
                     <label for="">
-                        Last name: <input type="text" name="lastname" id="lastname" value="{{data.lastname}}">
+                        Last name: <input type="text" name="lastname" id="lastname" formControlName="patientLastname">
                     </label>
                     <label for="">
-                        City: <input type="text" name="city" id="city" value="{{data.city}}">
+                        City: <input type="text" name="city" id="city" formControlName="patientCity">
                     </label>
                     <label for="">
-                        Email: <input type="text" name="email" id="email" value="{{data.email}}">
+                        Email: <input type="text" name="email" id="email" formControlName="patientEmail">
                     </label>
                     <button class="flex flex-row justify-center items-center bg-green-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
                         Save changes
                     </button>
-                    <button (click)="discardChanges()" class="bg-red-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
+                    <button (click)="deletePatient(data.dni)" type="button" class="flex flex-row justify-center items-center bg-green-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
+                        Delete patient
+                    </button>
+                    <button (click)="discardChanges()" type="button" class="bg-red-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
                         Discard changes
                     </button>
                 </form>
-            </div>
         </section>
     }
 }
