@@ -8,7 +8,7 @@
     >
       <label
         for="filterPatient"
-        class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
+        class="bg-white rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
       >
         <i class="bx bx-search-alt"></i>
         <input
@@ -16,13 +16,13 @@
           name="filterPatient"
           placeholder="Search patient"
           #filter
-          size="10"
-          class="bg-transparent"
+          size="20"
+          class="bg-transparent outline-0"
           (keyup.enter)="filterPatients(filter.value)"
         />
       </label>
       <button
-        class="border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out"
+        class="bg-white rounded-md px-2 py-1.8 hover:bg-main-purple/80 hover:text-white transition ease-in-out"
         (click)="filterPatients(filter.value)"
         type="button"
       >
@@ -30,7 +30,7 @@
       </button>
     </form>
     <a
-      class="ml-auto border-b-gray-300 border-2 rounded-md px-2 py-1.8 hover:scale-110 transition ease-in-out cursor-pointer"
+      class="ml-auto bg-white rounded-md px-2 py-1.8 hover:bg-main-purple/80 hover:text-white transition ease-in-out cursor-pointer"
       (click)="newPatient()"
       >New patient</a
     >
@@ -38,7 +38,7 @@
   @if (data.length > 0){
     <div class="flex flex-row flex-wrap gap-4 items-center">
       @for (patient of filteredPatient; track filteredPatient.dni){
-      <div class="flex flex-col rounded-md border-2 p-4">
+      <div class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 transition ease-in-out">
         <div class="flex flex-row gap-2 items-center">
           <img
             src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
@@ -57,13 +57,15 @@
                 <i class="bx bxs-edit"></i>
               </button>
             </div>
-            <span class="text-sm text-gray-500">{{ patient.city }}</span>
+            <span class="text-sm">{{ patient.city }}</span>
           </div>
         </div>
       </div>
       }
     </div>
   } @else {
-    <p class="text-gray-400">Ups! There are no patients...</p>
+    <div class="flex flex-col items-center justify-center">
+      <p class="text-gray-400">Ups! There are no patients...</p>
+    </div>
   }
 </section>
