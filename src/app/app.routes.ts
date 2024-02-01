@@ -5,6 +5,7 @@ import { PatientsComponent } from './patients/patients.component';
 import { DoctorsComponent } from './doctors/doctors.component';
 import { ModifyPatientComponent } from './modify-patient/modify-patient.component';
 import { CreatePatientComponent } from './create-patient/create-patient.component';
+import { AppointmentsComponent } from './appointments/appointments.component';
 
 export const routes: Routes = [
   {
@@ -26,6 +27,11 @@ export const routes: Routes = [
     path: 'patients',
     title: 'Manage patients',
     component: PatientsComponent,
+  },
+  {
+    path: 'appointments',
+    title: 'Manage appointments',
+    component: AppointmentsComponent,
   },
   {
     path: 'doctors',
