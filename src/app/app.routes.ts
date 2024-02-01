@@ -7,7 +7,16 @@ import { ModifyPatientComponent } from './modify-patient/modify-patient.componen
 import { CreatePatientComponent } from './create-patient/create-patient.component';
 
 export const routes: Routes = [
-  { path: 'home', title: 'Home page', component: HomeComponent },
+  {
+    path: '',
+    redirectTo: '/home',
+    pathMatch: "full"
+  },
+  { 
+    path: 'home', 
+    title: 'Home page', 
+    component: HomeComponent 
+  },
   {
     path: 'user-data',
     title: 'Personal information',
