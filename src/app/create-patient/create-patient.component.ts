@@ -29,27 +29,31 @@ export class CreatePatientComponent implements OnInit{
     patientDNI: new FormControl('', Validators.required),
     patientName: new FormControl('', Validators.required),
     patientLastname: new FormControl('', Validators.required),
-    // patientPhone: new FormControl('', Validators.required),
-    patientEmail: new FormControl('', Validators.required),
-    patientCity: new FormControl('', Validators.required),
-    // patientGender: new FormControl('', Validators.required),
+    patientPhone: new FormControl('', Validators.required),
+    patientEmail: new FormControl(''),
+    patientCity: new FormControl(''),
+    patientGender: new FormControl('', Validators.required),
     // patientDirection: new FormControl('', Validators.required),
-    patientPassword: new FormControl('', Validators.required),
+    // patientPassword: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
   });
+
+  returnBack(){
+    this.router.navigate(['/patients']);
+  }
 
   createPatient() {
     const dataPatient = {
       dni: this.createPatientForm.value.patientDNI,
       firstname: this.createPatientForm.value.patientName,
       lastname: this.createPatientForm.value.patientLastname,
+      gender: this.createPatientForm.value.patientGender,
       city: this.createPatientForm.value.patientCity,
       email: this.createPatientForm.value.patientEmail,
-      // telefono: this.createPatientForm.value.patientPhone,
-      // genero: this.createPatientForm.value.patientGender,
+      phone: this.createPatientForm.value.patientPhone,
       // direccion: this.createPatientForm.value.patientDirection,
       assignedDoctor: this.createPatientForm.value.patientDoctor,
-      password: this.createPatientForm.value.patientPassword,
+      // password: this.createPatientForm.value.patientPassword,
 
     };
 
