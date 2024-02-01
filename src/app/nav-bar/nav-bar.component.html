@@ -1,27 +1,40 @@
-<nav class="flex flex-row w-screen items-center px-6 py-2 bg-[#5200FF] text-white/90">
+<nav class="flex flex-row w-screen items-center justify-between px-6 py-2 bg-white text text-main-purple animate-fade">
+  <img src="" alt="logo">
   <div class="flex flex-row items-center gap-4">
     <a
-      href="/home"
-      class="hover:scale-110 hover:text-white transition ease-in-out duration-300"
-      >Home</a
+      routerLink="/home"
+      routerLinkActive="active"
+      [routerLinkActiveOptions] = "{ exact: true }"
+      class="border-b-2 border-transparent px-1 hover:border-main-purple"
     >
+      Home
+    </a>
     <a
-      href=""
-      class="hover:scale-110 hover:text-white transition ease-in-out duration-300"
-      >New appointment</a
+      routerLink=""
+      routerLinkActive="active"
+      [routerLinkActiveOptions] = "{ exact: true }"
+      class="border-b-2 border-transparent px-1 hover:border-main-purple"
     >
+      New appointment
+    </a>
     <a
-      href="/patients"
-      class="hover:scale-110 hover:text-white transition ease-in-out duration-300"
-      >Manage patients</a
+      routerLink="/patients"
+      routerLinkActive="active"
+      [routerLinkActiveOptions] = "{ exact: true }"
+      class="border-b-2 border-transparent px-1 hover:border-main-purple"
     >
+      Manage patients
+    </a>
     <a
-      href="/doctors"
-      class="hover:scale-110 hover:text-white transition ease-in-out duration-300"
-      >Manage doctors</a
+      routerLink="/doctors"
+      routerLinkActive="active"
+      [routerLinkActiveOptions] = "{ exact: true }"
+      class="border-b-2 border-transparent px-1 hover:border-main-purple"
     >
+      Manage doctors
+    </a>
   </div>
-  <div class="flex flex-row items-center ml-auto gap-2">
+  <div class="flex flex-row items-center gap-2">
     <img
       src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
       height="35"
@@ -29,6 +42,6 @@
       alt="User profile example"
       class="rounded-full"
     />
-    <a href="/user-data">Hi {{ name }}!</a>
+    <a routerLink="/user-data">Hi {{ name }}!</a>
   </div>
 </nav>
