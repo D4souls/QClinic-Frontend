@@ -9,9 +9,13 @@ export class PatientApiService {
 
   constructor(private httpclient: HttpClient) { }
 
-  getPatientData(): Observable<any>{
+  getPatients(): Observable<any>{
     return this.httpclient.get('http://localhost:8080/patients');
   }
+
+  getPatientData(dni: string): Observable<any>{
+    return this.httpclient.get(`http://localhost:8080/patient/${dni}`);
+  }  
 
   deletePatient(dni: string): Observable<any> {
     return this.httpclient.delete(`http://localhost:8080/delete-patient/${dni}`);
