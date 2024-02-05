@@ -1,32 +1,141 @@
 @if (load){
-    @for (data of modifyUserService.userDNI; track modifyUserService.userDNI){
-        <section class="flex flex-row flex-shrink p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500">
-                <form [formGroup]="createPatientForm" (ngSubmit)="saveChanges()">
-                    <label for="">
-                        DNI: <input type="text" name="dni" id="dni" readonly formControlName="patientDNI">
-                    </label>
-                    <label for="">
-                        First name: <input type="text" name="firstname" id="firstname" formControlName="patientName">
-                    </label>
-                    <label for="">
-                        Last name: <input type="text" name="lastname" id="lastname" formControlName="patientLastname">
-                    </label>
-                    <label for="">
-                        City: <input type="text" name="city" id="city" formControlName="patientCity">
-                    </label>
-                    <label for="">
-                        Email: <input type="text" name="email" id="email" formControlName="patientEmail">
-                    </label>
-                    <button class="flex flex-row justify-center items-center bg-green-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
-                        Save changes
-                    </button>
-                    <button (click)="deletePatient(data.dni)" type="button" class="flex flex-row justify-center items-center bg-green-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
-                        Delete patient
-                    </button>
-                    <button (click)="discardChanges()" type="button" class="bg-red-400 px-2 rounded-full text-white/90 hover:scale-110 hover:text-white transition ease-in-out">
-                        Discard changes
-                    </button>
-                </form>
-        </section>
-    }
+<section
+  class="flex flex-col items-center justify-center h-fit mt-10 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
+>
+  <form
+    class="flex flex-col gap-4 bg-white p-4 rounded-md w-96"
+    [formGroup]="createPatientForm"
+    (ngSubmit)="saveChanges()"
+  >
+    <div class="flex flex-col gap-2">
+      <h2 class="text-main-purple text-xl">Personal information</h2>
+      <label for="patientDNI" class="flex flex-col justify-center text-sm">
+        DNI
+        <input
+          type="text"
+          id="patientDNI"
+          placeholder=" Enter patient's DNI here"
+          formControlName="patientDNI"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientName" class="flex flex-col justify-center text-sm">
+        First name
+        <input
+          type="text"
+          id="patientName"
+          placeholder=" Enter patient's first name here"
+          formControlName="patientName"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientLastname" class="flex flex-col justify-center text-sm">
+        Last name
+        <input
+          type="text"
+          id="patientLastname"
+          placeholder=" Enter patient's last name here"
+          formControlName="patientLastname"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientPhone" class="flex flex-col justify-center text-sm">
+        Phone number
+        <input
+          type="text"
+          id="patientPhone"
+          placeholder=" Enter patient's phone number here"
+          formControlName="patientPhone"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientGender" class="flex flex-col justify-center text-sm">
+        Gender
+        <select
+          name="patientGender"
+          id="patientGender"
+          formControlName="patientGender"
+          class="rounded-md outline-0 border border-gray-300"
+        >
+          @if (dataPatient && dataPatient[0]){
+            <option value="{{dataPatient[0].gender}}" [selected]="true" class="text-gray-300">
+                {{dataPatient[0].gender}}
+            </option>
+          }@else {
+            <option value="" disabled selected class="text-gray-300">Select patient's gender</option>
+          }
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="noBinary">No binary</option>
+        </select>
+      </label>
+      <label for="patientDoctor" class="flex flex-col justify-center text-sm">
+        Doctor
+        <select
+          name="patientDoctor"
+          id="patientDoctor"
+          formControlName="patientDoctor"
+          class="rounded-md outline-0 border border-gray-300"
+        >   
+
+        @if (dataPatient && dataPatient[0]){
+            <option value="{{dataPatient[0].assignedDoctor}}" [selected]="true" class="text-gray-300">
+                {{dataPatient[0].doctorName}} {{dataPatient[0].doctorLastname}}
+            </option>
+        }@else{
+            <option value="" disabled selected>Select Doctor</option>
+        }
+          @for (doctorData of doctors; track doctors.dni){
+          <option value="{{ doctorData.dni }}">
+            {{ doctorData.firstname }} {{ doctorData.lastname }}
+          </option>
+          }
+        </select>
+      </label>
+    </div>
+    <div class="flex flex-col gap-2">
+      <h3 class="text-main-purple text-lg">Additional information</h3>
+      <label for="patientEmail" class="flex flex-col justify-center text-sm">
+        Email:
+        <input
+          type="email"
+          id="patientEmail"
+          placeholder=" Enter patient's mail here"
+          formControlName="patientEmail"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientCity" class="flex flex-col justify-center text-sm">
+        City:
+        <input
+          type="text"
+          id="patientCity"
+          placeholder=" Enter patient's city here"
+          formControlName="patientCity"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+    </div>
+    <div class="flex flex-row gap-4 items-center mt-7">
+      <button
+        type="submit"
+        [disabled]="!createPatientForm.valid"
+        class="rounded-md px-2 text-white {{
+          !createPatientForm.valid
+            ? 'bg-main-purple/30 cursor-not-allowed'
+            : 'bg-main-purple cursor-pointer'
+        }}"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+        (click)="returnBack()"
+        class="border-2 rounded-md px-2 text-slate-400 hover:bg-slate-700/30 hover:text-white"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</section>
 }
