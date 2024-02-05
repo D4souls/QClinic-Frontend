@@ -1,4 +1,28 @@
-<button type="button" (click)="createAppointment()">New appointment</button>
 <section class="flex flex-col items-center justify-center bg-white">
-    <full-calendar #calendar [options]="calendarOptions" class="w-3/4 p-4"></full-calendar>
+  <full-calendar
+    #calendar
+    [options]="calendarOptions"
+    class="w-3/4 p-4"
+  ></full-calendar>
 </section>
+
+<form [formGroup]="createAppointmentForm" (submit)="createAppointment()">
+  <label for="namePatient">
+    Patient:
+    <input type="text" formControlName="patient" id="namePatient" />
+  </label>
+
+  <label for="dateAppointment">
+    Date:
+    <input type="text" formControlName="date" id="dateAppointment" />
+  </label>
+
+  <label for="hourAppointment">
+    Hour:
+    <input type="text" formControlName="hour" id="hourAppointment" />
+  </label>
+
+  <button type="submit" [disabled]="!createAppointmentForm.valid">
+    Create
+  </button>
+</form>
