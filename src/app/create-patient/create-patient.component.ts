@@ -93,12 +93,18 @@ export class CreatePatientComponent implements OnInit{
     );
   }
 
-  doctors: any = []
+  doctors: any = [];
 
   getDoctors(){
-    this.apiPatient.getDoctors().subscribe((data) => {
-      this.doctors = data
-      console.log(this.doctors);
+    this.apiPatient.getDoctors().subscribe((data: any) => {
+
+      if (data.success){
+        this.doctors = data.data
+        // console.log(this.doctors);
+      } else {
+        console.log(data);
+      }
+
     })
   }
 
