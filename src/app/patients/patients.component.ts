@@ -26,7 +26,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getUser(): void {
-    this.patientapiservice.getPatientData().subscribe((data: any) => {
+    this.patientapiservice.getPatients().subscribe((data: any) => {
       // console.log(data);
       this.data = data;
       this.filteredPatient = this.data;
