@@ -28,4 +28,12 @@ export class PatientApiService {
   getDoctors(): Observable<any> {
     return this.httpclient.get('http://localhost:8080/doctors')
   }
+
+  getAppointments(): Observable<any> {
+    return this.httpclient.get('http://localhost:8080/appointments')
+  }
+
+  createAppointments(appointmentData: any): Observable<any> {
+    return this.httpclient.post('http://localhost:8080/create-appointment', appointmentData);
+  }
 }
