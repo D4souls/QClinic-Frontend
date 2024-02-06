@@ -2,70 +2,70 @@
   class="flex flex-col p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
   <div class="flex flex-row items-center">
-    <form
-      (submit)="onSubmit($event)"
-      class="flex flex-row items-center gap-4"
-    >
+    <form (submit)="onSubmit($event)" class="flex flex-row items-center gap-4">
       <label
         for="filterPatient"
         class="bg-white rounded-md px-2 py-1.8 flex flex-row items-center gap-2"
       >
         <i class="bx bx-search-alt"></i>
         <input
-          type="text"
+          type="search"
           name="filterPatient"
           placeholder="Search patient"
           #filter
           size="20"
-          class="bg-transparent outline-0"
+          class="bg-transparent border-none focus:border-none"
           (keyup.enter)="filterPatients(filter.value)"
         />
       </label>
       <button
-        class="bg-white rounded-md px-2 py-1.8 hover:bg-main-purple/80 hover:text-white transition ease-in-out"
+        class="bg-white font-medium text-sm rounded-lg px-5 py-2.5 me-2 hover:bg-main-purple/80 hover:text-white focus:ring-main-purple focus:ring-4 transition ease-in-out"
         (click)="filterPatients(filter.value)"
         type="button"
       >
         Search
       </button>
     </form>
-    <a
-      class="ml-auto bg-white rounded-md px-2 py-1.8 hover:bg-main-purple/80 hover:text-white transition ease-in-out cursor-pointer"
-      (click)="newPatient()"
-      >New patient</a
-    >
+    
+    <button
+      class="bg-white font-medium text-sm rounded-lg px-5 py-2.5 me-2 hover:bg-main-purple/80 hover:text-white focus:ring-main-purple focus:ring-4 transition ease-in-out ml-auto"
+      (click)="newPatient()">
+      New patient
+    </button>
   </div>
   @if (data.length > 0){
-    <div class="flex flex-row flex-wrap gap-4 items-center">
-      @for (patient of filteredPatient; track filteredPatient.dni){
-      <div class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 transition ease-in-out">
-        <div class="flex flex-row gap-2 items-center">
-          <img
-            src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
-            height="60"
-            width="60"
-            alt="{{ patient.dni }}_avatar"
-            class="rounded-full"
-          />
+  <div class="flex flex-row flex-wrap gap-4 items-center">
+    @for (patient of filteredPatient; track filteredPatient.dni){
+    <div
+      class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 transition ease-in-out"
+    >
+      <div class="flex flex-row gap-2 items-center">
+        <img
+          src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
+          height="60"
+          width="60"
+          alt="{{ patient.dni }}_avatar"
+          class="rounded-full"
+        />
 
-          <div class="flex flex-col">
-            <div class="flex flex-row gap-2 items-center">
-              <span class="font-semibold text-xl"
-                >{{ patient.firstname }} {{ patient.lastname }}</span
-              >
-              <button (click)="modifyPatient(patient.dni)">
-                <i class="bx bxs-edit"></i>
-              </button>
-            </div>
-            <span class="text-sm">{{ patient.city }}</span>
+        <div class="flex flex-col">
+          <div class="flex flex-row gap-2 items-center">
+            <span class="font-semibold text-xl"
+              >{{ patient.firstname }} {{ patient.lastname }}</span
+            >
+            <button (click)="modifyPatient(patient.dni)">
+              <i class="bx bxs-edit"></i>
+            </button>
           </div>
+          <span class="text-sm">{{ patient.city }}</span>
         </div>
       </div>
-      }
     </div>
+    }
+  </div>
   } @else {
-    <div class="flex flex-col items-center justify-center">
-      <p class="text-gray-400">Ups! There are no patients...</p>
-    </div>
+  <div class="flex flex-col items-center justify-center">
+    <p class="text-gray-400">Ups! There are no patients...</p>
+  </div>
   }
 </section>
