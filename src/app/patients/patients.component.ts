@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
@@ -13,12 +12,12 @@ import { PatientApiService } from '../service/patient-api.service';
 })
 export class PatientsComponent implements OnInit {
   data: any = [];
-  filteredPatient: any =  this.data;
+  filteredPatient: any = this.data;
 
   constructor(
     public modifyUserService: ModifyUserService,
     private router: Router,
-    public patientapiservice: PatientApiService,
+    public patientapiservice: PatientApiService
   ) {}
 
   ngOnInit(): void {
@@ -52,7 +51,7 @@ export class PatientsComponent implements OnInit {
     }
   }
 
-  onSubmit(event: Event): void{
+  onSubmit(event: Event): void {
     event.preventDefault();
   }
 }
