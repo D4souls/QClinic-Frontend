@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { PatientApiService } from '../service/patient-api.service';
+import { ApiService } from '../service/api.service';
 
 @Component({
   selector: 'app-create-patient',
@@ -19,7 +19,7 @@ import { PatientApiService } from '../service/patient-api.service';
   styleUrl: './create-patient.component.css',
 })
 export class CreatePatientComponent implements OnInit{
-  constructor(private router: Router, private apiPatient: PatientApiService) {}
+  constructor(private router: Router, private apiPatient: ApiService) {}
 
   ngOnInit(): void {
       this.getDoctors()

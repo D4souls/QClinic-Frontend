@@ -1,4 +1,4 @@
-import { Component, WritableSignal, signal, effect, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -6,7 +6,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { PatientApiService } from '../service/patient-api.service';
+import { ApiService } from '../service/api.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 
@@ -19,7 +19,7 @@ import { Router } from '@angular/router';
 })
 export class AppointmentsComponent implements OnInit {
 
-  constructor(private apiGetPatient: PatientApiService, private router: Router){}
+  constructor(private apiGetPatient: ApiService, private router: Router){}
 
   calendarEvents: any[] = [];
 

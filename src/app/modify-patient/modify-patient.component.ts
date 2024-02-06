@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
-import { PatientApiService } from '../service/patient-api.service';
+import { ApiService } from '../service/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
@@ -36,7 +36,7 @@ export class ModifyPatientComponent implements OnInit {
   constructor(
     public modifyUserService: ModifyUserService,
     private router: Router,
-    private apiService: PatientApiService,
+    private apiService: ApiService,
   ) {}
 
   ngOnInit(): void {

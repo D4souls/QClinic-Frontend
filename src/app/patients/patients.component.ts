@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
-import { PatientApiService } from '../service/patient-api.service';
+import { ApiService } from '../service/api.service';
 
 @Component({
   selector: 'app-patients',
@@ -17,7 +17,7 @@ export class PatientsComponent implements OnInit {
   constructor(
     public modifyUserService: ModifyUserService,
     private router: Router,
-    public patientapiservice: PatientApiService
+    public patientapiservice: ApiService
   ) {}
 
   ngOnInit(): void {
