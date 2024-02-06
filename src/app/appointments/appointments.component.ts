@@ -29,7 +29,7 @@ export class AppointmentsComponent implements OnInit {
       this.calendarOptions = {
         events: this.calendarEvents,
       }
-    }, 800);
+    }, 1);
   }
 
   calendarOptions: CalendarOptions = {
