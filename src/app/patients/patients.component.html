@@ -37,7 +37,8 @@
   <div class="flex flex-row flex-wrap gap-4 items-center">
     @for (patient of filteredPatient; track filteredPatient.dni){
     <div
-      class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 transition ease-in-out"
+      class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 cursor-pointer transition ease-in-out"
+      (click)="modifyPatient(patient.dni)"
     >
       <div class="flex flex-row gap-2 items-center">
         <img
@@ -54,7 +55,7 @@
               >{{ patient.firstname }} {{ patient.lastname }}</span
             >
             <button (click)="modifyPatient(patient.dni)">
-              <i class="bx bxs-edit"></i>
+              <i class="bx bxs-show"></i>
             </button>
           </div>
           <span class="text-sm">{{ patient.city }}</span>
