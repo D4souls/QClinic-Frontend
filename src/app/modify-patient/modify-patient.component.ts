@@ -20,6 +20,8 @@ export class ModifyPatientComponent implements OnInit {
 
   doctors: any = [];
 
+  appointmentsPatient: any = [];
+
   createPatientForm = new FormGroup({
     patientDNI: new FormControl('', Validators.required),
     patientName: new FormControl('', Validators.required),
@@ -41,6 +43,7 @@ export class ModifyPatientComponent implements OnInit {
     this.chekData();
     this.getDataPatient(this.modifyUserService.userDNI[0])
     this.getDoctors();
+    this.getPatientAppointments(this.modifyUserService.userDNI[0]);
   }
 
   chekData(): void {
@@ -69,6 +72,13 @@ export class ModifyPatientComponent implements OnInit {
         });
       }
 
+    })
+  }
+
+  getPatientAppointments(dni: string) {
+    this.apiService.getUserAppointments(dni).subscribe((data: any) => {
+      this.appointmentsPatient = data.data;
+      console.log(this.appointmentsPatient);
     })
   }
 
@@ -152,7 +162,7 @@ export class ModifyPatientComponent implements OnInit {
     });
   }
 
-  deletePatient(dni: string): void {
+  deletePatient(): void {
     Swal.fire({
       title: 'Are you sure?',
       text: "You won't be able to revert this!",
@@ -163,7 +173,7 @@ export class ModifyPatientComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deletePatient(dni).subscribe(
+        this.apiService.deletePatient(this.createPatientForm.value.patientDNI!).subscribe(
           (data: any) => {
             console.log(data);
 
