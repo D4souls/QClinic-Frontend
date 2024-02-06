@@ -1,20 +1,23 @@
 @if (load){
 <section
-  class="flex flex-col items-center justify-center h-fit mt-10 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
+  class="flex flex-col items-center justify-center py-4 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
   <form
-    class="flex flex-col gap-4 bg-white p-4 rounded-md w-96"
+    class="bg-white p-4 rounded-md w-2/3 flex flex-col gap-2"
     [formGroup]="createPatientForm"
     (ngSubmit)="saveChanges()"
   >
-    <div class="flex flex-col gap-2">
-      <h2 class="text-main-purple text-xl">Personal information</h2>
+
+<!-- MAIN INFORMATION USER FORM -->
+
+  <h2 class="text-main-purple text-2xl font-normal">Personal information</h2>
+    <div class="grid grid-cols-3 grid-rows-2 gap-2">
       <label for="patientDNI" class="flex flex-col justify-center text-sm">
         DNI
         <input
           type="text"
           id="patientDNI"
-          placeholder=" Enter patient's DNI here"
+          placeholder="Enter patient's DNI here"
           formControlName="patientDNI"
           class="rounded-md outline-0 border border-gray-300"
         />
@@ -24,7 +27,7 @@
         <input
           type="text"
           id="patientName"
-          placeholder=" Enter patient's first name here"
+          placeholder="Enter patient's first name here"
           formControlName="patientName"
           class="rounded-md outline-0 border border-gray-300"
         />
@@ -34,7 +37,7 @@
         <input
           type="text"
           id="patientLastname"
-          placeholder=" Enter patient's last name here"
+          placeholder="Enter patient's last name here"
           formControlName="patientLastname"
           class="rounded-md outline-0 border border-gray-300"
         />
@@ -44,7 +47,7 @@
         <input
           type="text"
           id="patientPhone"
-          placeholder=" Enter patient's phone number here"
+          placeholder="Enter patient's phone number here"
           formControlName="patientPhone"
           class="rounded-md outline-0 border border-gray-300"
         />
@@ -58,11 +61,17 @@
           class="rounded-md outline-0 border border-gray-300"
         >
           @if (dataPatient && dataPatient[0]){
-            <option value="{{dataPatient[0].gender}}" [selected]="true" class="text-gray-300">
-                {{dataPatient[0].gender}}
-            </option>
+          <option
+            value="{{ dataPatient[0].gender }}"
+            [selected]="true"
+            class="text-gray-300"
+          >
+            {{ dataPatient[0].gender }}
+          </option>
           }@else {
-            <option value="" disabled selected class="text-gray-300">Select patient's gender</option>
+          <option value="" disabled selected class="text-gray-300">
+            Select patient's gender
+          </option>
           }
           <option value="Male">Male</option>
           <option value="Female">Female</option>
@@ -76,16 +85,18 @@
           id="patientDoctor"
           formControlName="patientDoctor"
           class="rounded-md outline-0 border border-gray-300"
-        >   
-
-        @if (dataPatient && dataPatient[0]){
-            <option value="{{dataPatient[0].assignedDoctor}}" [selected]="true" class="text-gray-300">
-                {{dataPatient[0].doctorName}} {{dataPatient[0].doctorLastname}}
-            </option>
-        }@else{
-            <option value="" disabled selected>Select Doctor</option>
-        }
-          @for (doctorData of doctors; track doctors.dni){
+        >
+          @if (dataPatient && dataPatient[0]){
+          <option
+            value="{{ dataPatient[0].assignedDoctor }}"
+            [selected]="true"
+            class="text-gray-300"
+          >
+            {{ dataPatient[0].doctorName }} {{ dataPatient[0].doctorLastname }}
+          </option>
+          }@else{
+          <option value="" disabled selected>Select Doctor</option>
+          } @for (doctorData of doctors; track doctors.dni){
           <option value="{{ doctorData.dni }}">
             {{ doctorData.firstname }} {{ doctorData.lastname }}
           </option>
@@ -93,48 +104,88 @@
         </select>
       </label>
     </div>
-    <div class="flex flex-col gap-2">
-      <h3 class="text-main-purple text-lg">Additional information</h3>
+
+<!-- ADDITIONAL INFORMATION USER FROM -->
+
+  <h3 class="text-main-purple text-lg">Additional information</h3>
+    <div class="grid grid-cols-2 grid-rows-1 gap-2">
       <label for="patientEmail" class="flex flex-col justify-center text-sm">
-        Email:
+        Email
         <input
           type="email"
           id="patientEmail"
-          placeholder=" Enter patient's mail here"
+          placeholder="Enter patient's mail here"
           formControlName="patientEmail"
           class="rounded-md outline-0 border border-gray-300"
         />
       </label>
       <label for="patientCity" class="flex flex-col justify-center text-sm">
-        City:
+        City
         <input
           type="text"
           id="patientCity"
-          placeholder=" Enter patient's city here"
+          placeholder="Enter patient's city here"
           formControlName="patientCity"
           class="rounded-md outline-0 border border-gray-300"
         />
       </label>
     </div>
+
+<!-- FORM BUTTONS -->
+
     <div class="flex flex-row gap-4 items-center mt-7">
       <button
         type="submit"
         [disabled]="!createPatientForm.valid"
-        class="rounded-md px-2 text-white {{
+        class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
           !createPatientForm.valid
             ? 'bg-main-purple/30 cursor-not-allowed'
             : 'bg-main-purple cursor-pointer'
         }}"
       >
-        Save
+        Save changes
+      </button>
+      <button
+        type="button"
+        (click)="deletePatient()"
+        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+      >
+        Delete patient
       </button>
       <button
         type="button"
         (click)="returnBack()"
-        class="border-2 rounded-md px-2 text-slate-400 hover:bg-slate-700/30 hover:text-white"
+        class="ml-auto text-main-purple/80 font-semibold text-sm px-5 py-2.5 me-2 mb-2 hover:text-main-purple"
       >
-        Cancel
+        <div class="flex flex-row items-center justify-center">
+          <span>Return back</span>
+          <i class="bx bx-chevron-right bx-sm"></i>
+        </div>
       </button>
+    </div>
+
+    <hr class="w-full border border-gray-300">
+
+<!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
+    
+    <div class="gap-4 flex flex-col">
+      <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
+      <table>
+        <tr class="border-b-2 border-b-gray-300">
+          <th>Date</th>
+          <th>Duration</th>
+          <th>Doctor</th>
+          <th>Payed</th>
+        </tr>
+        @for(dataAppointment of appointmentsPatient; track appointmentsPatient.id){
+          <tr class="text-center hover:bg-main-purple/40">
+            <td class="px-2 py-3 rounded-l-lg">{{dataAppointment.date}}</td>
+            <td class="px-2 py-3">1 hour</td>
+            <td class="px-2 py-3">{{dataAppointment.doctorFirstname}} {{dataAppointment.doctorLastname}}</td>
+            <td class="px-2 py-3 rounded-r-lg">Yes</td>
+          </tr>
+        }
+      </table>
     </div>
   </form>
 </section>
