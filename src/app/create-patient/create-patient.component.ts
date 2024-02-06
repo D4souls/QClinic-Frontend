@@ -30,12 +30,10 @@ export class CreatePatientComponent implements OnInit{
     patientName: new FormControl('', Validators.required),
     patientLastname: new FormControl('', Validators.required),
     patientPhone: new FormControl('', Validators.required),
+    patientGender: new FormControl('', Validators.required),
+    patientDoctor: new FormControl('', Validators.required),
     patientEmail: new FormControl(''),
     patientCity: new FormControl(''),
-    patientGender: new FormControl('', Validators.required),
-    // patientDirection: new FormControl('', Validators.required),
-    // patientPassword: new FormControl('', Validators.required),
-    patientDoctor: new FormControl('', Validators.required),
   });
 
   returnBack(){
