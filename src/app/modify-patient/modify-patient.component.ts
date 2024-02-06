@@ -27,10 +27,8 @@ export class ModifyPatientComponent implements OnInit {
     patientPhone: new FormControl('', Validators.required),
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
-    patientEmail: new FormControl('', Validators.required),
-    patientCity: new FormControl('', Validators.required),
-    // patientDirection: new FormControl('', Validators.required),
-    // patientPassword: new FormControl('', Validators.required),
+    patientEmail: new FormControl(''),
+    patientCity: new FormControl(''),
   });
 
   constructor(
