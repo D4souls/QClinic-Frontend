@@ -45,7 +45,7 @@
       <label for="patientPhone" class="flex flex-col justify-center text-sm">
         Phone number
         <input
-          type="text"
+          type="tel"
           id="patientPhone"
           placeholder="Enter patient's phone number here"
           formControlName="patientPhone"
@@ -167,9 +167,11 @@
     <hr class="w-full border border-gray-300">
 
 <!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
-    
-    <div class="gap-4 flex flex-col">
-      <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
+
+
+  <div class="gap-4 flex flex-col justify-center">
+    <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
+    @if (appointmentsPatient.length > 0){
       <table>
         <tr class="border-b-2 border-b-gray-300">
           <th>Date</th>
@@ -186,7 +188,10 @@
           </tr>
         }
       </table>
-    </div>
+    }@else {
+      <span class="text-center text-gray-300">We didn't find any appointments</span>
+    }
+  </div>
   </form>
 </section>
 }
