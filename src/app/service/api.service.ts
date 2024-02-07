@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 export class ApiService {
 
   constructor(private httpclient: HttpClient) { }
-
-  url = 'http://localhost:8080/'
+  port = '8080'
+  url = `http://localhost:${this.port}/`
 
   getPatients(page: number): Observable<any>{
     return this.httpclient.get(this.url + 'patients' + '?page=' + page);
