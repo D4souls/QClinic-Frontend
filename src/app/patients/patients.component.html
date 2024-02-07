@@ -26,6 +26,12 @@
         Search
       </button>
     </form>
+
+    <div class="d-flex justify-content-center">
+      <pagination-controls
+        (pageChange)="renderPage($event)"
+      ></pagination-controls>
+    </div>
     
     <button
       class="bg-white font-medium text-sm rounded-lg px-5 py-2.5 me-2 hover:bg-main-purple/80 hover:text-white focus:ring-main-purple focus:ring-4 transition ease-in-out ml-auto"
@@ -35,8 +41,9 @@
   </div>
   @if (data.length > 0){
   <div class="flex flex-row flex-wrap gap-4 items-center">
-    @for (patient of filteredPatient; track filteredPatient.dni){
+    <!-- @for (let patient of data; track data.dni | paginate : { itemsPerPage: 6, currentPage: pagination, totalItems: allPatients}){ -->
     <div
+      *ngFor="let patient of data | paginate : { itemsPerPage: 6, currentPage: pagination, totalItems: allPatients}"
       class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 cursor-pointer transition ease-in-out"
       (click)="modifyPatient(patient.dni)"
     >
@@ -62,7 +69,7 @@
         </div>
       </div>
     </div>
-    }
+    <!-- } -->
   </div>
   } @else {
   <div class="flex flex-row items-center justify-center">

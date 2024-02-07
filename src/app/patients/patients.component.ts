@@ -2,17 +2,22 @@ import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../service/api.service';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [],
+  imports: [NgxPaginationModule, CommonModule],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.css',
 })
 export class PatientsComponent implements OnInit {
   data: any = [];
   filteredPatient: any = this.data;
+
+  allPatients: number = 0;
+  pagination: number = 1;
 
   constructor(
     public modifyUserService: ModifyUserService,
@@ -25,7 +30,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getUser(): void {
-    this.patientapiservice.getPatients().subscribe((data: any) => {
+    this.patientapiservice.getPatients(this.pagination).subscribe((data: any) => {
       // console.log(data);
       this.data = data;
       this.filteredPatient = this.data;
@@ -53,5 +58,10 @@ export class PatientsComponent implements OnInit {
 
   onSubmit(event: Event): void {
     event.preventDefault();
+  }
+
+  renderPage(event: number) {
+    this.pagination = event;
+    this.getUser();
   }
 }

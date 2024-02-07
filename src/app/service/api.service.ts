@@ -9,39 +9,41 @@ export class ApiService {
 
   constructor(private httpclient: HttpClient) { }
 
-  getPatients(): Observable<any>{
-    return this.httpclient.get('http://localhost:8080/patients');
+  url = 'http://localhost:8080/'
+
+  getPatients(page: number): Observable<any>{
+    return this.httpclient.get(this.url + 'patients' + '?page=' + page);
   }
 
   getPatientData(dni: string): Observable<any>{
-    return this.httpclient.get(`http://localhost:8080/patient/${dni}`);
+    return this.httpclient.get(this.url + `patient/${dni}`);
   }  
 
   deletePatient(dni: string): Observable<any> {
-    return this.httpclient.delete(`http://localhost:8080/delete-patient/${dni}`);
+    return this.httpclient.delete(this.url + `delete-patient/${dni}`);
   }
 
   createPatient(patientData: any): Observable<any> {
-    return this.httpclient.post('http://localhost:8080/create-patient', patientData);
+    return this.httpclient.post(this.url + 'create-patient', patientData);
   }
 
   modifyPatient(patientData: any): Observable<any> {
-    return this.httpclient.post('http://localhost:8080/modify-patient', patientData);
+    return this.httpclient.post(this.url + 'modify-patient', patientData);
   }
 
   getDoctors(): Observable<any> {
-    return this.httpclient.get('http://localhost:8080/doctors')
+    return this.httpclient.get(this.url + 'doctors')
   }
 
   getAppointments(): Observable<any> {
-    return this.httpclient.get('http://localhost:8080/appointments')
+    return this.httpclient.get(this.url + 'appointments')
   }
 
   createAppointments(appointmentData: any): Observable<any> {
-    return this.httpclient.post('http://localhost:8080/create-appointment', appointmentData);
+    return this.httpclient.post(this.url + 'create-appointment', appointmentData);
   }
 
   getUserAppointments(dni: string): Observable<any> {
-    return this.httpclient.get(`http://localhost:8080/user-appointments/${dni}`);
+    return this.httpclient.get(this.url + `user-appointments/${dni}`);
   }
 }
