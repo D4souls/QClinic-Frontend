@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import { RouterModule, Routes } from '@angular/router';
 import { HomeComponent } from './home/home.component';
 import { UserDataComponent } from './user-data/user-data.component';
 import { PatientsComponent } from './patients/patients.component';
@@ -6,6 +6,7 @@ import { DoctorsComponent } from './doctors/doctors.component';
 import { ModifyPatientComponent } from './modify-patient/modify-patient.component';
 import { CreatePatientComponent } from './create-patient/create-patient.component';
 import { AppointmentsComponent } from './appointments/appointments.component';
+import { NgModule } from '@angular/core';
 
 export const routes: Routes = [
   {
@@ -39,7 +40,7 @@ export const routes: Routes = [
     component: DoctorsComponent,
   },
   {
-    path: 'modify-patient',
+    path: 'patients/modify-patient/:dniPatient',
     title: 'Modify patient',
     component: ModifyPatientComponent,
   },
