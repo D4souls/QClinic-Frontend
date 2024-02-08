@@ -1,4 +1,3 @@
-@if (load){
 <section
   class="flex flex-col items-center justify-center py-4 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
@@ -7,10 +6,9 @@
     [formGroup]="createPatientForm"
     (ngSubmit)="saveChanges()"
   >
+    <!-- MAIN INFORMATION USER FORM -->
 
-<!-- MAIN INFORMATION USER FORM -->
-
-  <h2 class="text-main-purple text-2xl font-normal">Personal information</h2>
+    <h2 class="text-main-purple text-2xl font-normal">Personal information</h2>
     <div class="grid grid-cols-3 grid-rows-2 gap-2">
       <label for="patientDNI" class="flex flex-col justify-center text-sm">
         DNI
@@ -105,9 +103,9 @@
       </label>
     </div>
 
-<!-- ADDITIONAL INFORMATION USER FROM -->
+    <!-- ADDITIONAL INFORMATION USER FROM -->
 
-  <h3 class="text-main-purple text-lg">Additional information</h3>
+    <h3 class="text-main-purple text-lg">Additional information</h3>
     <div class="grid grid-cols-2 grid-rows-1 gap-2">
       <label for="patientEmail" class="flex flex-col justify-center text-sm">
         Email
@@ -131,7 +129,7 @@
       </label>
     </div>
 
-<!-- FORM BUTTONS -->
+    <!-- FORM BUTTONS -->
 
     <div class="flex flex-row gap-4 items-center mt-7">
       <button
@@ -164,14 +162,13 @@
       </button>
     </div>
 
-    <hr class="w-full border border-gray-300">
+    <hr class="w-full border border-gray-300" />
 
-<!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
+    <!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
 
-
-  <div class="gap-4 flex flex-col justify-center">
-    <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
-    @if (appointmentsPatient.length > 0){
+    <div class="gap-4 flex flex-col justify-center">
+      <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
+      @if (appointmentsPatient.length > 0){
       <table>
         <tr class="border-b-2 border-b-gray-300">
           <th>Date</th>
@@ -179,22 +176,29 @@
           <th>Doctor</th>
           <th>Payed</th>
         </tr>
-        @for(dataAppointment of appointmentsPatient; track appointmentsPatient.id){
-          <tr class="text-center hover:bg-main-purple/40">
-            <td class="px-2 py-3 rounded-l-lg">{{dataAppointment.date}}</td>
-            <td class="px-2 py-3">1 hour</td>
-            <td class="px-2 py-3">{{dataAppointment.doctorFirstname}} {{dataAppointment.doctorLastname}}</td>
-            <td class="px-2 py-3 rounded-r-lg">Yes</td>
-          </tr>
+        @for(dataAppointment of appointmentsPatient; track
+        appointmentsPatient.id){
+        <tr class="text-center hover:bg-main-purple/40">
+          <td class="px-2 py-3 rounded-l-lg">{{ dataAppointment.date }}</td>
+          <td class="px-2 py-3">1 hour</td>
+          <td class="px-2 py-3">
+            {{ dataAppointment.doctorFirstname }}
+            {{ dataAppointment.doctorLastname }}
+          </td>
+          <td class="px-2 py-3 rounded-r-lg">Yes</td>
+        </tr>
         }
       </table>
-    }@else {
+      }@else {
       <div class="flex flex-row items-center justify-center">
-        <img src="/assets/images/calendar-flatline.png" alt="earch-engine" width="150">
+        <img
+          src="/assets/images/calendar-flatline.png"
+          alt="earch-engine"
+          width="150"
+        />
         <span class="text-gray-500">We didn't find any appointments</span>
       </div>
-    }
-  </div>
+      }
+    </div>
   </form>
 </section>
-}
