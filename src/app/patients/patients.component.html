@@ -1,6 +1,9 @@
 <section
   class="flex flex-col justify-center p-6 gap-4 animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
+
+  <!-- USERS SEARCH FORM -->
+
   <div class="flex flex-row items-center">
     <form (submit)="onSubmit($event)" class="flex flex-row items-center gap-4">
       <label
@@ -26,12 +29,6 @@
         Search
       </button>
     </form>
-
-    <div class="d-flex justify-content-center">
-      <pagination-controls
-        (pageChange)="renderPage($event)"
-      ></pagination-controls>
-    </div>
     
     <button
       class="bg-white font-medium text-sm rounded-lg px-5 py-2.5 me-2 hover:bg-main-purple/80 hover:text-white focus:ring-main-purple focus:ring-4 transition ease-in-out ml-auto"
@@ -40,40 +37,51 @@
     </button>
   </div>
   @if (data.length > 0){
-  <div class="flex flex-row flex-wrap gap-4 items-center">
-    <!-- @for (let patient of data; track data.dni | paginate : { itemsPerPage: 6, currentPage: pagination, totalItems: allPatients}){ -->
-    <div
-      *ngFor="let patient of data | paginate : { itemsPerPage: 6, currentPage: pagination, totalItems: allPatients}"
-      class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 cursor-pointer transition ease-in-out"
-      (click)="modifyPatient(patient.dni)"
-    >
-      <div class="flex flex-row gap-2 items-center">
-        <img
-          src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
-          height="60"
-          width="60"
-          alt="{{ patient.dni }}_avatar"
-          class="rounded-full"
-        />
 
-        <div class="flex flex-col">
-          <div class="flex flex-row gap-2 items-center">
-            <span class="font-semibold text-xl"
-              >{{ patient.firstname }} {{ patient.lastname }}</span
-            >
-            <button (click)="modifyPatient(patient.dni)">
+ <!-- USER CARD -->
+
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-rows-4 gap-4 items-center">
+    @for (patient of filteredPatient | paginate : { itemsPerPage: 16, currentPage: pagination, totalItems: allPatients}; track filteredPatient.dni){
+      <div
+        class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 cursor-pointer transition ease-in-out"
+        (click)="modifyPatient(patient.dni)"
+      >
+        <div class="flex flex-row gap-2 items-center">
+          <img
+            src="https://raw.githubusercontent.com/D4souls/portfolio-2023/main/public/logoportfolio2023.webp"
+            height="60"
+            width="60"
+            alt="{{ patient.dni }}_avatar"
+            class="rounded-full"
+          />
+  
+          <div class="flex flex-col">
+            <div class="flex flex-row gap-2 items-center">
+              <span class="font-semibold text-xl line-clamp-1"
+                >{{ patient.firstname }} {{ patient.lastname }}</span
+              >
               <i class="bx bxs-show"></i>
-            </button>
+            </div>
+            <span class="text-sm">{{ patient.city }}</span>
           </div>
-          <span class="text-sm">{{ patient.city }}</span>
         </div>
       </div>
-    </div>
-    <!-- } -->
+    }
   </div>
+
+ <!-- PAGINATION CONTROLS -->
+
+  <div class="self-center absolute bottom-1">
+    <pagination-controls
+      (pageChange)="renderPage($event)"
+    ></pagination-controls>
+  </div>
+
+  <!-- FALLBACK TO DATA -->
+
   } @else {
   <div class="flex flex-row items-center justify-center">
-    <img src="/assets/images/question-flatline.png" alt="earch-engine" width="150">
+    <img src="/assets/images/question-flatline.png" alt="earch-engine" width="150" height="150">
     <p class="text-gray-500">Ups! There are no patients...</p>
   </div>
   }
