@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ModifyUserService } from '../service/modify-user.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -14,9 +14,9 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 })
 export class ModifyPatientComponent implements OnInit {
 
-  load: boolean = false;
-
   dataPatient: any[] = [];
+
+  dniPatient: string = '';
 
   doctors: any = [];
 
@@ -37,21 +37,19 @@ export class ModifyPatientComponent implements OnInit {
     public modifyUserService: ModifyUserService,
     private router: Router,
     private apiService: ApiService,
+    private activatedRouter: ActivatedRoute
   ) {}
 
   ngOnInit(): void {
-    this.chekData();
-    this.getDataPatient(this.modifyUserService.userDNI[0])
-    this.getDoctors();
-    this.getPatientAppointments(this.modifyUserService.userDNI[0]);
-  }
 
-  chekData(): void {
-    if (this.modifyUserService.userDNI.length > 0) {
-      this.load = true;
-    } else {
-      this.router.navigate(['/patients']);
-    }
+    this.activatedRouter.params.subscribe(req => {
+
+      this.dniPatient = req['dniPatient'];
+
+      this.getDataPatient(this.dniPatient);
+      this.getPatientAppointments(this.dniPatient);
+      this.getDoctors();
+    })
   }
 
   getDataPatient(dniToFind: string){
