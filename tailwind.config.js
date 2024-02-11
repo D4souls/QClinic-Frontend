@@ -11,6 +11,7 @@ module.exports = {
       }
     },
   },
+  darkMode: 'media',
   plugins: [
     require('tailwindcss-animated'),
     require('flowbite/plugin'),
