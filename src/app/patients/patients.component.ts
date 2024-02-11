@@ -20,6 +20,10 @@ export class PatientsComponent implements OnInit {
   allPatients: number = 0;
   pagination: number = 1;
 
+  isRotated: boolean = false;
+
+  cantPatientsPerPage: number = 16;
+
   constructor(
     public modifyUserService: ModifyUserService,
     private router: Router,
@@ -53,7 +57,7 @@ export class PatientsComponent implements OnInit {
   }
 
   newPatient(): void {
-    this.router.navigate(['/create-patient']);
+    this.router.navigate(['/patients/create-patient']);
   }
 
   filterPatients(dataToSearch: string): void {
@@ -85,6 +89,37 @@ export class PatientsComponent implements OnInit {
     }
   }
 
+  orderFilterPatients: string = 'Descending';
+
+  changeOrderFilterPatients(): void {
+
+    if (this.orderFilterPatients === 'Ascending') {
+      const orderASC = this.filteredPatient.sort((a: any, b: any)=> {
+        
+        if (a.firstname > b.firstname) {
+          return 1;
+        }
+
+        if (a.firstname < b.firstname) {
+          return -1;
+        }
+
+        return 0;
+
+      });
+
+      this.filteredPatient = orderASC;
+      this.orderFilterPatients = 'Descending';
+
+    } else {
+      this.filteredPatient.sort((a: any, b: any)=> {
+        return b.firstname.toLowerCase().localeCompare(a.firstname.toLowerCase());
+      });
+
+      this.orderFilterPatients = 'Ascending';
+    }
+  }
+
   onSubmit(event: Event): void {
     event.preventDefault();
   }
@@ -92,5 +127,9 @@ export class PatientsComponent implements OnInit {
   renderPage(event: number) {
     this.pagination = event;
     this.getUser();
+  }
+
+  rotate(): void {
+   this.isRotated = !this.isRotated; 
   }
 }
