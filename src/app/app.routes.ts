@@ -45,7 +45,7 @@ export const routes: Routes = [
     component: ModifyPatientComponent,
   },
   {
-    path: 'create-patient',
+    path: 'patients/create-patient',
     title: 'Create patient',
     component: CreatePatientComponent,
   },
