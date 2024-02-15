@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ModifyUserService } from '../service/modify-user.service';
 import { Router } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -25,7 +24,6 @@ export class PatientsComponent implements OnInit {
   cantPatientsPerPage: number = 16;
 
   constructor(
-    public modifyUserService: ModifyUserService,
     private router: Router,
     public patientapiservice: ApiService
   ) {}
@@ -49,10 +47,6 @@ export class PatientsComponent implements OnInit {
   }
 
   modifyPatient(dni: string): void {
-
-    // SHARE DATA TO MODIFY-PATIENT COMPONENT
-
-    this.modifyUserService.shareData(dni);
     this.router.navigate(['/patients/modify-patient', dni]);
   }
 

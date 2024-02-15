@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ModifyUserService } from '../service/modify-user.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../service/api.service';
 import Swal from 'sweetalert2';
@@ -34,7 +33,6 @@ export class ModifyPatientComponent implements OnInit {
   });
 
   constructor(
-    public modifyUserService: ModifyUserService,
     private router: Router,
     private apiService: ApiService,
     private activatedRouter: ActivatedRoute
