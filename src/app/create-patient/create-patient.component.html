@@ -2,106 +2,126 @@
   class="flex flex-col items-center justify-center py-4 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
 >
   <form
-    class="bg-white p-4 rounded-md w-2/3 flex flex-col gap-2"
+    class="bg-white p-4 mt-20 rounded-md w-2/3 flex flex-row flex-shrink items-center gap-4"
     [formGroup]="createPatientForm"
     (ngSubmit)="createPatient()"
   >
-
-<!-- MAIN INFORMATION USER FORM -->
-
-  <h2 class="text-main-purple text-2xl">Personal information</h2>
-  <div class="grid grid-cols-3 grid-rows-2 gap-2">
-      <label for="patientDNI" class="flex flex-col justify-center text-md">
-        DNI
-        <input
-          type="text"
-          id="patientDNI"
-          placeholder="Enter patient's DNI here"
-          formControlName="patientDNI"
-          class="rounded-md outline-0 border border-gray-300"
-        />
-      </label>
-      <label for="patientName" class="flex flex-col justify-center text-md">
-        First name
-        <input
-          type="text"
-          id="patientName"
-          placeholder="Enter patient's first name here"
-          formControlName="patientName"
-          class="rounded-md outline-0 border border-gray-300"
-        />
-      </label>
-      <label for="patientLastname" class="flex flex-col justify-center text-md">
-        Last name
-        <input
-          type="text"
-          id="patientLastname"
-          placeholder="Enter patient's last name here"
-          formControlName="patientLastname"
-          class="rounded-md outline-0 border border-gray-300"
-        />
-      </label>
-      <label for="patientPhone" class="flex flex-col justify-center text-md">
-        Phone number
-        <input
-          type="text"
-          id="patientPhone"
-          placeholder="Enter patient's phone number here"
-          formControlName="patientPhone"
-          class="rounded-md outline-0 border border-gray-300"
-        />
-      </label>
-      <label for="patientGender" class="flex flex-col justify-center text-md">
-        Gender
-        <select name="patientGender" id="patientGender" formControlName="patientGender" class="rounded-md outline-0 border border-gray-300">
-          <option value="" disabled selected class="text-gray-300">Select patient's gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="noBinary">No binary</option>
-        </select>
-      </label>
-      <label for="patientDoctor" class="flex flex-col justify-center text-md">
-        Doctor
-        <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="rounded-md outline-0 border border-gray-300">
-          <option value="" disabled selected>Select Doctor</option>
-          @for (doctorData of doctors; track doctors.dni){
-            <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
-          }
-        </select>
-      </label>
-  </div>
-
-<!-- ADDITIONAL INFORMATION USER FROM -->
-
-  <h3 class="text-main-purple text-lg">Additional information</h3>
-  <div class="grid grid-cols-2 grid-rows-1 gap-2">
-    <label for="patientEmail" class="flex flex-col justify-center text-md">
-      Email:
-      <input
-        type="email"
-        id="patientEmail"
-        placeholder="Enter patient's mail here"
-        formControlName="patientEmail"
-        class="rounded-md outline-0 border border-gray-300"
-      />
-    </label>
-    <label for="patientCity" class="flex flex-col justify-center text-md">
-      City:
-      <input
-        type="text"
-        id="patientCity"
-        placeholder="Enter patient's city here"
-        formControlName="patientCity"
-        class="rounded-md outline-0 border border-gray-300"
-      />
+   <!-- UPLOAD USER'S AVATAR -->
+  
+   <div class="flex items-center justify-center order-2 absolute top-24 right-72">
+    <label for="patientAvatar" class="flex flex-col items-center justify-center h-32 w-32 border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 relative overflow-hidden">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg class="w-4 h-4 mb-1 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            </svg>
+            <p class="mb-2 text-xs text-gray-500 font-semibold">Click to upload</p>
+        </div>
+        <input id="patientAvatar" type="file" class="hidden z-10" formControlName="patientAvatar" (change)="filePreview($event)"/>
+        <img [src]="previewAvatar" class="absolute z-0 rounded-full object-cover">
     </label>
   </div>
 
-<!-- FORM BUTTONS -->
 
-  <div class="flex flex-row gap-4 items-center mt-7">
-    <button type="submit" [disabled]="!createPatientForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createPatientForm.valid ? 'bg-main-purple/30 cursor-not-allowed' : 'bg-main-purple cursor-pointer'}}">Create</button>
-    <button type="button" (click)="returnBack()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+  <!-- INFORMATION CONTAINER -->
+
+  <div class="flex flex-col order-1 w-full">
+    <!-- MAIN INFORMATION USER FORM -->
+    <h2 class="text-main-purple text-2xl">Personal information</h2>
+    <div class="grid grid-cols-3 grid-rows-2 gap-2">
+        <label for="patientDNI" class="flex flex-col justify-center text-md">
+          DNI
+          <input
+            type="text"
+            id="patientDNI"
+            placeholder="Enter patient's DNI here"
+            formControlName="patientDNI"
+            class="rounded-md outline-0 border border-gray-300"
+          />
+        </label>
+        <label for="patientName" class="flex flex-col justify-center text-md">
+          First name
+          <input
+            type="text"
+            id="patientName"
+            placeholder="Enter patient's first name here"
+            formControlName="patientName"
+            class="rounded-md outline-0 border border-gray-300"
+          />
+        </label>
+        <label for="patientLastname" class="flex flex-col justify-center text-md">
+          Last name
+          <input
+            type="text"
+            id="patientLastname"
+            placeholder="Enter patient's last name here"
+            formControlName="patientLastname"
+            class="rounded-md outline-0 border border-gray-300"
+          />
+        </label>
+        <label for="patientPhone" class="flex flex-col justify-center text-md">
+          Phone number
+          <input
+            type="text"
+            id="patientPhone"
+            placeholder="Enter patient's phone number here"
+            formControlName="patientPhone"
+            class="rounded-md outline-0 border border-gray-300"
+          />
+        </label>
+        <label for="patientGender" class="flex flex-col justify-center text-md">
+          Gender
+          <select name="patientGender" id="patientGender" formControlName="patientGender" class="rounded-md outline-0 border border-gray-300">
+            <option value="" disabled selected class="text-gray-300">Select patient's gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="No binary">No binary</option>
+          </select>
+        </label>
+        <label for="patientDoctor" class="flex flex-col justify-center text-md">
+          Doctor
+          <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="rounded-md outline-0 border border-gray-300">
+            <option value="" disabled selected>Select Doctor</option>
+            @for (doctorData of doctors; track doctors.dni){
+              <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
+            }
+          </select>
+        </label>
+    </div>
+
+    <!-- ADDITIONAL INFORMATION USER FROM -->
+
+    <h3 class="text-main-purple text-lg">Additional information</h3>
+    <div class="grid grid-cols-2 grid-rows-1 gap-2">
+      <label for="patientEmail" class="flex flex-col justify-center text-md">
+        Email:
+        <input
+          type="email"
+          id="patientEmail"
+          placeholder="Enter patient's mail here"
+          formControlName="patientEmail"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+      <label for="patientCity" class="flex flex-col justify-center text-md">
+        City:
+        <input
+          type="text"
+          id="patientCity"
+          placeholder="Enter patient's city here"
+          formControlName="patientCity"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+    </div>
+
+    <!-- FORM BUTTONS -->
+  
+    <div class="flex flex-row gap-4 items-center mt-7">
+      <button type="submit" [disabled]="!createPatientForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createPatientForm.valid ? 'bg-main-purple/30 cursor-not-allowed' : 'bg-main-purple cursor-pointer'}}">Create</button>
+      <button type="button" (click)="returnBack()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+    </div>
+
   </div>
+
   </form>
 </section>
