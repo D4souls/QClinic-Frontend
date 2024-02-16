@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../core/services/api.service';
+import { ApiService } from '../../core/services/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { phoneNumberValidator } from '../shared/validators/phone.validator';
-import { dniValidator } from '../shared/validators/dni.validator';
+import { phoneNumberValidator } from '../../shared/validators/phone.validator';
+import { dniValidator } from '../../shared/validators/dni.validator';
 
-import { FormatFormsInputsService } from '../shared/services/format-forms-inputs.service';
-import { textValidator } from '../shared/validators/text.validator';
+import { FormatFormsInputsService } from '../../shared/services/format-forms-inputs.service';
+import { textValidator } from '../../shared/validators/text.validator';
 
 @Component({
   selector: 'app-modify-patient',

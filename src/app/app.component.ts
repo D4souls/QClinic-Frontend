@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { NavBarComponent } from './pages/nav-bar/nav-bar.component';
 import { HttpClientModule } from '@angular/common/http';
 import { initFlowbite } from 'flowbite';
 

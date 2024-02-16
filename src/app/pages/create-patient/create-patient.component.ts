@@ -9,13 +9,13 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { ApiService } from '../core/services/api.service';
+import { ApiService } from '../../core/services/api.service';
 
-import { phoneNumberValidator } from '../shared/validators/phone.validator';
-import { dniValidator } from '../shared/validators/dni.validator';
-import { textValidator } from '../shared/validators/text.validator';
+import { phoneNumberValidator } from '../../shared/validators/phone.validator';
+import { dniValidator } from '../../shared/validators/dni.validator';
+import { textValidator } from '../../shared/validators/text.validator';
 
-import { FormatFormsInputsService } from '../shared/services/format-forms-inputs.service';
+import { FormatFormsInputsService } from '../../shared/services/format-forms-inputs.service';
 
 @Component({
   selector: 'app-create-patient',
