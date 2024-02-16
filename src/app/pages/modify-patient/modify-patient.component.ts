@@ -27,6 +27,25 @@ export class ModifyPatientComponent implements OnInit {
 
   appointmentsPatient: any = [];
 
+  constructor(
+    private router: Router,
+    private apiService: ApiService,
+    private activatedRouter: ActivatedRoute,
+    private formatForm: FormatFormsInputsService,
+  ) {}
+
+  ngOnInit(): void {
+
+    this.activatedRouter.params.subscribe(req => {
+
+      this.dniPatient = req['dniPatient'];
+
+      this.getDataPatient(this.dniPatient);
+      this.getPatientAppointments(this.dniPatient);
+      this.getDoctors();
+    })
+  }
+
   modifyPatientForm = new FormGroup({
     patientDNI: new FormControl('', [
       Validators.required,
@@ -48,25 +67,6 @@ export class ModifyPatientComponent implements OnInit {
     patientEmail: new FormControl('', Validators.email),
     patientCity: new FormControl('', textValidator),
   });
-
-  constructor(
-    private router: Router,
-    private apiService: ApiService,
-    private activatedRouter: ActivatedRoute,
-    private formatForm: FormatFormsInputsService,
-  ) {}
-
-  ngOnInit(): void {
-
-    this.activatedRouter.params.subscribe(req => {
-
-      this.dniPatient = req['dniPatient'];
-
-      this.getDataPatient(this.dniPatient);
-      this.getPatientAppointments(this.dniPatient);
-      this.getDoctors();
-    })
-  }
 
   getDataPatient(dniToFind: string){
     this.apiService.getPatientData(dniToFind).subscribe((data: any) => {
@@ -128,11 +128,8 @@ export class ModifyPatientComponent implements OnInit {
       assignedDoctor: this.modifyPatientForm.value.patientDoctor,
       phone: this.modifyPatientForm.value.patientPhone,
       gender: this.modifyPatientForm.value.patientGender,
-      // direccion: this.modifyPatientForm.value.patientDirection,
 
     };
-
-    // console.log(dataPatient);
 
     Swal.fire({
       title: 'Do you want to save changes?',
