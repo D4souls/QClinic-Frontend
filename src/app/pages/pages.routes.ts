@@ -1,6 +1,4 @@
 import { Routes } from '@angular/router';
-import { AppointmentsComponent } from './appointments/show-appointments/appointments.component';
-import { DoctorsComponent } from './doctors/show-doctors/doctors.component';
 import { HomeComponent } from './home/home.component';
 import { UserDataComponent } from './user-data/user-data.component';
 
