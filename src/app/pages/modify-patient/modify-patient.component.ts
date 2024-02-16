@@ -116,13 +116,11 @@ export class ModifyPatientComponent implements OnInit {
   saveChanges(): void {
 
     // FORMAT DATA PATIENT
-    const formattedDNI = this.formatForm.formatDNI(this.modifyPatientForm.value.patientDNI!);
     const formattedName = this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientName!);
     const formattedLastName = this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientLastname!);
     const formattedCity = this.modifyPatientForm.value.patientCity ? this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientCity!) : this.modifyPatientForm.value.patientCity;
 
     const dataPatient = {
-      dni: formattedDNI,
       firstname: formattedName,
       lastname: formattedLastName,
       city: formattedCity,
