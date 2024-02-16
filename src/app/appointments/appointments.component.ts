@@ -6,7 +6,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../service/api.service';
+import { ApiService } from '../core/services/api.service';
 import Swal from 'sweetalert2';
 import { Router } from '@angular/router';
 

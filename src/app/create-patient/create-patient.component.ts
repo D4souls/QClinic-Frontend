@@ -9,7 +9,7 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { ApiService } from '../service/api.service';
+import { ApiService } from '../core/services/api.service';
 
 import { phoneNumberValidator } from '../shared/validators/phone.validator';
 import { dniValidator } from '../shared/validators/dni.validator';
