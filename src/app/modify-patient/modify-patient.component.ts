@@ -4,6 +4,12 @@ import { ApiService } from '../service/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
+import { phoneNumberValidator } from '../shared/validators/phone.validator';
+import { dniValidator } from '../shared/validators/dni.validator';
+
+import { FormatFormsInputsService } from '../shared/services/format-forms-inputs.service';
+import { textValidator } from '../shared/validators/text.validator';
+
 @Component({
   selector: 'app-modify-patient',
   standalone: true,
@@ -21,21 +27,33 @@ export class ModifyPatientComponent implements OnInit {
 
   appointmentsPatient: any = [];
 
-  createPatientForm = new FormGroup({
-    patientDNI: new FormControl('', Validators.required),
-    patientName: new FormControl('', Validators.required),
-    patientLastname: new FormControl('', Validators.required),
-    patientPhone: new FormControl('', Validators.required),
+  modifyPatientForm = new FormGroup({
+    patientDNI: new FormControl('', [
+      Validators.required,
+      dniValidator
+    ]),
+    patientName: new FormControl('', [
+      Validators.required,
+      textValidator
+    ]),
+    patientLastname: new FormControl('', [
+      Validators.required, textValidator
+    ]),
+    patientPhone: new FormControl('', [
+      Validators.required,
+      phoneNumberValidator
+    ]),
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
-    patientEmail: new FormControl(''),
-    patientCity: new FormControl(''),
+    patientEmail: new FormControl('', Validators.email),
+    patientCity: new FormControl('', textValidator),
   });
 
   constructor(
     private router: Router,
     private apiService: ApiService,
-    private activatedRouter: ActivatedRoute
+    private activatedRouter: ActivatedRoute,
+    private formatForm: FormatFormsInputsService,
   ) {}
 
   ngOnInit(): void {
@@ -56,7 +74,7 @@ export class ModifyPatientComponent implements OnInit {
       if(data && data.length > 0){
         this.dataPatient = data;
 
-        this.createPatientForm.patchValue({
+        this.modifyPatientForm.patchValue({
           patientDNI: this.dataPatient[0].dni,
           patientName: this.dataPatient[0].firstname,
           patientLastname: this.dataPatient[0].lastname,
@@ -96,16 +114,23 @@ export class ModifyPatientComponent implements OnInit {
   }
 
   saveChanges(): void {
+
+    // FORMAT DATA PATIENT
+    const formattedDNI = this.formatForm.formatDNI(this.modifyPatientForm.value.patientDNI!);
+    const formattedName = this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientName!);
+    const formattedLastName = this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientLastname!);
+    const formattedCity = this.modifyPatientForm.value.patientCity ? this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientCity!) : this.modifyPatientForm.value.patientCity;
+
     const dataPatient = {
-      dni: this.createPatientForm.value.patientDNI,
-      firstname: this.createPatientForm.value.patientName,
-      lastname: this.createPatientForm.value.patientLastname,
-      city: this.createPatientForm.value.patientCity,
-      email: this.createPatientForm.value.patientEmail,
-      assignedDoctor: this.createPatientForm.value.patientDoctor,
-      phone: this.createPatientForm.value.patientPhone,
-      gender: this.createPatientForm.value.patientGender,
-      // direccion: this.createPatientForm.value.patientDirection,
+      dni: formattedDNI,
+      firstname: formattedName,
+      lastname: formattedLastName,
+      city: formattedCity,
+      email: this.modifyPatientForm.value.patientEmail,
+      assignedDoctor: this.modifyPatientForm.value.patientDoctor,
+      phone: this.modifyPatientForm.value.patientPhone,
+      gender: this.modifyPatientForm.value.patientGender,
+      // direccion: this.modifyPatientForm.value.patientDirection,
 
     };
 
@@ -169,7 +194,7 @@ export class ModifyPatientComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deletePatient(this.createPatientForm.value.patientDNI!).subscribe(
+        this.apiService.deletePatient(this.modifyPatientForm.value.patientDNI!).subscribe(
           (data: any) => {
             console.log(data);
 

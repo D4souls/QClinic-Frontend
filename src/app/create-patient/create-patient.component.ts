@@ -11,6 +11,12 @@ import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiService } from '../service/api.service';
 
+import { phoneNumberValidator } from '../shared/validators/phone.validator';
+import { dniValidator } from '../shared/validators/dni.validator';
+import { textValidator } from '../shared/validators/text.validator';
+
+import { FormatFormsInputsService } from '../shared/services/format-forms-inputs.service';
+
 @Component({
   selector: 'app-create-patient',
   standalone: true,
@@ -19,21 +25,36 @@ import { ApiService } from '../service/api.service';
   styleUrl: './create-patient.component.css',
 })
 export class CreatePatientComponent implements OnInit{
-  constructor(private router: Router, private apiPatient: ApiService) {}
+  constructor(
+    private router: Router, 
+    private apiPatient: ApiService,
+    private formatForm: FormatFormsInputsService,
+  ) {}
 
   ngOnInit(): void {
-      this.getDoctors()
+    this.getDoctors()
   }
 
   createPatientForm = new FormGroup({
-    patientDNI: new FormControl('', Validators.required),
-    patientName: new FormControl('', Validators.required),
-    patientLastname: new FormControl('', Validators.required),
-    patientPhone: new FormControl('', Validators.required),
+    patientDNI: new FormControl('', [
+      Validators.required,
+      dniValidator
+    ]),
+    patientName: new FormControl('', [
+      Validators.required,
+      textValidator
+    ]),
+    patientLastname: new FormControl('', [
+      Validators.required, textValidator
+    ]),
+    patientPhone: new FormControl('', [
+      Validators.required,
+      phoneNumberValidator
+    ]),
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
-    patientEmail: new FormControl(''),
-    patientCity: new FormControl(''),
+    patientEmail: new FormControl('', Validators.email),
+    patientCity: new FormControl('', textValidator),
   });
 
   returnBack(){
@@ -41,17 +62,22 @@ export class CreatePatientComponent implements OnInit{
   }
 
   createPatient() {
+
+    // FORMAT DATA PATIENT
+    const formattedDNI = this.formatForm.formatDNI(this.createPatientForm.value.patientDNI!);
+    const formattedName = this.formatForm.formatTextToUpper(this.createPatientForm.value.patientName!);
+    const formattedLastName = this.formatForm.formatTextToUpper(this.createPatientForm.value.patientLastname!);
+
     const dataPatient = {
-      dni: this.createPatientForm.value.patientDNI,
-      firstname: this.createPatientForm.value.patientName,
-      lastname: this.createPatientForm.value.patientLastname,
+      // patientAvatar: this.createPatientForm.value.patientAvatar,
+      dni: formattedDNI,
+      firstname: formattedName,
+      lastname: formattedLastName,
       gender: this.createPatientForm.value.patientGender,
       city: this.createPatientForm.value.patientCity,
       email: this.createPatientForm.value.patientEmail,
       phone: this.createPatientForm.value.patientPhone,
-      // direccion: this.createPatientForm.value.patientDirection,
       assignedDoctor: this.createPatientForm.value.patientDoctor,
-      // password: this.createPatientForm.value.patientPassword,
 
     };
 
@@ -104,6 +130,18 @@ export class CreatePatientComponent implements OnInit{
       }
 
     })
+  }
+
+  previewAvatar: any;
+
+  filePreview(e: any){
+    if(e.target.files[0]!=null){
+      var reader = new FileReader();
+      reader.onload=(e:any)=>{
+        this.previewAvatar = e.target.result;
+      }
+      reader.readAsDataURL(e.target.files[0]);
+    }
   }
 
 }
