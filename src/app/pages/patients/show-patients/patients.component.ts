@@ -14,8 +14,8 @@ import { patientsInterfaces } from '../../../core/interfaces/patients/patients-i
   styleUrl: './patients.component.css',
 })
 export class PatientsComponent implements OnInit {
-  data: any = [];
-  filteredPatient: any = [];
+  data: patientsInterfaces[] = [];
+  filteredPatient: patientsInterfaces[] = [];
 
   allPatients: number = 0;
   pagination: number = 1;
@@ -34,7 +34,7 @@ export class PatientsComponent implements OnInit {
   getUser(): void {
 
     try {
-      this.patientapiservice.getPatients(this.pagination).subscribe((data: patientsInterfaces) => {
+      this.patientapiservice.getPatients(this.pagination).subscribe((data: patientsInterfaces[]) => {
         this.data = data;
         this.filteredPatient = this.data.slice();
         console.log(this.filteredPatient);

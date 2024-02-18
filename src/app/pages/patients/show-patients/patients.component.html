@@ -49,7 +49,7 @@
  <!-- USER CARD -->
 
   <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grid-rows-4 gap-4 items-center">
-    @for (patient of filteredPatient | paginate : { itemsPerPage: cantPatientsPerPage, currentPage: pagination, totalItems: allPatients}; track filteredPatient.dni){
+    @for (patient of filteredPatient | paginate : { itemsPerPage: cantPatientsPerPage, currentPage: pagination, totalItems: allPatients}; track filteredPatient[0].dni){
       <div
         class="flex flex-col bg-white rounded-md p-4 text-black/90 hover:bg-main-purple/20 hover:text-white/90 cursor-pointer transition ease-in-out"
         (click)="modifyPatient(patient.dni)"
