@@ -4,6 +4,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
+import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces'
 
 @Component({
   selector: 'app-patients',
@@ -14,12 +15,10 @@ import Swal from 'sweetalert2';
 })
 export class PatientsComponent implements OnInit {
   data: any = [];
-  filteredPatient: any = this.data;
+  filteredPatient: any = [];
 
   allPatients: number = 0;
   pagination: number = 1;
-
-  isRotated: boolean = false;
 
   cantPatientsPerPage: number = 16;
 
@@ -35,10 +34,10 @@ export class PatientsComponent implements OnInit {
   getUser(): void {
 
     try {
-      this.patientapiservice.getPatients(this.pagination).subscribe((data: any) => {
-        // console.log(data);
+      this.patientapiservice.getPatients(this.pagination).subscribe((data: patientsInterfaces) => {
         this.data = data;
-        this.filteredPatient = this.data;
+        this.filteredPatient = this.data.slice();
+        console.log(this.filteredPatient);
       });
     } catch (error) {
       console.log('Error while getting users: ',error);
@@ -57,7 +56,7 @@ export class PatientsComponent implements OnInit {
   filterPatients(dataToSearch: string): void {
 
     if (!dataToSearch) {
-      this.filteredPatient = this.data;
+      this.filteredPatient = this.data.slice();
     } else {
       const searchName = this.data.filter((dataPatientToFilter: any) =>
         dataPatientToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
@@ -86,30 +85,11 @@ export class PatientsComponent implements OnInit {
   orderFilterPatients: string = 'Descending';
 
   changeOrderFilterPatients(): void {
-
     if (this.orderFilterPatients === 'Ascending') {
-      const orderASC = this.filteredPatient.sort((a: any, b: any)=> {
-        
-        if (a.firstname > b.firstname) {
-          return 1;
-        }
-
-        if (a.firstname < b.firstname) {
-          return -1;
-        }
-
-        return 0;
-
-      });
-
-      this.filteredPatient = orderASC;
+      this.filteredPatient?.sort((a: patientsInterfaces, b: patientsInterfaces) => a.firstname.localeCompare(b.firstname));
       this.orderFilterPatients = 'Descending';
-
     } else {
-      this.filteredPatient.sort((a: any, b: any)=> {
-        return b.firstname.toLowerCase().localeCompare(a.firstname.toLowerCase());
-      });
-
+      this.filteredPatient?.sort((a: patientsInterfaces, b: patientsInterfaces) => b.firstname.localeCompare(a.firstname));
       this.orderFilterPatients = 'Ascending';
     }
   }
@@ -121,9 +101,5 @@ export class PatientsComponent implements OnInit {
   renderPage(event: number) {
     this.pagination = event;
     this.getUser();
-  }
-
-  rotate(): void {
-   this.isRotated = !this.isRotated; 
   }
 }

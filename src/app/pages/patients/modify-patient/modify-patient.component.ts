@@ -9,6 +9,7 @@ import { dniValidator } from '../../../shared/validators/dni.validator';
 
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../shared/validators/text.validator';
+import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
 
 @Component({
   selector: 'app-modify-patient',
@@ -19,7 +20,7 @@ import { textValidator } from '../../../shared/validators/text.validator';
 })
 export class ModifyPatientComponent implements OnInit {
 
-  dataPatient: any[] = [];
+  dataPatient: any = [];
 
   dniPatient: string = '';
 
@@ -69,7 +70,7 @@ export class ModifyPatientComponent implements OnInit {
   });
 
   getDataPatient(dniToFind: string){
-    this.apiService.getPatientData(dniToFind).subscribe((data: any) => {
+    this.apiService.getPatientData(dniToFind).subscribe((data: patientsInterfaces[]) => {
 
       if(data && data.length > 0){
         this.dataPatient = data;
@@ -123,12 +124,11 @@ export class ModifyPatientComponent implements OnInit {
     const dataPatient = {
       firstname: formattedName,
       lastname: formattedLastName,
+      gender: this.modifyPatientForm.value.patientGender,
       city: formattedCity,
       email: this.modifyPatientForm.value.patientEmail,
       assignedDoctor: this.modifyPatientForm.value.patientDoctor,
       phone: this.modifyPatientForm.value.patientPhone,
-      gender: this.modifyPatientForm.value.patientGender,
-
     };
 
     Swal.fire({
