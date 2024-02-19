@@ -1,28 +1,16 @@
-<section class="flex flex-col items-center justify-center bg-white">
-  <full-calendar
-    #calendar
-    [options]="calendarOptions"
-    class="w-3/4 p-4"
-  ></full-calendar>
+<section class="flex flex-row items-center justify-center gap-40 mt-10">
+  <div class="p-4 bg-white w-3/5 h-2/3 flex items-center justify-center">
+    <full-calendar
+      #calendar
+      [options]="calendarOptions"
+      class="w-screen"
+    ></full-calendar>
+  </div>
+  <div class="flex flex-col h-96 items-center bg-white">
+    <div class="flex justify-center items-center gap-4 self-start p-4">
+      <a routerLink="/create-appointment" routerLinkActive="active" >New appointment</a>
+      <a routerLink="/delete-appointment" routerLinkActive="active" >Delete appointment</a>
+    </div>
+    <router-outlet />
+  </div>
 </section>
-
-<form [formGroup]="createAppointmentForm" (submit)="createAppointment()">
-  <label for="namePatient">
-    Patient:
-    <input type="text" formControlName="patient" id="namePatient" />
-  </label>
-
-  <label for="dateAppointment">
-    Date:
-    <input type="text" formControlName="date" id="dateAppointment" />
-  </label>
-
-  <label for="hourAppointment">
-    Hour:
-    <input type="text" formControlName="hour" id="hourAppointment" />
-  </label>
-
-  <button type="submit" [disabled]="!createAppointmentForm.valid">
-    Create
-  </button>
-</form>
