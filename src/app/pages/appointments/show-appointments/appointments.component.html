@@ -1,4 +1,4 @@
-<section class="flex flex-row items-center justify-center gap-40 mt-10">
+<section class="flex flex-row items-center justify-center gap-32 mt-10">
   <div class="p-4 bg-white w-3/5 h-2/3 flex items-center justify-center">
     <full-calendar
       #calendar
@@ -6,11 +6,24 @@
       class="w-screen"
     ></full-calendar>
   </div>
-  <div class="flex flex-col h-96 items-center bg-white">
-    <div class="flex justify-center items-center gap-4 self-start p-4">
-      <a routerLink="/create-appointment" routerLinkActive="active" >New appointment</a>
-      <a routerLink="/delete-appointment" routerLinkActive="active" >Delete appointment</a>
-    </div>
+  <div class="flex flex-col h-[450px] w-80 items-center bg-white">
+    <nav class="inline-flex items-center justify-center self-start w-full">
+      <a 
+        routerLink="/appointments/create" 
+        routerLinkActive="router-link-active"
+        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70"
+        >New</a>
+      <a 
+        routerLink="/appointments/edit" 
+        routerLinkActive="router-link-active"
+        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70"
+        >Edit</a>
+      <a 
+        routerLink="/appointments/delete" 
+        routerLinkActive="router-link-active"
+        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70"
+        >Delete</a>
+    </nav>
     <router-outlet />
-  </div>
+  </div>  
 </section>
