@@ -1,19 +1,23 @@
 import { Component, OnInit } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ApiService } from '../../../core/services/api.service';
+
+// FULLCALENDAR MODULS
 import { FullCalendarModule } from '@fullcalendar/angular';
 import { CalendarOptions } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { ApiService } from '../../../core/services/api.service';
+
+// SWEETALERTS
 import Swal from 'sweetalert2';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [FullCalendarModule, ReactiveFormsModule],
+  imports: [FullCalendarModule, ReactiveFormsModule, RouterOutlet, RouterLinkActive, RouterLink],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.css',
 })
@@ -33,29 +37,31 @@ export class AppointmentsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
-    initialView: 'dayGridMonth',
+    initialView: 'timeGridWeek',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     weekNumbers: true,
     navLinks: true,
     firstDay: 1,
     nowIndicator: true,
     locale: esLocale,
-    height: 650,
+    height: 530,
     editable: true,
     headerToolbar: {
-      left: 'prev,next today',
+      start: 'prev,next today',
       center: 'title',
-      right: 'dayGridMonth,timeGridWeek,timeGridDay',
+      end: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
-
-    themeSystem: 'standard',
+    titleFormat: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    },
     dayMaxEventRows: false,
   };
 
   handleDateClick(arg:any) {
     alert('date click! ' + arg.dateStr)
   }
-
 
   createAppointmentForm = new FormGroup({
     patient: new FormControl('', Validators.required),
