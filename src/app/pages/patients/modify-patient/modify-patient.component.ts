@@ -122,6 +122,7 @@ export class ModifyPatientComponent implements OnInit {
     const formattedCity = this.modifyPatientForm.value.patientCity ? this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientCity!) : this.modifyPatientForm.value.patientCity;
 
     const dataPatient = {
+      dni: this.modifyPatientForm.value.patientDNI,
       firstname: formattedName,
       lastname: formattedLastName,
       gender: this.modifyPatientForm.value.patientGender,
