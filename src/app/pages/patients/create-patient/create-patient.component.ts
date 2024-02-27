@@ -54,7 +54,7 @@ export class CreatePatientComponent implements OnInit{
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
     patientEmail: new FormControl('', Validators.email),
-    patientCity: new FormControl('', textValidator),
+    patientCity: new FormControl('', Validators.nullValidator),
   });
 
   returnBack(){
