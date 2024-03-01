@@ -7,6 +7,7 @@ import Swal from 'sweetalert2';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
+import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
 
 @Component({
   selector: 'app-create-appointment',
@@ -17,6 +18,12 @@ import { FormatFormsInputsService } from '../../../shared/services/format-forms-
 })
 export class CreateAppointmentComponent implements OnInit{
 
+  patients: patientsInterfaces[] = [];
+  filteredPatient: patientsInterfaces[] = [];
+  
+  doctors: any = [];
+  filteredDoctor: any [] = [];
+
   constructor(
     private router: Router,
     private apiService: ApiService,
@@ -24,48 +31,60 @@ export class CreateAppointmentComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.getDoctors()
+    this.getDoctors();
+    this.getPatients();
   }
 
   createAppointmentForm = new FormGroup({
-    patientDNI: new FormControl('', [
-      Validators.required,
-      dniValidator
-    ]),
-    patientName: new FormControl('', [
-      Validators.required,
-      textValidator
-    ]),
-    patientLastname: new FormControl('', [
-      Validators.required, textValidator
-    ]),
-    patientPhone: new FormControl('', [
-      Validators.required,
-      phoneNumberValidator
-    ]),
-    patientGender: new FormControl('', Validators.required),
-    patientDoctor: new FormControl('', Validators.required),
-    patientEmail: new FormControl('', Validators.email),
-    patientCity: new FormControl('', textValidator),
+    searchDataPatientForm: new FormGroup({
+      dataToSearch: new FormControl(''),
+      dataSelect : new FormControl('', Validators.required)
+
+    }),
+    searchDataDoctorForm: new FormGroup({
+      dataToSearch: new FormControl(''),
+      dataSelect : new FormControl('', Validators.required)
+
+    }),
+    dateTime: new FormControl('', Validators.required),
+    appointmentComment: new FormControl('', Validators.required)
   });
+
+
+  getPatients(): void{
+    this.apiService.getPatients(0).subscribe((data: any) => {
+      this.patients = data;
+      this.filteredPatient = this.patients.slice();
+    });
+  }
+
+  getDoctors(){
+    this.apiService.getDoctors().subscribe((data: any) => {
+
+      if (data.success){
+        this.doctors = data.data
+        this.filteredDoctor = this.doctors.slice();
+      } else {
+        console.log(data);
+      }
+
+    })
+  }
 
   createAppointment(): void {
 
-    // FORMAT DATA PATIENT
-    const formattedName = this.formatForm.formatTextToUpper(this.createAppointmentForm.value.patientName!);
-    const formattedLastName = this.formatForm.formatTextToUpper(this.createAppointmentForm.value.patientLastname!);
-    const formattedCity = this.createAppointmentForm.value.patientCity ? this.formatForm.formatTextToUpper(this.createAppointmentForm.value.patientCity!) : this.createAppointmentForm.value.patientCity;
+    // FROMAT DATE
+    const splitDate = this.createAppointmentForm.value.dateTime?.split("T");
+    const formattedDate = `${splitDate![0]} ${splitDate![1]}`
 
-    const dataPatient = {
-      dni: this.createAppointmentForm.value.patientDNI,
-      firstname: formattedName,
-      lastname: formattedLastName,
-      gender: this.createAppointmentForm.value.patientGender,
-      city: formattedCity,
-      email: this.createAppointmentForm.value.patientEmail,
-      assignedDoctor: this.createAppointmentForm.value.patientDoctor,
-      phone: this.createAppointmentForm.value.patientPhone,
+    const dataAppointment = {
+      date: formattedDate,
+      dniPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
+      dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+      comment: this.createAppointmentForm.value.appointmentComment
     };
+
+    console.log(dataAppointment);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -76,57 +95,106 @@ export class CreateAppointmentComponent implements OnInit{
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.modifyPatient(dataPatient).subscribe(
+        this.apiService.createAppointments(dataAppointment).subscribe(
           (data: any) => {
-            console.log(data);
+            // console.log(data);
 
-            if (data.message) {
-              Swal.fire({
-                title: 'Success',
-                text: data.message,
-                icon: 'success',
-                confirmButtonText: "Return back",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.router.navigate(['/patients']);
-                }
-              });
-              
-            } else {
-              Swal.fire({
-                title: 'Error',
-                text: 'Error deleting patient. Please try again.',
-                icon: 'error',
-              });
-            }
-          },
-          (error) => {
-            console.error('Error deleting patient:', error);
+             if (data.message) {
+               Swal.fire({
+                 title: 'Success',
+                 text: data.message,
+                 icon: 'success',
+                 confirmButtonText: "Return back",
+               }).then((result) => {
+                 if (result.isConfirmed) {
+                   window.location.reload();
+                 }
+               });
+            
+             } else {
+               Swal.fire({
+                 title: 'Error',
+                 text: 'Error deleting patient. Please try again.',
+                 icon: 'error',
+               });
+             }
+           },
+           (error) => {
+             console.error('Error deleting patient:', error);
 
-            Swal.fire({
-              title: 'Error',
-              text: 'Error deleting patient. Please try again.',
-              icon: 'error',
-            });
-          }
-        );
-      }
-    });
+             Swal.fire({
+               title: 'Error',
+               text: 'Error deleting patient. Please try again.',
+               icon: 'error',
+             });
+           }
+         );
+       }
+     });
   }
 
-  doctors: any = [];
 
-  getDoctors(){
-    this.apiService.getDoctors().subscribe((data: any) => {
+  filterPatients(dataToSearch: string): void{
+    if (!dataToSearch) {
+      this.filteredPatient = this.patients.slice();
+    } else {
+      const searchName = this.patients.filter((dataAppointmentToFilter: any) =>
+        dataAppointmentToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataAppointmentToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataAppointmentToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataAppointmentToFilter.city.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataAppointmentToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
 
-      if (data.success){
-        this.doctors = data.data
-        // console.log(this.doctors);
+      );
+
+      if (searchName.length > 0) {
+        this.filteredPatient = searchName;
       } else {
-        console.log(data);
+        this.filteredPatient = this.patients;
+
+        Swal.fire({
+          title: 'Search error',
+          text: "We didn't found any patients..." ,
+          icon: 'error',
+        });
       }
 
-    })
+    }
+  }
+
+  filterDoctors(dataToSearch: string): void {
+    if (!dataToSearch) {
+      this.filteredDoctor = this.doctors.slice();
+    } else {
+      const searchName = this.doctors.filter((dataDoctorToFilter: any) =>
+        dataDoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataDoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataDoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        dataDoctorToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
+
+      );
+
+      if (searchName.length > 0) {
+        this.filteredDoctor = searchName;
+      } else {
+        this.filteredDoctor = this.doctors;
+
+        Swal.fire({
+          title: 'Search error',
+          text: "We didn't found any doctors..." ,
+          icon: 'error',
+        });
+      }
+
+    }
+  }
+
+  onSubmitPatient(event: Event): void{
+    event.preventDefault();
+  }
+
+  onSubmitDoctor(event: Event): void{
+    event.preventDefault();
   }
 
 }

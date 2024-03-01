@@ -1,81 +1,119 @@
 <form
-    class="bg-white p-4 rounded-md w-full flex flex-row flex-shrink items-center gap-4"
-    [formGroup]="createAppointmentForm"
-    (ngSubmit)="createAppointment()"
+  class="bg-white p-4 rounded-md w-full flex flex-row flex-shrink items-center gap-2"
+  [formGroup]="createAppointmentForm"
+  (ngSubmit)="createAppointment()"
 >
-<div class="flex flex-col w-full gap-4">
-
+  <div class="flex flex-col w-full gap-2">
     <!-- APPOINTMENT DATA PATIENT -->
-    
+
     <h2 class="text-main-purple text-2xl">Appointment information</h2>
-    <div class="grid grid-cols-2 gap-2">
+    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmitPatient($event)" formGroupName="searchDataPatientForm">
+      <label for="patientSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="patientSearch"
+          placeholder="Search patient"
+          formControlName="dataToSearch"
+          #filterPatient
+          class="rounded-md outline-0 border border-gray-300"
+          (keyup.enter)="filterPatients(filterPatient.value)"
+        />
+      </label>
 
-        <label for="patientDNI" class="flex flex-col justify-center text-md">
-          <input
-            type="text"
-            id="patientDNI"
-            placeholder="Search patient"
-            formControlName="patientDNI"
-            class="rounded-md outline-0 border border-gray-300"
-          />
-        </label>
+      <label for="patientSelect" class="flex flex-col justify-center text-md">
+        <select
+          name="patientSelect"
+          id="patientSelect"
+          formControlName="dataSelect"
+          class="rounded-md outline-0 border border-gray-300"
+        >
+          <option value="" disabled selected>Select patient</option>
+          @for (patient of filteredPatient; track filteredPatient[0].dni){
+            <option value="{{ patient.dni }}">
+              {{ patient.firstname }} {{ patient.lastname }}
+            </option>
+          }
+        </select>
+      </label>
+    </form>
 
-        <label for="patientDoctor" class="flex flex-col justify-center text-md">
-            <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="rounded-md outline-0 border border-gray-300">
-              <option value="" disabled selected>Select patient</option>
-              @for (doctorData of doctors; track doctors.dni){
-                <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
-              }
-            </select>
-        </label>
-        
-    </div>
-    
     <!-- APPOINTMENT DATA DOCTOR -->
-    
+
     <h2 class="text-main-purple text-2xl">Doctor information</h2>
-    <div class="grid grid-cols-2 gap-2">
+    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmitDoctor($event)" formGroupName="searchDataDoctorForm">
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="doctorSearch"
+          placeholder="Search doctor"
+          formControlName="dataToSearch"
+          #filterDoctor
+          class="rounded-md outline-0 border border-gray-300"
+          (keyup.enter)="filterDoctors(filterDoctor.value)"
+        />
+      </label>
 
-        <label for="patientDNI" class="flex flex-col justify-center text-md">
-            <input
-              type="text"
-              id="patientDNI"
-              placeholder="Search doctor"
-              formControlName="patientDNI"
-              class="rounded-md outline-0 border border-gray-300"
-            />
-        </label>
-
-        <label for="patientDoctor" class="flex flex-col justify-center text-md">
-          <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="rounded-md outline-0 border border-gray-300">
-            <option value="" disabled selected>Select doctor</option>
-            @for (doctorData of doctors; track doctors.dni){
-              <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
-            }
-          </select>
-        </label>
-    </div>
+      <label for="doctorSelect" class="flex flex-col justify-center text-md">
+        <select
+          name="doctorSelect"
+          id="doctorSelect"
+          formControlName="dataSelect"
+          class="rounded-md outline-0 border border-gray-300"
+        >
+          <option value="" disabled selected>Select doctor</option>
+          @for (doctor of filteredDoctor; track filteredDoctor[0].dni){
+            <option value="{{ doctor.dni }}">
+              {{ doctor.firstname }} {{ doctor.lastname }}
+            </option>
+          }
+        </select>
+      </label>
+    </form>
 
     <!-- APPOINTMENT DATA DATETIME  -->
 
     <h2 class="text-main-purple text-xl">Appointment date</h2>
     <div class="grid grid-cols-1 gap-2">
-        <label for="patientDNI" class="flex flex-col justify-center text-md">
-            <input
-              type="datetime-local"
-              id="patientDNI"
-              placeholder="Search doctor"
-              formControlName="patientDNI"
-              class="rounded-md outline-0 border border-gray-300"
-            />
-        </label>
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="datetime-local"
+          id="doctorSearch"
+          placeholder="Search doctor"
+          formControlName="dateTime"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+    </div>
+
+    <!-- APPOINTMENT COMMENT  -->
+
+    <h2 class="text-main-purple text-xl">Appointment comment</h2>
+    <div class="grid grid-cols-1 gap-2">
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="doctorSearch"
+          placeholder="Reason for appointment"
+          formControlName="appointmentComment"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
     </div>
 
     <!-- FORM BUTTONS -->
-  
-    <div class="flex flex-row gap-4 items-center mt-7">
-      <button type="submit" [disabled]="!createAppointmentForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createAppointmentForm.valid ? 'bg-main-purple/30 cursor-not-allowed' : 'bg-main-purple cursor-pointer'}}">Create</button>
-    </div>
 
+    <div class="flex flex-row gap-2 items-center mt-7">
+      <button
+        type="submit"
+        [disabled]="!createAppointmentForm.valid"
+        class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
+          !createAppointmentForm.valid
+            ? 'bg-main-purple/30 cursor-not-allowed'
+            : 'bg-main-purple cursor-pointer'
+        }}"
+      >
+        Create
+      </button>
+    </div>
   </div>
 </form>
