@@ -1,22 +1,22 @@
 <section class="flex flex-row items-center justify-center gap-32 mt-10">
-  <div class="p-4 bg-white w-3/5 h-auto flex items-center justify-center">
+  <div class="p-4 bg-white w-3/5 h-auto flex items-center justify-center rounded-md">
     <full-calendar
       #calendar
       [options]="calendarOptions"
       class="w-screen"
     ></full-calendar>
   </div>
-  <div class="flex flex-col h-[450px] w-80 items-center bg-white">
+  <div class="flex flex-col h-[450px] w-80 items-center bg-white rounded-md">
     <nav class="inline-flex items-center justify-center self-start w-full">
       <a 
         routerLink="/appointments/create" 
         routerLinkActive="router-link-active"
-        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70"
+        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70 rounded-tl-md"
         >New</a>
       <a 
         routerLink="/appointments/edit" 
         routerLinkActive="router-link-active"
-        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70"
+        class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70 rounded-tr-md"
         >Edit</a>
     </nav>
     <router-outlet />
