@@ -47,7 +47,7 @@ export class CreateAppointmentComponent implements OnInit{
 
     }),
     dateTime: new FormControl('', Validators.required),
-    appointmentComment: new FormControl('', Validators.required)
+    appointmentComment: new FormControl('', [Validators.required, textValidator])
   });
 
 
