@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AppointmentsComponent } from './show-appointments/appointments.component';
 import { CreateAppointmentComponent } from './create-appointment/create-appointment.component';
-import { DeleteAppointmentComponent } from './delete-appointment/delete-appointment.component';
 import { EditAppointmentComponent } from './edit-appointment/edit-appointment.component';
 
 
@@ -24,10 +23,6 @@ export const patients_routes: Routes = [
         path: 'edit',
         component: EditAppointmentComponent
       },
-      {
-        path: 'delete',
-        component: DeleteAppointmentComponent
-      }
     ]
   },
 ];
