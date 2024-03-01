@@ -16,7 +16,7 @@
           formControlName="dataToSearch"
           #filterPatient
           class="rounded-md outline-0 border border-gray-300"
-          (keyup.enter)="filterPatients(filterPatient.value)"
+          (change)="filterPatients(filterPatient.value)"
         />
       </label>
 
@@ -49,7 +49,7 @@
           formControlName="dataToSearch"
           #filterDoctor
           class="rounded-md outline-0 border border-gray-300"
-          (keyup.enter)="filterDoctors(filterDoctor.value)"
+          (change)="filterDoctors(filterDoctor.value)"
         />
       </label>
 

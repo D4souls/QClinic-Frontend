@@ -87,7 +87,7 @@ export class CreateAppointmentComponent implements OnInit{
     console.log(dataAppointment);
 
     Swal.fire({
-      title: 'Do you want to save changes?',
+      title: 'Do you want to create this appointment?',
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',
