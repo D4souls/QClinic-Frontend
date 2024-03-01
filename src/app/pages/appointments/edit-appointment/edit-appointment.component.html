@@ -1,1 +1,134 @@
-<p>edit-appointment works!</p>
+<form
+  class="bg-white p-4 rounded-md w-full flex flex-row flex-shrink items-center gap-2"
+  [formGroup]="createAppointmentForm"
+  (ngSubmit)="updateAppointment()"
+>
+  <div class="flex flex-col w-full gap-2">
+
+    <!-- APPOINTMENT DATA DATETIME  -->
+
+    <h2 class="text-main-purple text-2xl">Appointment date</h2>
+    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmit($event)" formGroupName="searchAppointment">
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="date"
+          id="doctorSearch"
+          placeholder="Search doctor"
+          formControlName="date"
+          class="rounded-md outline-0 border border-gray-300"
+          #filterAppointments
+          (change)="getAppointments(filterAppointments.value)"
+        />
+      </label>
+      <label for="patientSelect" class="flex flex-col justify-center text-md">
+        <select
+          name="patientSelect"
+          id="patientSelect"
+          formControlName="selectAppointment"
+          class="rounded-md outline-0 border border-gray-300"
+          #filterPatient
+          (change)="loadData(filterPatient.value)"
+        >
+          <option value="" disabled selected>Select appointment</option>
+          @for (appointment of dayAppointments; track dayAppointments[0]){
+            <option value="{{ appointment.id }}">
+              {{ appointment.patientFirstname }} {{ appointment.patientLastname }}
+            </option>
+          }
+        </select>
+      </label>
+    </form>
+
+    <!-- APPOINTMENT DATA PATIENT -->
+
+    <h2 class="text-main-purple text-xl">Appointment information</h2>
+    <div class="grid grid-cols-1 gap-2 w-full">
+      <label for="patientSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="patientSearch"
+          placeholder="Search patient"
+          formControlName="patientName"
+          class="rounded-md outline-0 border border-gray-300 cursor-not-allowed"
+          readonly
+        />
+      </label>
+    </div>
+
+    <!-- APPOINTMENT DATA DOCTOR -->
+
+    <h2 class="text-main-purple text-xl">Doctor information</h2>
+    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmit($event)" formGroupName="searchDataDoctorForm">
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="doctorSearch"
+          placeholder="Search doctor"
+          formControlName="dataToSearch"
+          #filterDoctor
+          class="rounded-md outline-0 border border-gray-300"
+          (change)="filterDoctors(filterDoctor.value)"
+        />
+      </label>
+
+      <label for="doctorSelect" class="flex flex-col justify-center text-md">
+        <select
+          name="doctorSelect"
+          id="doctorSelect"
+          formControlName="dataSelect"
+          class="rounded-md outline-0 border border-gray-300"
+        >
+          <option value="" disabled selected>Select doctor</option>
+          @for (doctor of filteredDoctor; track filteredDoctor[0].dni){
+            <option value="{{ doctor.dni }}">
+              {{ doctor.firstname }} {{ doctor.lastname }}
+            </option>
+          }
+        </select>
+      </label>
+    </form>
+
+    <!-- APPOINTMENT COMMENT  -->
+
+    <h2 class="text-main-purple text-xl">Appointment comment</h2>
+    <div class="grid grid-cols-1 gap-2">
+      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+        <input
+          type="text"
+          id="doctorSearch"
+          placeholder="Reason for appointment"
+          formControlName="appointmentComment"
+          class="rounded-md outline-0 border border-gray-300"
+        />
+      </label>
+    </div>
+
+    <!-- FORM BUTTONS -->
+
+    <div class="flex flex-row gap-2 items-center mt-7">
+      <button
+        type="submit"
+        [disabled]="!createAppointmentForm.valid"
+        class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
+          !createAppointmentForm.valid
+            ? 'bg-main-purple/30 cursor-not-allowed'
+            : 'bg-main-purple cursor-pointer'
+        }}"
+      >
+        Update
+      </button>
+      <button
+        type="button"
+        [disabled]="!createAppointmentForm.valid"
+        (click)="deletePatient()"
+        class="focus:outline-none text-white focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
+          !createAppointmentForm.valid
+            ? 'bg-red-700/30 cursor-not-allowed'
+            : 'bg-red-700 cursor-pointer hover:bg-red-800'
+        }}"
+      >
+        Delete
+      </button>
+    </div>
+  </div>
+</form>
