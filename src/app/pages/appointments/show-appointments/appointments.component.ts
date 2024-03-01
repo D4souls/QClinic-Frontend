@@ -5,7 +5,7 @@ import { ApiService } from '../../../core/services/api.service';
 
 // FULLCALENDAR MODULS
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions } from '@fullcalendar/core';
+import { CalendarOptions  } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import esLocale from '@fullcalendar/core/locales/es';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -37,14 +37,14 @@ export class AppointmentsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
-    initialView: 'timeGridWeek',
+    initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     weekNumbers: true,
     navLinks: true,
     firstDay: 1,
     nowIndicator: true,
     locale: esLocale,
-    height: 530,
+    height: 725,
     editable: true,
     headerToolbar: {
       start: 'prev,next today',
@@ -56,59 +56,16 @@ export class AppointmentsComponent implements OnInit {
       month: 'long',
       day: 'numeric'
     },
-    dayMaxEventRows: false,
+    dayMaxEventRows: true,
+    views: {
+      timeGrid: {
+        dayMaxEventRows: 4
+      }
+    },
   };
 
   handleDateClick(arg:any) {
     alert('date click! ' + arg.dateStr)
-  }
-
-  createAppointmentForm = new FormGroup({
-    patient: new FormControl('', Validators.required),
-    date: new FormControl('', Validators.required),
-    hour: new FormControl('', Validators.required),
-  })
-
-  createAppointment() {
-
-    const dataCreateAppointment = {
-      date: `${this.createAppointmentForm.value.date} ${this.createAppointmentForm.value.hour}`,
-      dniPatient: this.createAppointmentForm.value.patient,
-      dniDoctor: "72210584Z"
-    }
-
-    // console.log(dataCreateAppointment);
-
-    
-    this.apiGetPatient.createAppointments(dataCreateAppointment).subscribe((response: any) => {
-      if (response.success) {
-        Swal.fire({
-          title: 'Appointment created!',
-          showDenyButton: false,
-          confirmButtonText: 'Ok',
-        }).then((result) => {
-          if (result.isConfirmed) {
-            window.location.reload();
-          }
-        });
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: response.message,
-        });
-      }
-    },
-    (error) => {
-      console.error('Error en la solicitud:', error.error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Oops...',
-        text: error.error.data,
-      });
-    })
-    
-    console.log(this.calendarEvents);
   }
 
   getAppointments(): void {
