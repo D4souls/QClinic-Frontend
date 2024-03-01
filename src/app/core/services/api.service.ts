@@ -46,4 +46,8 @@ export class ApiService {
   getUserAppointments(dni: string): Observable<any> {
     return this.httpclient.get(this.url + `user-appointments/${dni}`);
   }
+
+  getDayAppointments(date: string): Observable<any> {
+    return this.httpclient.get(this.url + `day-appointments/${date}`);
+  }
 }
