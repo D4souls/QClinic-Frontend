@@ -50,4 +50,12 @@ export class ApiService {
   getDayAppointments(date: string): Observable<any> {
     return this.httpclient.get(this.url + `day-appointments/${date}`);
   }
+
+  updateAppointments(appointmentData: any): Observable<any> {
+    return this.httpclient.post(this.url + `update-appointment/`, appointmentData);
+  }
+
+  deleteAppointments(id: string): Observable<any> {
+    return this.httpclient.delete(this.url + `delete-appointment/${id}`);
+  }
 }
