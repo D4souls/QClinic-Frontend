@@ -9,14 +9,15 @@ module.exports = {
     extend: {
       colors: {
         "main-purple": "#5200FF",
-        "main-bg": "#FAF7FC"
+        "main-bg": "#FAF7FC",
+        "dark-main-bg": "#1C2126",
       },
       fontFamily: {
         inter: "inter"
       }
     },
   },
-  darkMode: 'media',
+  darkMode: 'class',
   plugins: [
     require('tailwindcss-animated'),
     require('flowbite/plugin'),
