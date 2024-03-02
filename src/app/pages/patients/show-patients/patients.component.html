@@ -17,7 +17,7 @@
           placeholder="Search patient"
           #filter
           class="bg-transparent border-none"
-          (keyup.enter)="filterPatients(filter.value)"
+          (change)="filterPatients(filter.value)"
         />
       </label>
       <button
