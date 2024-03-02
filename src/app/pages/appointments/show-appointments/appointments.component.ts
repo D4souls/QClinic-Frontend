@@ -1,17 +1,17 @@
 import { Component, OnInit } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 
 // FULLCALENDAR MODULS
 import { FullCalendarModule } from '@fullcalendar/angular';
-import { CalendarOptions, DateSelectArg, EventClickArg  } from '@fullcalendar/core';
-import dayGridPlugin from '@fullcalendar/daygrid';
+import { CalendarOptions, EventClickArg } from '@fullcalendar/core';
 import esLocale from '@fullcalendar/core/locales/es';
-import timeGridPlugin from '@fullcalendar/timegrid';
+import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
 
-import { Modal, ModalOptions, ModalInterface, InstanceOptions } from 'flowbite';
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 
 @Component({
   selector: 'app-appointments',
@@ -22,7 +22,7 @@ import { Modal, ModalOptions, ModalInterface, InstanceOptions } from 'flowbite';
 })
 export class AppointmentsComponent implements OnInit {
 
-  constructor(private apiGetPatient: ApiService, private router: Router){}
+  constructor(private apiGetPatient: ApiService){}
 
   calendarEvents: any[] = [];
 
