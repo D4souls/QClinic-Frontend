@@ -1,5 +1,5 @@
 <section
-  class="flex flex-col items-center justify-center py-4 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
+  class="flex flex-col items-center justify-center py-4 overflow-hidden"
 >
   <form
     class="bg-white p-4 rounded-md w-2/3 flex flex-col gap-2"
@@ -29,6 +29,7 @@
           placeholder="Enter patient's first name here"
           formControlName="patientName"
           class="rounded-md outline-0 border border-gray-300"
+          [style.view-transition-name] ="'transition-patient-name-'+dniPatient"
         />
       </label>
       <label for="patientLastname" class="flex flex-col justify-center text-sm">
@@ -126,6 +127,7 @@
           placeholder="Enter patient's city here"
           formControlName="patientCity"
           class="rounded-md outline-0 border border-gray-300"
+          [style.view-transition-name] ="'transition-patient-city-'+dniPatient"
         />
       </label>
     </div>
