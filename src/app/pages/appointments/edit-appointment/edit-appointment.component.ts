@@ -158,7 +158,21 @@ export class EditAppointmentComponent implements OnInit {
       );
 
       if (searchName.length > 0) {
-        this.filteredDoctor = searchName;
+
+        if (searchName.length === 1){
+
+          this.createAppointmentForm.patchValue({
+            searchDataDoctorForm: {
+              dataSelect: searchName[0].dni,
+            },
+          });
+
+          this.filteredDoctor = searchName;
+
+        } else {
+          this.filteredDoctor = searchName;
+        }
+
       } else {
         this.filteredDoctor = this.doctors;
 

@@ -148,7 +148,21 @@ export class CreateAppointmentComponent implements OnInit{
       );
 
       if (searchName.length > 0) {
-        this.filteredPatient = searchName;
+
+        if (searchName.length === 1){
+
+          this.createAppointmentForm.patchValue({
+            searchDataPatientForm: {
+              dataSelect: searchName[0].dni,
+            },
+          });
+
+          this.filteredPatient = searchName;
+
+        } else {
+          this.filteredPatient = searchName;
+        }
+
       } else {
         this.filteredPatient = this.patients;
 
@@ -175,7 +189,21 @@ export class CreateAppointmentComponent implements OnInit{
       );
 
       if (searchName.length > 0) {
-        this.filteredDoctor = searchName;
+
+        if (searchName.length === 1){
+
+          this.createAppointmentForm.patchValue({
+            searchDataDoctorForm: {
+              dataSelect: searchName[0].dni,
+            },
+          });
+
+          this.filteredDoctor = searchName;
+
+        } else {
+          this.filteredDoctor = searchName;
+        }
+
       } else {
         this.filteredDoctor = this.doctors;
 
