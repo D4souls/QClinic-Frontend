@@ -1,4 +1,5 @@
 /** @type {import('tailwindcss').Config} */
+import animations from '@midudev/tailwind-animations'
 module.exports = {
   content: [
     "./src/**/*.{html,ts}",
@@ -8,6 +9,9 @@ module.exports = {
     extend: {
       colors: {
         "main-purple": "#5200FF"
+      },
+      fontFamily: {
+        inter: "inter"
       }
     },
   },
@@ -15,6 +19,7 @@ module.exports = {
   plugins: [
     require('tailwindcss-animated'),
     require('flowbite/plugin'),
+    animations
   ]
 }
 
