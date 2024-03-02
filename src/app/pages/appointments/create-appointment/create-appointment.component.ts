@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { dniValidator } from '../../../shared/validators/dni.validator';
-import { phoneNumberValidator } from '../../../shared/validators/phone.validator';
-import { textValidator } from '../../../shared/validators/text.validator';
+import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { Router, ActivatedRoute } from '@angular/router';
+import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
 import { ApiService } from '../../../core/services/api.service';
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
-import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
+import { dateTimeValidator } from '../../../shared/validators/dateTime.validator';
+import { textValidator } from '../../../shared/validators/text.validator';
 
 @Component({
   selector: 'app-create-appointment',
@@ -25,9 +24,7 @@ export class CreateAppointmentComponent implements OnInit{
   filteredDoctor: any [] = [];
 
   constructor(
-    private router: Router,
     private apiService: ApiService,
-    private formatForm: FormatFormsInputsService,
   ) {}
 
   ngOnInit(): void {
@@ -46,7 +43,7 @@ export class CreateAppointmentComponent implements OnInit{
       dataSelect : new FormControl('', Validators.required)
 
     }),
-    dateTime: new FormControl('', Validators.required),
+    dateTime: new FormControl('', [Validators.required, dateTimeValidator]),
     appointmentComment: new FormControl('', [Validators.required, textValidator])
   });
 
