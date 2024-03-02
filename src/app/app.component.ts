@@ -16,6 +16,17 @@ export class AppComponent implements OnInit{
   title = 'consultorio-medico';
 
   ngOnInit(): void {
-      initFlowbite();
+    initFlowbite();
+    this.setMode();
+  }
+
+  setMode(): void {
+
+    if (localStorage.getItem("darkModePrefer") === 'true'){
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+
   }
 }
