@@ -1,5 +1,7 @@
 <section class="flex flex-row items-center justify-center gap-32 mt-10">
-  <div class="p-4 bg-white w-3/5 h-auto flex items-center justify-center rounded-md">
+  <div
+    class="p-4 bg-white w-3/5 h-auto flex items-center justify-center rounded-md"
+  >
     <full-calendar
       #calendar
       [options]="calendarOptions"
@@ -8,17 +10,83 @@
   </div>
   <div class="flex flex-col h-[450px] w-80 items-center bg-white rounded-md">
     <nav class="inline-flex items-center justify-center self-start w-full">
-      <a 
-        routerLink="/appointments/create" 
+      <a
+        routerLink="/appointments/create"
         routerLinkActive="router-link-active"
         class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70 rounded-tl-md"
-        >New</a>
-      <a 
-        routerLink="/appointments/edit" 
+        >New</a
+      >
+      <a
+        routerLink="/appointments/edit"
         routerLinkActive="router-link-active"
         class="flex-grow text-white text-center bg-main-purple p-4 hover:bg-main-purple/70 rounded-tr-md"
-        >Edit</a>
+        >Edit</a
+      >
     </nav>
     <router-outlet />
-  </div>  
+  </div>
+
+  <!-- MODAL INFO APPOINTMENT -->
+  <div
+    id="show-info-appointment"
+    tabindex="-1"
+    aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+  >
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+
+      <!-- MODAL CONTENT -->
+      <div class="relative bg-white rounded-lg shadow w-[800px]">
+
+        <!-- MODAL HEADER -->
+        <div
+          class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+        >
+          <h3
+            class="text-xl font-semibold uppercase text-gray-900"
+            id="modal-header"
+          ></h3>
+        </div>
+
+        <!-- MODAL BODY -->
+        <div class="relative overflow-x-auto shadow-md">
+          <table class="w-full text-sm text-left rtl:text-right text-gray-500">
+            <thead class="text-xs text-gray-700 bg-gray-50">
+              <tr>
+                <th scope="col" class="px-6 py-3">Patient</th>
+                <th scope="col" class="px-6 py-3">Datetime</th>
+                <th scope="col" class="px-6 py-3">Doctor</th>
+                <th scope="col" class="px-6 py-3">Comment</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="bg-white hover:bg-main-purple/30">
+                <th
+                  id="th-namePatient"
+                  scope="row"
+                  class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap"
+                ></th>
+                <td id="th-dateTime" class="px-6 py-4"></td>
+                <td id="th-nameDoctor" class="px-6 py-4"></td>
+                <td id="th-comment" class="px-6 py-4"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- MODAL FOOTER-->
+        <div
+          class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b"
+        >
+          <button
+            (click)="hideModal()"
+            type="button"
+            class="text-white bg-main-purple hover:bg-main-purple/65 focus:ring-4 focus:outline-none focus:ring-main-purple font-medium rounded-lg text-sm px-5 py-2.5 text-center"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
