@@ -20,7 +20,7 @@ export class EditAppointmentComponent implements OnInit {
   
   doctors: any = [];
   filteredDoctor: any [] = [];
-
+  
   ngOnInit(): void {
     this.getDoctors();
   }
@@ -42,6 +42,17 @@ export class EditAppointmentComponent implements OnInit {
   getAppointments(date: string): void {
     this.apiService.getDayAppointments(date).subscribe((data: any) => {
 
+      this.createAppointmentForm.patchValue({
+        searchAppointment: {
+          selectAppointment: '',
+        },
+        searchDataDoctorForm: {
+          dataToSearch: '',
+          dataSelect: '',
+        },
+        patientName: '',
+        appointmentComment: '',
+      });
       
       if (data.data.length == 1) {
 
@@ -50,9 +61,9 @@ export class EditAppointmentComponent implements OnInit {
             selectAppointment: data.data[0].id
           },
           patientName: `${data.data[0].patientFirstname} ${data.data[0].patientLastname}`,
-        searchDataDoctorForm: {
-          dataToSearch: `${data.data[0].doctorFirstname} ${data.data[0].doctorLastname}`,
-          dataSelect: data.data[0].dniDoctor
+          searchDataDoctorForm: {
+            dataToSearch: `${data.data[0].doctorFirstname} ${data.data[0].doctorLastname}`,
+            dataSelect: data.data[0].dniDoctor
         },
         appointmentComment: data.data[0].comment,
         })
