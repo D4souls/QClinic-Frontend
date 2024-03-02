@@ -9,6 +9,11 @@ export interface modifyPatientInterface {
   phone: number;
 }
 
-export interface patientsInterfaces extends modifyPatientInterface {
+export interface patientsInterfaces {
   dni: string;
+  firstname: string;
+  lastname: string;
+  city: null | string;
+  email: null | string;
+  doctorName: string;
 }
