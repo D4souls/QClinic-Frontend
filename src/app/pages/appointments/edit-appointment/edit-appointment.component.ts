@@ -1,13 +1,9 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { dniValidator } from '../../../shared/validators/dni.validator';
-import { phoneNumberValidator } from '../../../shared/validators/phone.validator';
-import { textValidator } from '../../../shared/validators/text.validator';
 import Swal from 'sweetalert2';
-import { Router, ActivatedRoute } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
-import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
-import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
+import { dateValidator } from '../../../shared/validators/date.validator';
+import { textValidator } from '../../../shared/validators/text.validator';
 
 @Component({
   selector: 'app-edit-appointment',
@@ -31,7 +27,7 @@ export class EditAppointmentComponent implements OnInit {
 
   createAppointmentForm = new FormGroup({
     searchAppointment: new FormGroup({
-      date : new FormControl('', Validators.required),
+      date : new FormControl('', [Validators.required, dateValidator]),
       selectAppointment: new FormControl('', Validators.required),
     }),
     patientName: new FormControl('', Validators.required),
@@ -46,14 +42,33 @@ export class EditAppointmentComponent implements OnInit {
   getAppointments(date: string): void {
     this.apiService.getDayAppointments(date).subscribe((data: any) => {
 
-      this.dayAppointments = data.data;
-      console.log(this.dayAppointments);
+      
+      if (data.data.length == 1) {
+
+        this.createAppointmentForm.patchValue({
+          searchAppointment: {
+            selectAppointment: data.data[0].id
+          },
+          patientName: `${data.data[0].patientFirstname} ${data.data[0].patientLastname}`,
+        searchDataDoctorForm: {
+          dataToSearch: `${data.data[0].doctorFirstname} ${data.data[0].doctorLastname}`,
+          dataSelect: data.data[0].dniDoctor
+        },
+        appointmentComment: data.data[0].comment,
+        })
+
+        this.dayAppointments = data.data;
+      } else {
+        this.dayAppointments = data.data;
+      }
+
+      // console.log(this.dayAppointments);
 
     }, (error) => {
-      console.error("Error getting dayAppointments: ", error);
+      console.error("We didn't found any appointments on this date: ", error);
       Swal.fire({
         title: 'Error',
-        text: 'Error getting appointments. Please try again.',
+        text: "We didn't found any appointments on this date.",
         icon: 'error',
       });
     });
