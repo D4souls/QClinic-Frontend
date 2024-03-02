@@ -8,7 +8,8 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        "main-purple": "#5200FF"
+        "main-purple": "#5200FF",
+        "main-bg": "#FAF7FC"
       },
       fontFamily: {
         inter: "inter"
