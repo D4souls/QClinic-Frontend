@@ -1,27 +1,20 @@
-# ConsultorioMedico
+# QClinic (on developing)
+## Description
+QClinic is a software to manage a psychological cabinet. Is made on `Angular 17` and `TailwindCSS`. You can do all these things:
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.1.0.
+| Feature | Description |
+| -- | -- |
+| Manage patients | Sign up new patients, edit or delete him.
+| Manage doctors | Sign up new doctors, edit or delete him.
+| Create appointments | Show, create, edit or delete appointments.
 
-## Development server
+> [!IMPORTANT] 
+> This project is on developing, in the future it will have more features.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+### Some images:
 
-## Code scaffolding
+#### ☀️ Light mode
+<img src="https://github.com/D4souls/consultorio-medico/assets/67900366/9626a48d-91be-475d-851f-b56c5f195e93" alt="mockup_lightMode">
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+#### 🌑 Dark mode
+<img src="https://github.com/D4souls/consultorio-medico/assets/67900366/b0c4f1f3-b9ab-485f-81fd-d5b496f2687f" alt="mockup_darkMode">
