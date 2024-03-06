@@ -20,7 +20,7 @@ export class PatientsComponent implements OnInit {
   allPatients: number = 0;
   pagination: number = 1;
 
-  cantPatientsPerPage: number = 16;
+  cantPatientsPerPage: number = 10;
 
   constructor(
     private router: Router,
