@@ -102,18 +102,6 @@ export class PatientsComponent implements OnInit {
     }
   }
 
-  orderFilterPatients: string = 'Descending';
-
-  changeOrderFilterPatients(): void {
-    if (this.orderFilterPatients === 'Ascending') {
-      this.filteredPatient?.sort((a: patientsInterfaces, b: patientsInterfaces) => a.firstname.localeCompare(b.firstname));
-      this.orderFilterPatients = 'Descending';
-    } else {
-      this.filteredPatient?.sort((a: patientsInterfaces, b: patientsInterfaces) => b.firstname.localeCompare(a.firstname));
-      this.orderFilterPatients = 'Ascending';
-    }
-  }
-
   onSubmit(event: Event): void {
     event.preventDefault();
   }
