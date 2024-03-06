@@ -20,6 +20,9 @@ export class NavBarComponent implements OnInit{
     const darkMode = document.getElementById('moon');
     const lightMode = document.getElementById('sun');
 
+    const logoDark = document.getElementById('logoDark');
+    const logoLight = document.getElementById('logoLight');
+
     lightMode?.classList.toggle('animate-rotate-in');
     darkMode?.classList.toggle('animate-rotate-in');
 
@@ -30,6 +33,9 @@ export class NavBarComponent implements OnInit{
 
       darkMode!.style.display = 'none';
       lightMode!.style.display = 'block';
+
+      logoLight!.style.display = 'none';
+      logoDark!.style.display = 'block';
 
     } else {
 
@@ -45,6 +51,9 @@ export class NavBarComponent implements OnInit{
 
     const darkMode = document.getElementById('moon');
     const lightMode = document.getElementById('sun');
+
+    const logoDark = document.getElementById('logoDark');
+    const logoLight = document.getElementById('logoLight');
     
     document.body.classList.toggle('dark');
 
@@ -53,12 +62,21 @@ export class NavBarComponent implements OnInit{
     
     if(darkMode!.style.display !== 'none') {
       localStorage.setItem("darkModePrefer", "true");
+
       darkMode!.style.display = 'none';
       lightMode!.style.display = 'block';
+
+      logoLight!.style.display = 'none';
+      logoDark!.style.display = 'block';
+
     } else {
       localStorage.setItem("darkModePrefer", "false");
+
       darkMode!.style.display = 'block';
       lightMode!.style.display = 'none';
+
+      logoLight!.style.display = 'block';
+      logoDark!.style.display = 'none';
     }
 
   }
