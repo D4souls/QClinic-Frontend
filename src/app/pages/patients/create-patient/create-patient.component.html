@@ -1,8 +1,5 @@
-<section
-  class="flex flex-col items-center justify-center py-4 overflow-hidden animate-fade animate-ease-in-out animate-fill-both animate-duration-500"
->
-  <form
-    class="bg-white p-4 mt-20 rounded-md w-2/3 flex flex-row flex-shrink items-center gap-4"
+<form
+    class="p-4 rounded-md flex flex-row flex-shrink items-center gap-4"
     [formGroup]="createPatientForm"
     (ngSubmit)="createPatient()"
   >
@@ -24,62 +21,61 @@
 
   <!-- INFORMATION CONTAINER -->
 
-  <div class="flex flex-col order-1 w-full">
+  <div class="flex flex-col order-1 w-full gap-4">
     <!-- MAIN INFORMATION USER FORM -->
-    <h2 class="text-main-purple text-2xl">Personal information</h2>
-    <div class="grid grid-cols-3 grid-rows-2 gap-2">
+    <div class="grid grid-cols-2 gap-2">
         <label for="patientDNI" class="flex flex-col justify-center text-md">
-          DNI
+          <span class="dark:text-white/90">DNI*</span>
           <input
             type="text"
             id="patientDNI"
             placeholder="Enter patient's DNI here"
             formControlName="patientDNI"
-            class="rounded-md outline-0 border border-gray-300"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
           />
         </label>
         <label for="patientName" class="flex flex-col justify-center text-md">
-          First name
+          <span class="dark:text-white/90">First name*</span>
           <input
             type="text"
             id="patientName"
             placeholder="Enter patient's first name here"
             formControlName="patientName"
-            class="rounded-md outline-0 border border-gray-300"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
           />
         </label>
         <label for="patientLastname" class="flex flex-col justify-center text-md">
-          Last name
+          <span class="dark:text-white/90">Last name*</span>
           <input
             type="text"
             id="patientLastname"
             placeholder="Enter patient's last name here"
             formControlName="patientLastname"
-            class="rounded-md outline-0 border border-gray-300"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
           />
         </label>
         <label for="patientPhone" class="flex flex-col justify-center text-md">
-          Phone number
+          <span class="dark:text-white/90">Phone Number*</span>
           <input
             type="text"
             id="patientPhone"
             placeholder="Enter patient's phone number here"
             formControlName="patientPhone"
-            class="rounded-md outline-0 border border-gray-300"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
           />
         </label>
         <label for="patientGender" class="flex flex-col justify-center text-md">
-          Gender
-          <select name="patientGender" id="patientGender" formControlName="patientGender" class="rounded-md outline-0 border border-gray-300">
-            <option value="" disabled selected class="text-gray-300">Select patient's gender</option>
+          <span class="dark:text-white/90">Gender*</span>
+          <select name="patientGender" id="patientGender" formControlName="patientGender" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
+            <option value="" disabled selected>Select patient's gender</option>
               <option value="Male">Male</option>
               <option value="Female">Female</option>
               <option value="No binary">No binary</option>
           </select>
         </label>
         <label for="patientDoctor" class="flex flex-col justify-center text-md">
-          Doctor
-          <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="rounded-md outline-0 border border-gray-300">
+          <span class="dark:text-white/90">Doctor*</span>
+          <select name="patientDoctor" id="patientDoctor" formControlName="patientDoctor" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
             <option value="" disabled selected>Select Doctor</option>
             @for (doctorData of doctors; track doctors.dni){
               <option value="{{doctorData.dni}}">{{doctorData.firstname}} {{doctorData.lastname}}</option>
@@ -90,26 +86,25 @@
 
     <!-- ADDITIONAL INFORMATION USER FROM -->
 
-    <h3 class="text-main-purple text-lg">Additional information</h3>
-    <div class="grid grid-cols-2 grid-rows-1 gap-2">
+    <div class="grid grid-cols-2 gap-2">
       <label for="patientEmail" class="flex flex-col justify-center text-md">
-        Email:
+        <span class="dark:text-white/90">Email</span>
         <input
           type="email"
           id="patientEmail"
           placeholder="Enter patient's mail here"
           formControlName="patientEmail"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
       <label for="patientCity" class="flex flex-col justify-center text-md">
-        City:
+        <span class="dark:text-white/90">City</span>
         <input
           type="text"
           id="patientCity"
           placeholder="Enter patient's city here"
           formControlName="patientCity"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
     </div>
@@ -117,11 +112,10 @@
     <!-- FORM BUTTONS -->
   
     <div class="flex flex-row gap-4 items-center mt-7">
-      <button type="submit" [disabled]="!createPatientForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createPatientForm.valid ? 'bg-main-purple/30 cursor-not-allowed' : 'bg-main-purple cursor-pointer'}}">Create</button>
+      <button type="submit" [disabled]="!createPatientForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createPatientForm.valid ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed' : 'bg-main-purple dark:bg-gray-700 cursor-pointer'}}">Create</button>
       <button type="button" (click)="returnBack()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
     </div>
 
   </div>
 
   </form>
-</section>
