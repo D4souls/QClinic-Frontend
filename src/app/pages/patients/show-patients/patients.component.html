@@ -100,6 +100,11 @@
   <div class="self-center absolute bottom-1">
     <pagination-controls
       (pageChange)="renderPage($event)"
+      previousLabel=""
+      nextLabel=""
+      screenReaderPaginationLabel="Pagination"
+      screenReaderPageLabel="page"
+      screenReaderCurrentLabel="You're on page"
     ></pagination-controls>
   </div>
 
@@ -111,7 +116,7 @@
   >
     <div class="relative p-4 w-full max-w-2xl max-h-full">
       <!-- MODAL CONTENT -->
-      <div class="relative bg-white rounded-lg shadow w-[800px]">
+      <div class="relative bg-white dark:bg-dark-main-bg rounded-lg shadow w-[800px]">
         <!-- MODAL HEADER -->
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
@@ -123,13 +128,6 @@
         <div class="relative overflow-x-auto">
           <app-create-patient modalId="modal-create-patient"></app-create-patient>
         </div>
-
-        <!-- MODAL FOOTER-->
-        <!-- <div
-          class="w-full flex flex-row justify-end p-4 md:p-5 border-t border-gray-200 rounded-b"
-        >
-          <button type="button" (click)="hideModal()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
-        </div> -->
       </div>
     </div>
   </div>
