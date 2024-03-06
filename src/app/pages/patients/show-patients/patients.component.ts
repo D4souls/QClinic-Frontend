@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
 import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces'
+import { CreatePatientComponent } from '../create-patient/create-patient.component';
+
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule],
+  imports: [NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreatePatientComponent],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.css',
 })
@@ -49,7 +52,25 @@ export class PatientsComponent implements OnInit {
   }
 
   newPatient(): void {
-    this.router.navigate(['/patients/create-patient']);
+    const $targetEl = document.getElementById('modal-create-patient');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: true,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-create-patient',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
   }
 
   filterPatients(dataToSearch: string): void {
@@ -100,5 +121,29 @@ export class PatientsComponent implements OnInit {
   renderPage(event: number) {
     this.pagination = event;
     this.getUser();
+  }
+
+  hideModal(): void{
+    // Get modal id
+    const $targetEl = document.getElementById('show-info-appointment');
+  
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+      closable: true,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'show-info-appointment',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+  
+    modal.hide();
+
   }
 }
