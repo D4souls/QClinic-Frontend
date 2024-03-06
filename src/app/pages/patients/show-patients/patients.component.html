@@ -6,11 +6,8 @@
     <div class="flex flex-row">
       <span class="font-bold text-4xl">Patients</span>
       <button
-      class="
-        font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90
-        bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 
-        dark:bg-gray-700 dark:text-white/90
-        transition ease-in-out ml-auto"
+        
+        class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
         (click)="newPatient()"
       >
         New patient
@@ -20,18 +17,26 @@
     <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
       <label
         for="filterPatient"
-        class="
-        bg-gray-400/20 dark:bg-gray-700 dark:text-white/90
-        rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full 
-        text-gray-700/80"
+        class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
       >
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-        <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-      </svg>      
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+          class="w-6 h-6"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+          />
+        </svg>
         <input
           type="search"
           name="filterPatient"
-          placeholder="Search patient"
+          placeholder="Search patient by name, dni, city, email or phone number"
           #filter
           class="bg-transparent border-none w-full focus:border-0"
           (change)="filterPatients(filter.value)"
@@ -47,9 +52,9 @@
       >
         <tr>
           <th scope="col" class="px-6 py-3">Name</th>
-          <th scope="col" class="px-6 py-3">City</th>
+          <th scope="col" class="px-6 py-3 hidden md:block">City</th>
           <th scope="col" class="px-6 py-3">Assigned doctor</th>
-          <th scope="col" class="px-6 py-3">Email</th>
+          <th scope="col" class="px-6 py-3 hidden md:block">Email</th>
           <th scope="col" class="px-6 py-3">
             <span class="sr-only">Edit</span>
           </th>
@@ -68,14 +73,13 @@
           >
             {{ patient.firstname }} {{ patient.lastname }}
           </th>
-          <td class="px-6 py-4">{{ patient.city }}</td>
+          <td class="px-6 py-4 hidden md:block">{{ patient.city }}</td>
           <td class="px-6 py-4">{{ patient.doctorName }}</td>
-          
+
           @if (patient.email){
-            <td class="px-6 py-4">{{ patient.email }}</td>
-          }
-          @else {
-            <td class="px-6 py-4">No email</td>
+          <td class="px-6 py-4 hidden md:block">{{ patient.email }}</td>
+          } @else {
+          <td class="px-6 py-4 hidden md:block">No email</td>
           }
 
           <td class="px-6 py-4 text-right">
@@ -97,6 +101,37 @@
     <pagination-controls
       (pageChange)="renderPage($event)"
     ></pagination-controls>
+  </div>
+
+  <div
+    id="modal-create-patient"
+    tabindex="-1"
+    aria-hidden="true"
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+  >
+    <div class="relative p-4 w-full max-w-2xl max-h-full">
+      <!-- MODAL CONTENT -->
+      <div class="relative bg-white rounded-lg shadow w-[800px]">
+        <!-- MODAL HEADER -->
+        <div
+          class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+        >
+          <span class="font-bold text-4xl">Create patient</span>
+        </div>
+
+        <!-- MODAL BODY -->
+        <div class="relative overflow-x-auto">
+          <app-create-patient modalId="modal-create-patient"></app-create-patient>
+        </div>
+
+        <!-- MODAL FOOTER-->
+        <!-- <div
+          class="w-full flex flex-row justify-end p-4 md:p-5 border-t border-gray-200 rounded-b"
+        >
+          <button type="button" (click)="hideModal()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+        </div> -->
+      </div>
+    </div>
   </div>
 
   <!-- FALLBACK TO DATA -->
