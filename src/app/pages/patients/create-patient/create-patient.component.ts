@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -17,6 +17,8 @@ import { textValidator } from '../../../shared/validators/text.validator';
 
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
 
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+
 @Component({
   selector: 'app-create-patient',
   standalone: true,
@@ -24,32 +26,26 @@ import { FormatFormsInputsService } from '../../../shared/services/format-forms-
   templateUrl: './create-patient.component.html',
   styleUrl: './create-patient.component.css',
 })
-export class CreatePatientComponent implements OnInit{
+export class CreatePatientComponent implements OnInit {
   constructor(
-    private router: Router, 
+    private router: Router,
     private apiPatient: ApiService,
-    private formatForm: FormatFormsInputsService,
+    private formatForm: FormatFormsInputsService
   ) {}
 
   ngOnInit(): void {
-    this.getDoctors()
+    this.getDoctors();
   }
 
+  @Input() modalId?: string;
+
   createPatientForm = new FormGroup({
-    patientDNI: new FormControl('', [
-      Validators.required,
-      dniValidator
-    ]),
-    patientName: new FormControl('', [
-      Validators.required,
-      textValidator
-    ]),
-    patientLastname: new FormControl('', [
-      Validators.required, textValidator
-    ]),
+    patientDNI: new FormControl('', [Validators.required, dniValidator]),
+    patientName: new FormControl('', [Validators.required, textValidator]),
+    patientLastname: new FormControl('', [Validators.required, textValidator]),
     patientPhone: new FormControl('', [
       Validators.required,
-      phoneNumberValidator
+      phoneNumberValidator,
     ]),
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
@@ -57,16 +53,42 @@ export class CreatePatientComponent implements OnInit{
     patientCity: new FormControl('', Validators.nullValidator),
   });
 
-  returnBack(){
-    this.router.navigate(['/patients']);
+  returnBack(): void {
+    const modalElement = document.getElementById(this.modalId!);
+
+    if (modalElement) {
+      const options: ModalOptions = {
+        placement: 'bottom-right',
+        backdrop: 'dynamic',
+        backdropClasses:
+          'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+        closable: true,
+      };
+
+      const instanceOptions: InstanceOptions = {
+        id: this.modalId,
+        override: true,
+      };
+
+      const modal: Modal = new Modal(modalElement, options, instanceOptions);
+
+      modal.hide();
+    } else {
+      console.error('We did not found ID:', this.modalId);
+    }
   }
 
   createPatient() {
-
     // FORMAT DATA PATIENT
-    const formattedDNI = this.formatForm.formatDNI(this.createPatientForm.value.patientDNI!);
-    const formattedName = this.formatForm.formatTextToUpper(this.createPatientForm.value.patientName!);
-    const formattedLastName = this.formatForm.formatTextToUpper(this.createPatientForm.value.patientLastname!);
+    const formattedDNI = this.formatForm.formatDNI(
+      this.createPatientForm.value.patientDNI!
+    );
+    const formattedName = this.formatForm.formatTextToUpper(
+      this.createPatientForm.value.patientName!
+    );
+    const formattedLastName = this.formatForm.formatTextToUpper(
+      this.createPatientForm.value.patientLastname!
+    );
 
     const dataPatient = {
       // patientAvatar: this.createPatientForm.value.patientAvatar,
@@ -78,7 +100,6 @@ export class CreatePatientComponent implements OnInit{
       email: this.createPatientForm.value.patientEmail,
       phone: this.createPatientForm.value.patientPhone,
       assignedDoctor: this.createPatientForm.value.patientDoctor,
-
     };
 
     this.apiPatient.createPatient(dataPatient).subscribe(
@@ -119,29 +140,26 @@ export class CreatePatientComponent implements OnInit{
 
   doctors: any = [];
 
-  getDoctors(){
+  getDoctors() {
     this.apiPatient.getDoctors().subscribe((data: any) => {
-
-      if (data.success){
-        this.doctors = data.data
+      if (data.success) {
+        this.doctors = data.data;
         // console.log(this.doctors);
       } else {
         console.log(data);
       }
-
-    })
+    });
   }
 
   previewAvatar: any;
 
-  filePreview(e: any){
-    if(e.target.files[0]!=null){
+  filePreview(e: any) {
+    if (e.target.files[0] != null) {
       var reader = new FileReader();
-      reader.onload=(e:any)=>{
+      reader.onload = (e: any) => {
         this.previewAvatar = e.target.result;
-      }
+      };
       reader.readAsDataURL(e.target.files[0]);
     }
   }
-
 }
