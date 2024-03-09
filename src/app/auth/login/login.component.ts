@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { ApiService } from '../../core/services/api.service';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,10 +11,14 @@ import Swal from 'sweetalert2';
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
   
   api = inject(ApiService);
-  router = inject(Router)
+  router = inject(Router);
+
+  ngOnInit(): void {
+    document.body.classList.remove('dark');
+  }
 
   formLogin = new FormGroup({
     username: new FormControl('', [Validators.required]),
@@ -49,6 +53,37 @@ export class LoginComponent {
       })
     });
     
+
+  }
+
+  showPassword(): void {
+
+    const showPassword = document.getElementById('openEye');
+    const noShowPassword = document.getElementById('closeEye');
+
+    const inputPassword = document.getElementById('passwd');
+
+    if (showPassword?.style.display == 'none') {
+
+      inputPassword?.setAttribute('type', 'text');
+      
+      showPassword!.style.display = 'block';
+      noShowPassword!.style.display = 'none';
+
+      
+      noShowPassword!.classList.remove('animate-pop');
+      showPassword!.classList.add('animate-pop');
+
+    } else {
+
+      inputPassword?.setAttribute('type', 'password');
+
+      showPassword!.style.display = 'none';
+      noShowPassword!.style.display = 'block';
+
+      noShowPassword!.classList.add('animate-pop');
+      showPassword!.classList.remove('animate-pop');
+    }
 
   }
 
