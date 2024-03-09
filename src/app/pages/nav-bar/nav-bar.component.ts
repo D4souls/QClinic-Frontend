@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-nav-bar',
@@ -10,6 +10,8 @@ import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
   styleUrl: './nav-bar.component.css'
 })
 export class NavBarComponent implements OnInit{
+
+  router = inject(Router);
 
   ngOnInit(): void {
     this.changeButton()
@@ -79,6 +81,12 @@ export class NavBarComponent implements OnInit{
       logoDark!.style.display = 'none';
     }
 
+  }
+
+  logout(): void {
+    localStorage.removeItem('token');
+    this.router.navigate(["/login"]);
+    
   }
 
   //? NEED LOGIN DATA TO USE THIS
