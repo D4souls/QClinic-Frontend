@@ -1,8 +1,8 @@
 <nav
   class="flex flex-row w-screen items-center justify-between px-6 py-2 dark:bg-dark-main-bg dark:text-white/90"
 >
-  <img src="/assets/images/logo-light.png" alt="logo" width='120' id="logoLight"/>
-  <img src="/assets/images/logo-dark.png" alt="logo" width='120' style="display: none;" id="logoDark"/>
+  <img src="/assets/images/logo-light.png" alt="logo" width='120' id="logoLight" [style.view-transition-name]="'logoQClinic'"/>
+  <img src="/assets/images/logo-dark.png" alt="logo" width='120' style="display: none;" id="logoDark" [style.view-transition-name]="'logoQClinic'"/>
   <div class="flex flex-row items-center gap-12">
     <!-- NAV LINKS -->
     <div class="flex flex-row items-center gap-6 font-medium">
