@@ -7,7 +7,7 @@ QClinic is a software to manage a psychological cabinet. Is made on `Angular 17`
 | Manage patients | Sign up new patients, edit or delete him.
 | Manage doctors | Sign up new doctors, edit or delete him.
 | Create appointments | Show, create, edit or delete appointments.
-| Security | It's use JSW (JSON Wb Token) to validate users to the backend
+| Security | It's use `JSW` (JSON Web Token) to validate users to the backend
 
 > [!IMPORTANT] 
 > This project is on developing, in the future it will have more features.
