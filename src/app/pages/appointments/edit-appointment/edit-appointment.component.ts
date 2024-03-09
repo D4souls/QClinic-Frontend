@@ -40,7 +40,13 @@ export class EditAppointmentComponent implements OnInit {
   });
 
   getAppointments(date: string): void {
-    this.apiService.getDayAppointments(date).subscribe((data: any) => {
+
+    const data = {
+      date: date,
+      token: localStorage.getItem('token')
+    }
+
+    this.apiService.getDayAppointments(data).subscribe((data: any) => {
 
       this.createAppointmentForm.patchValue({
         searchAppointment: {
@@ -102,7 +108,9 @@ export class EditAppointmentComponent implements OnInit {
 
   getDoctors(): void{
 
-    this.apiService.getDoctors().subscribe((data: any) => {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.getDoctors(token).subscribe((data: any) => {
 
       if (data.success){
         this.doctors = data.data
@@ -116,11 +124,14 @@ export class EditAppointmentComponent implements OnInit {
 
   updateAppointment(): void {
 
-    const dataAppointment = {
-      id: this.createAppointmentForm.value.searchAppointment?.selectAppointment,
-      dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
-      comment: this.createAppointmentForm.value.appointmentComment
-    };
+    const data = {
+      token: localStorage.getItem('token'),
+      appointmentData: {
+        id: this.createAppointmentForm.value.searchAppointment?.selectAppointment,
+        dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+        comment: this.createAppointmentForm.value.appointmentComment
+      }
+    }
 
     // console.log(dataAppointment);
 
@@ -133,7 +144,7 @@ export class EditAppointmentComponent implements OnInit {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.updateAppointments(dataAppointment).subscribe(
+        this.apiService.updateAppointments(data).subscribe(
           (data: any) => {
             // console.log(data);
 
@@ -152,17 +163,17 @@ export class EditAppointmentComponent implements OnInit {
              } else {
                Swal.fire({
                  title: 'Error',
-                 text: 'Error deleting patient. Please try again.',
+                 text: 'Error deleting appointment. Please try again.',
                  icon: 'error',
                });
              }
            },
            (error) => {
-             console.error('Error deleting patient:', error);
+             console.error('Error deleting appointment:', error);
 
              Swal.fire({
                title: 'Error',
-               text: 'Error deleting patient. Please try again.',
+               text: 'Error deleting appointment. Please try again.',
                icon: 'error',
              });
            }
@@ -212,7 +223,7 @@ export class EditAppointmentComponent implements OnInit {
     }
   }
 
-  deletePatient(): void {
+  deleteAppointment(): void {
 
     const id = this.createAppointmentForm.value.searchAppointment!.selectAppointment;
 
@@ -227,7 +238,13 @@ export class EditAppointmentComponent implements OnInit {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deleteAppointments(id!).subscribe(
+
+        const data = {
+          token: localStorage.getItem('token'),
+          id: id
+        }
+
+        this.apiService.deleteAppointments(data).subscribe(
           (data: any) => {
             // console.log(data);
 
@@ -246,17 +263,17 @@ export class EditAppointmentComponent implements OnInit {
              } else {
                Swal.fire({
                  title: 'Error',
-                 text: 'Error deleting patient. Please try again.',
+                 text: 'Error deleting appointment. Please try again.',
                  icon: 'error',
                });
              }
            },
            (error) => {
-             console.error('Error deleting patient:', error);
+             console.error('Error deleting appointment:', error);
 
              Swal.fire({
                title: 'Error',
-               text: 'Error deleting patient. Please try again.',
+               text: 'Error deleting appointment. Please try again.',
                icon: 'error',
              });
            }

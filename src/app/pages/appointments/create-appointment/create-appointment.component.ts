@@ -47,14 +47,23 @@ export class CreateAppointmentComponent implements OnInit{
 
 
   getPatients(): void{
-    this.apiService.getPatients(0).subscribe((data: any) => {
+
+    const data = {
+      pagination: 0,
+      token: localStorage.getItem('token')
+    }
+
+    this.apiService.getPatients(data).subscribe((data: any) => {
       this.patients = data;
       this.filteredPatient = this.patients.slice();
     });
   }
 
   getDoctors(){
-    this.apiService.getDoctors().subscribe((data: any) => {
+
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.getDoctors(token).subscribe((data: any) => {
 
       if (data.success){
         this.doctors = data.data
@@ -72,14 +81,18 @@ export class CreateAppointmentComponent implements OnInit{
     const splitDate = this.createAppointmentForm.value.dateTime?.split("T");
     const formattedDate = `${splitDate![0]} ${splitDate![1]}`
 
-    const dataAppointment = {
-      date: formattedDate,
-      dniPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
-      dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
-      comment: this.createAppointmentForm.value.appointmentComment
+    const data = {
+      token: localStorage.getItem('token'),
+      appointmentData: {
+        date: formattedDate,
+        dniPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
+        dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+        comment: this.createAppointmentForm.value.appointmentComment,
+      }
     };
 
-    console.log(dataAppointment);
+
+    // console.log(data);
 
     Swal.fire({
       title: 'Do you want to create this appointment?',
@@ -90,7 +103,7 @@ export class CreateAppointmentComponent implements OnInit{
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.createAppointments(dataAppointment).subscribe(
+        this.apiService.createAppointments(data).subscribe(
           (data: any) => {
             // console.log(data);
 

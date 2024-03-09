@@ -90,19 +90,21 @@ export class CreatePatientComponent implements OnInit {
       this.createPatientForm.value.patientLastname!
     );
 
-    const dataPatient = {
-      // patientAvatar: this.createPatientForm.value.patientAvatar,
-      dni: formattedDNI,
-      firstname: formattedName,
-      lastname: formattedLastName,
-      gender: this.createPatientForm.value.patientGender,
-      city: this.createPatientForm.value.patientCity,
-      email: this.createPatientForm.value.patientEmail,
-      phone: this.createPatientForm.value.patientPhone,
-      assignedDoctor: this.createPatientForm.value.patientDoctor,
+    const data = {
+      token: localStorage.getItem('token'),
+      patientData: {
+        dni: formattedDNI,
+        firstname: formattedName,
+        lastname: formattedLastName,
+        gender: this.createPatientForm.value.patientGender,
+        city: this.createPatientForm.value.patientCity,
+        email: this.createPatientForm.value.patientEmail,
+        phone: this.createPatientForm.value.patientPhone,
+        assignedDoctor: this.createPatientForm.value.patientDoctor,
+      }
     };
 
-    this.apiPatient.createPatient(dataPatient).subscribe(
+    this.apiPatient.createPatient(data).subscribe(
       (response: any) => {
         if (response.message) {
           Swal.fire({
@@ -113,11 +115,7 @@ export class CreatePatientComponent implements OnInit {
           }).then((result) => {
             if (result.isConfirmed) {
               this.router.navigate(['/patients']);
-            } else if (result.isDenied) {
-              setTimeout(() => {
-                this.router.navigate(['/create-patient']);
-              }, 1000);
-            }
+            } 
           });
         } else {
           Swal.fire({
@@ -141,7 +139,10 @@ export class CreatePatientComponent implements OnInit {
   doctors: any = [];
 
   getDoctors() {
-    this.apiPatient.getDoctors().subscribe((data: any) => {
+
+    const token = localStorage.getItem('token')!;
+
+    this.apiPatient.getDoctors(token).subscribe((data: any) => {
       if (data.success) {
         this.doctors = data.data;
         // console.log(this.doctors);

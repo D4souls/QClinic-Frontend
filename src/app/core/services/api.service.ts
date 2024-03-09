@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
@@ -11,51 +11,67 @@ export class ApiService {
   port = '8080'
   url = `http://localhost:${this.port}/`
 
-  getPatients(page: number): Observable<any>{
-    return this.httpclient.get(this.url + 'patients' + '?page=' + page);
+  login(dataToLogin: unknown): Observable<any>{
+    return this.httpclient.post(this.url + 'login', dataToLogin);
   }
 
-  getPatientData(dni: string): Observable<any>{
-    return this.httpclient.get(this.url + `patient/${dni}`);
+  // Function to configure auth header
+
+  configureAuthHeader(token: string){
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Authorization': token
+      })
+    }
+
+    return httpOptions;
+  }
+
+  getPatients(data: any): Observable<any>{
+    return this.httpclient.get(this.url + 'patients' + '?page=' + data.pagination, this.configureAuthHeader(data.token));
+  }
+
+  getPatientData(data: any): Observable<any>{
+    return this.httpclient.get(this.url + `patient/${data.dni}`, this.configureAuthHeader(data.token));
   }  
 
-  deletePatient(dni: string): Observable<any> {
-    return this.httpclient.delete(this.url + `delete-patient/${dni}`);
+  deletePatient(data: any): Observable<any> {
+    return this.httpclient.delete(this.url + `delete-patient/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
-  createPatient(patientData: any): Observable<any> {
-    return this.httpclient.post(this.url + 'create-patient', patientData);
+  createPatient(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'create-patient', data.patientData, this.configureAuthHeader(data.token));
   }
 
-  modifyPatient(patientData: any): Observable<any> {
-    return this.httpclient.post(this.url + 'modify-patient', patientData);
+  modifyPatient(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'modify-patient', data.patientData, this.configureAuthHeader(data.token));
   }
 
-  getDoctors(): Observable<any> {
-    return this.httpclient.get(this.url + 'doctors')
+  getDoctors(token: string): Observable<any> {
+    return this.httpclient.get(this.url + 'doctors', this.configureAuthHeader(token));
   }
 
-  getAppointments(): Observable<any> {
-    return this.httpclient.get(this.url + 'appointments')
+  getAppointments(token: string): Observable<any> {
+    return this.httpclient.get(this.url + 'appointments', this.configureAuthHeader(token));
   }
 
-  createAppointments(appointmentData: any): Observable<any> {
-    return this.httpclient.post(this.url + 'create-appointment', appointmentData);
+  createAppointments(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'create-appointment', data.appointmentData, this.configureAuthHeader(data.token));
   }
 
-  getUserAppointments(dni: string): Observable<any> {
-    return this.httpclient.get(this.url + `user-appointments/${dni}`);
+  getUserAppointments(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `user-appointments/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
-  getDayAppointments(date: string): Observable<any> {
-    return this.httpclient.get(this.url + `day-appointments/${date}`);
+  getDayAppointments(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `day-appointments/${data.date}`, this.configureAuthHeader(data.token));
   }
 
-  updateAppointments(appointmentData: any): Observable<any> {
-    return this.httpclient.post(this.url + `update-appointment/`, appointmentData);
+  updateAppointments(data: any): Observable<any> {
+    return this.httpclient.post(this.url + `update-appointment/`, data.appointmentData, this.configureAuthHeader(data.token));
   }
 
-  deleteAppointments(id: string): Observable<any> {
-    return this.httpclient.delete(this.url + `delete-appointment/${id}`);
+  deleteAppointments(data: any): Observable<any> {
+    return this.httpclient.delete(this.url + `delete-appointment/${data.id}`, this.configureAuthHeader(data.token));
   }
 }

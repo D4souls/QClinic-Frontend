@@ -14,6 +14,7 @@ import { initFlowbite } from 'flowbite';
 export class AppComponent implements OnInit{
 
   title = 'consultorio-medico';
+  token = localStorage.getItem('token');
 
   ngOnInit(): void {
     initFlowbite();

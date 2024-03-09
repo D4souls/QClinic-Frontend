@@ -138,7 +138,10 @@ export class AppointmentsComponent implements OnInit {
 
 
   getAppointments(): void {
-    this.apiGetPatient.getAppointments().subscribe((data: any) => {
+
+    const token = localStorage.getItem('token')!;
+
+    this.apiGetPatient.getAppointments(token).subscribe((data: any) => {
       const dataEvent = data.data.map((appointments: any) => {
         return {
           id: appointments.id,
@@ -153,7 +156,7 @@ export class AppointmentsComponent implements OnInit {
       
       this.calendarEvents = dataEvent;
 
-      console.log(dataEvent);
+      // console.log(dataEvent);
 
     })
   }

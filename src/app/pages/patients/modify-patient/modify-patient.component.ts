@@ -70,7 +70,13 @@ export class ModifyPatientComponent implements OnInit {
   });
 
   getDataPatient(dniToFind: string){
-    this.apiService.getPatientData(dniToFind).subscribe((data: patientsInterfaces[]) => {
+
+    const data = {
+      token: localStorage.getItem('token'),
+      dni: dniToFind
+    }
+
+    this.apiService.getPatientData(data).subscribe((data: patientsInterfaces[]) => {
 
       if(data && data.length > 0){
         this.dataPatient = data;
@@ -91,14 +97,23 @@ export class ModifyPatientComponent implements OnInit {
   }
 
   getPatientAppointments(dni: string) {
-    this.apiService.getUserAppointments(dni).subscribe((data: any) => {
+
+    const data = {
+      token: localStorage.getItem('token'),
+      dni: dni
+    }
+
+    this.apiService.getUserAppointments(data).subscribe((data: any) => {
       this.appointmentsPatient = data.data;
       console.log(this.appointmentsPatient);
     })
   }
 
   getDoctors(){
-    this.apiService.getDoctors().subscribe((data: any) => {
+
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.getDoctors(token).subscribe((data: any) => {
 
       if (data.success){
         this.doctors = data.data
@@ -121,15 +136,22 @@ export class ModifyPatientComponent implements OnInit {
     const formattedLastName = this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientLastname!);
     const formattedCity = this.modifyPatientForm.value.patientCity ? this.formatForm.formatTextToUpper(this.modifyPatientForm.value.patientCity!) : this.modifyPatientForm.value.patientCity;
 
+
+    const data = {
+      token: localStorage.getItem('token'),
+      patientData: {
+        dni: this.modifyPatientForm.value.patientDNI,
+        firstname: formattedName,
+        lastname: formattedLastName,
+        gender: this.modifyPatientForm.value.patientGender,
+        city: formattedCity,
+        email: this.modifyPatientForm.value.patientEmail,
+        assignedDoctor: this.modifyPatientForm.value.patientDoctor,
+        phone: this.modifyPatientForm.value.patientPhone,
+      }
+    }
+
     const dataPatient = {
-      dni: this.modifyPatientForm.value.patientDNI,
-      firstname: formattedName,
-      lastname: formattedLastName,
-      gender: this.modifyPatientForm.value.patientGender,
-      city: formattedCity,
-      email: this.modifyPatientForm.value.patientEmail,
-      assignedDoctor: this.modifyPatientForm.value.patientDoctor,
-      phone: this.modifyPatientForm.value.patientPhone,
     };
 
     Swal.fire({
@@ -141,9 +163,9 @@ export class ModifyPatientComponent implements OnInit {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.modifyPatient(dataPatient).subscribe(
+        this.apiService.modifyPatient(data).subscribe(
           (data: any) => {
-            console.log(data);
+            // console.log(data);
 
             if (data.message) {
               Swal.fire({
@@ -190,9 +212,15 @@ export class ModifyPatientComponent implements OnInit {
       confirmButtonText: 'Yes, delete it!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.deletePatient(this.modifyPatientForm.value.patientDNI!).subscribe(
+
+        const data = {
+          token: localStorage.getItem('token'),
+          dni: this.modifyPatientForm.value.patientDNI!
+        }
+
+        this.apiService.deletePatient(data).subscribe(
           (data: any) => {
-            console.log(data);
+            // console.log(data);
 
             if (data.message) {
               Swal.fire({

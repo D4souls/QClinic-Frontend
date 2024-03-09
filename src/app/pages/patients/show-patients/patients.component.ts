@@ -37,7 +37,15 @@ export class PatientsComponent implements OnInit {
   getUser(): void {
 
     try {
-      this.patientapiservice.getPatients(this.pagination).subscribe((data: patientsInterfaces[]) => {
+
+      const token = localStorage.getItem('token')!;
+
+      const data = {
+        token: token,
+        pagination: this.pagination
+      }
+
+      this.patientapiservice.getPatients(data).subscribe((data: patientsInterfaces[]) => {
         this.data = data;
         this.filteredPatient = this.data.slice();
       });
