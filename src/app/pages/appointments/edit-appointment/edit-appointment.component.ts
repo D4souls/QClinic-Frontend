@@ -82,11 +82,14 @@ export class EditAppointmentComponent implements OnInit {
       // console.log(this.dayAppointments);
 
     }, (error) => {
-      console.error("We didn't found any appointments on this date: ", error);
       Swal.fire({
-        title: 'Error',
-        text: "We didn't found any appointments on this date.",
         icon: 'error',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom',
+        text: error.error.message
       });
     });
   }
@@ -149,31 +152,34 @@ export class EditAppointmentComponent implements OnInit {
             // console.log(data);
 
              if (data.message) {
-               Swal.fire({
-                 title: 'Success',
-                 text: data.message,
-                 icon: 'success',
-                 confirmButtonText: "Return back",
-               }).then((result) => {
-                 if (result.isConfirmed) {
-                   window.location.reload();
-                 }
-               });
+                Swal.fire({
+                  title: 'Appointment edited!',
+                  icon: 'success',
+                  toast: true,
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  position: 'bottom'
+                });
+      
+                setTimeout(() => {
+                  window.location.reload();
+                }, 2000);
             
              } else {
                Swal.fire({
                  title: 'Error',
-                 text: 'Error deleting appointment. Please try again.',
+                 text: 'Error updating appointment. Please try again.',
                  icon: 'error',
                });
              }
            },
            (error) => {
-             console.error('Error deleting appointment:', error);
+             console.error('Error updating appointment:', error);
 
              Swal.fire({
                title: 'Error',
-               text: 'Error deleting appointment. Please try again.',
+               text: 'Error updating appointment. Please try again.',
                icon: 'error',
              });
            }
@@ -214,9 +220,13 @@ export class EditAppointmentComponent implements OnInit {
         this.filteredDoctor = this.doctors;
 
         Swal.fire({
-          title: 'Search error',
-          text: "We didn't found any doctors..." ,
           icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom',
+          text: "We didn't found any doctors..."
         });
       }
 
@@ -249,16 +259,19 @@ export class EditAppointmentComponent implements OnInit {
             // console.log(data);
 
              if (data.message) {
-               Swal.fire({
-                 title: 'Success',
-                 text: data.message,
-                 icon: 'success',
-                 confirmButtonText: "Return back",
-               }).then((result) => {
-                 if (result.isConfirmed) {
-                   window.location.reload();
-                 }
-               });
+                Swal.fire({
+                  title: 'Appointment deleted!',
+                  icon: 'success',
+                  toast: true,
+                  showConfirmButton: false,
+                  timer: 2000,
+                  timerProgressBar: true,
+                  position: 'bottom'
+                });
+      
+                setTimeout(() => {
+                  window.location.reload();
+                }, 2000);
             
              } else {
                Swal.fire({

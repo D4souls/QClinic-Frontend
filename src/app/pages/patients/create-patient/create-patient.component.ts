@@ -108,15 +108,19 @@ export class CreatePatientComponent implements OnInit {
       (response: any) => {
         if (response.message) {
           Swal.fire({
-            title: 'Patient created!',
-            showDenyButton: true,
-            confirmButtonText: 'Return to patients',
-            denyButtonText: 'Create more',
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.router.navigate(['/patients']);
-            } 
+            text: 'Patient created!',
+            icon: 'success',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
           });
+
+          setTimeout(() => {
+            this.router.navigate(['/patients']);
+          }, 3000);     
+
         } else {
           Swal.fire({
             icon: 'error',

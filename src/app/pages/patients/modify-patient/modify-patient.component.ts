@@ -151,9 +151,6 @@ export class ModifyPatientComponent implements OnInit {
       }
     }
 
-    const dataPatient = {
-    };
-
     Swal.fire({
       title: 'Do you want to save changes?',
       icon: 'warning',
@@ -169,15 +166,18 @@ export class ModifyPatientComponent implements OnInit {
 
             if (data.message) {
               Swal.fire({
-                title: 'Success',
-                text: data.message,
+                text: 'Changes saved!',
                 icon: 'success',
-                confirmButtonText: "Return back",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.router.navigate(['/patients']);
-                }
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'bottom'
               });
+    
+              setTimeout(() => {
+                this.router.navigate(['/patients']);
+              }, 3000);   
               
             } else {
               Swal.fire({
@@ -224,15 +224,18 @@ export class ModifyPatientComponent implements OnInit {
 
             if (data.message) {
               Swal.fire({
-                title: 'Success',
-                text: data.message,
                 icon: 'success',
-                confirmButtonText: "Return back",
-              }).then((result) => {
-                if (result.isConfirmed) {
-                  this.router.navigate(['/patients']);
-                }
+                text: data.message,
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'bottom'
               });
+
+              setTimeout(() => {
+                this.router.navigate(['/patients']);
+              }, 3000);    
               
             } else {
               Swal.fire({

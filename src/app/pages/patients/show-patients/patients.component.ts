@@ -101,9 +101,13 @@ export class PatientsComponent implements OnInit {
         this.filteredPatient = this.data;
 
         Swal.fire({
-          title: 'Search error',
           text: "We didn't found any patients..." ,
           icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
         });
       }
 

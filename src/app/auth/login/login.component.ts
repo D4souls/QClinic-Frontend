@@ -28,26 +28,27 @@ export class LoginComponent {
       password: this.formLogin.value.password,
     }
 
-    console.log(dataLogin);
+    // console.log(dataLogin);
 
     this.api.login(dataLogin).subscribe((data: any) => {
-
-      if(!data.token){
-        console.error(data.message)
-
-        Swal.fire({
-          title: 'Error',
-          text: data.message.error,
-          icon: 'error',
-        })
-
+      if (!data.token) {
+        alert("Password or")
+      } else {
+        localStorage.setItem('token', data.token);
+        this.router.navigate(['/']);
       }
-
-      localStorage.setItem('token', data.token);
-
-      this.router.navigate(['/']);
-
-    })
+    }, (error: any) =>{
+      Swal.fire({
+        timer: 4000,
+        position: "bottom",
+        timerProgressBar: true,
+        showConfirmButton: false,
+        text: error.error.message,
+        icon: 'error',
+        toast: true
+      })
+    });
+    
 
   }
 

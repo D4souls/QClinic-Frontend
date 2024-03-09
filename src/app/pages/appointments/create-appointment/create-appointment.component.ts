@@ -5,6 +5,7 @@ import { patientsInterfaces } from '../../../core/interfaces/patients/patients-i
 import { ApiService } from '../../../core/services/api.service';
 import { dateTimeValidator } from '../../../shared/validators/dateTime.validator';
 import { textValidator } from '../../../shared/validators/text.validator';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-appointment',
@@ -23,6 +24,7 @@ export class CreateAppointmentComponent implements OnInit{
 
   constructor(
     private apiService: ApiService,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -91,9 +93,6 @@ export class CreateAppointmentComponent implements OnInit{
       }
     };
 
-
-    // console.log(data);
-
     Swal.fire({
       title: 'Do you want to create this appointment?',
       icon: 'warning',
@@ -108,16 +107,19 @@ export class CreateAppointmentComponent implements OnInit{
             // console.log(data);
 
              if (data.message) {
-               Swal.fire({
-                 title: 'Success',
-                 text: data.message,
-                 icon: 'success',
-                 confirmButtonText: "Return back",
-               }).then((result) => {
-                 if (result.isConfirmed) {
-                   window.location.reload();
-                 }
-               });
+              Swal.fire({
+                title: 'Appointment created!',
+                icon: 'success',
+                toast: true,
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                position: 'bottom'
+              });
+    
+              setTimeout(() => {
+                window.location.reload();
+              }, 2000);
             
              } else {
                Swal.fire({
@@ -175,9 +177,13 @@ export class CreateAppointmentComponent implements OnInit{
         this.filteredPatient = this.patients;
 
         Swal.fire({
-          title: 'Search error',
-          text: "We didn't found any patients..." ,
           icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom',
+          text: "We didn't found any patients..."
         });
       }
 
@@ -216,9 +222,13 @@ export class CreateAppointmentComponent implements OnInit{
         this.filteredDoctor = this.doctors;
 
         Swal.fire({
-          title: 'Search error',
-          text: "We didn't found any doctors..." ,
           icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom',
+          text: "We didn't found any doctors..."
         });
       }
 
