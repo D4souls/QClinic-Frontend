@@ -45,27 +45,28 @@
     </form>
 
     <table
-      class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400"
+      class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
     >
       <thead
-        class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
       >
-        <tr>
-          <th scope="col" class="px-6 py-3">Name</th>
-          <th scope="col" class="px-6 py-3 hidden md:block">City</th>
-          <th scope="col" class="px-6 py-3">Assigned doctor</th>
-          <th scope="col" class="px-6 py-3 hidden md:block">Email</th>
-          <th scope="col" class="px-6 py-3">
+        <tr class="table-row">
+          <th scope="col" class="px-6 py-3 table-cell">Name</th>
+          <th scope="col" class="px-6 py-3 md:table-cell hidden">City</th>
+          <th scope="col" class="px-6 py-3 md:table-cell hidden">Assigned doctor</th>
+          <th scope="col" class="px-6 py-3 md:table-cell hidden">Email</th>
+          <th scope="col" class="px-6 py-3 table-cell">
             <span class="sr-only">Edit</span>
           </th>
         </tr>
       </thead>
-      <tbody>
+      <tbody class="table-row-group">
         @for (patient of filteredPatient | paginate : { itemsPerPage:
         cantPatientsPerPage, currentPage: pagination, totalItems: allPatients};
         track filteredPatient[0].dni){
         <tr
-          class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          (click)="modifyPatient(patient.dni)"
+          class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
           <th
             scope="row"
@@ -73,16 +74,22 @@
           >
             {{ patient.firstname }} {{ patient.lastname }}
           </th>
-          <td class="px-6 py-4 hidden md:block">{{ patient.city }}</td>
-          <td class="px-6 py-4">{{ patient.doctorName }}</td>
 
-          @if (patient.email){
-          <td class="px-6 py-4 hidden md:block">{{ patient.email }}</td>
+          @if (patient.city){
+            <td class="px-6 py-4 md:table-cell hidden">{{ patient.city }}</td>
           } @else {
-          <td class="px-6 py-4 hidden md:block">No email</td>
+            <td class="px-6 py-4 md:table-cell hidden">No city</td>
           }
 
-          <td class="px-6 py-4 text-right">
+          <td class="px-6 py-4 md:table-cell hidden">{{ patient.doctorName }}</td>
+
+          @if (patient.email){
+            <td class="px-6 py-4 md:table-cell hidden">{{ patient.email }}</td>
+          } @else {
+            <td class="px-6 py-4 md:table-cell hidden">No email</td>
+          }
+
+          <td class="px-6 py-4 text-right table-cell">
             <a
               (click)="modifyPatient(patient.dni)"
               class="font-medium text-main-purple dark:text-white/90 hover:underline cursor-pointer"
@@ -116,7 +123,7 @@
   >
     <div class="relative p-4 w-full max-w-2xl max-h-full">
       <!-- MODAL CONTENT -->
-      <div class="relative bg-white dark:bg-dark-main-bg rounded-lg shadow w-[800px]">
+      <div class="relative bg-white dark:bg-dark-main-bg rounded-lg shadow md:w-[800px]">
         <!-- MODAL HEADER -->
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
