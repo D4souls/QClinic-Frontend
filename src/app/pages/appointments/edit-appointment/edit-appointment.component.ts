@@ -1,10 +1,12 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../core/services/api.service';
 import { dateValidator } from '../../../shared/validators/date.validator';
 import { textValidator } from '../../../shared/validators/text.validator';
 
+// FLOWBITE MODAL
+import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
@@ -14,6 +16,8 @@ import { textValidator } from '../../../shared/validators/text.validator';
 })
 export class EditAppointmentComponent implements OnInit {
 
+  @Input() modalId?: string;
+  
   apiService = inject(ApiService);
 
   dayAppointments: any[] = [];
@@ -298,6 +302,31 @@ export class EditAppointmentComponent implements OnInit {
 
   onSubmit(event: Event): void{
     event.preventDefault();
+  }
+
+  returnBack(): void {
+    const modalElement: HTMLElement = document.getElementById('edit-appointment')!;
+
+    if (modalElement) {
+      const options: ModalOptions = {
+        placement: 'bottom-right',
+        backdrop: 'dynamic',
+        backdropClasses:
+          'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+        closable: true,
+      };
+
+      const instanceOptions: InstanceOptions = {
+        id: this.modalId,
+        override: true,
+      };
+
+      const modal: Modal = new Modal(modalElement, options, instanceOptions);
+
+      modal.hide();
+    } else {
+      console.error('We did not found ID:', this.modalId);
+    }
   }
 
 }

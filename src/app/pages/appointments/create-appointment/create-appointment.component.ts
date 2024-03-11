@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
@@ -6,6 +6,7 @@ import { ApiService } from '../../../core/services/api.service';
 import { dateTimeValidator } from '../../../shared/validators/dateTime.validator';
 import { textValidator } from '../../../shared/validators/text.validator';
 import { Router } from '@angular/router';
+import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
 
 @Component({
   selector: 'app-create-appointment',
@@ -16,6 +17,8 @@ import { Router } from '@angular/router';
 })
 export class CreateAppointmentComponent implements OnInit{
 
+  @Input() modalId?: string;
+  
   patients: patientsInterfaces[] = [];
   filteredPatient: patientsInterfaces[] = [];
   
@@ -241,6 +244,31 @@ export class CreateAppointmentComponent implements OnInit{
 
   onSubmitDoctor(event: Event): void{
     event.preventDefault();
+  }
+
+  returnBack(): void {
+    const modalElement = document.getElementById(this.modalId!);
+
+    if (modalElement) {
+      const options: ModalOptions = {
+        placement: 'bottom-right',
+        backdrop: 'dynamic',
+        backdropClasses:
+          'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+        closable: true,
+      };
+
+      const instanceOptions: InstanceOptions = {
+        id: this.modalId,
+        override: true,
+      };
+
+      const modal: Modal = new Modal(modalElement, options, instanceOptions);
+
+      modal.hide();
+    } else {
+      console.error('We did not found ID:', this.modalId);
+    }
   }
 
 }
