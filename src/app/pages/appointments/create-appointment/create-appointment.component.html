@@ -9,7 +9,7 @@
       (submit)="onSubmitPatient($event)"
       formGroupName="searchDataPatientForm"
     >
-      <fieldset class="grid grid-cols-2 gap-2 w-full text-md">
+      <fieldset class="grid grid-rows-2 md:grid-cols-2 gap-2 w-full text-md">
         <legend class="dark:text-white/90">Patient*</legend>
         <label for="patientSearch" class="flex flex-col justify-center text-md">
           <input
@@ -46,7 +46,7 @@
       (submit)="onSubmitDoctor($event)"
       formGroupName="searchDataDoctorForm"
     >
-      <fieldset class="grid grid-cols-2 gap-2 w-full text-md">
+      <fieldset class="grid grid-rows-2 md:grid-cols-2 gap-2 w-full text-md">
         <legend class="dark:text-white/90">Doctor*</legend>
         <label for="doctorSearch" class="flex flex-col justify-center text-md">
           <input

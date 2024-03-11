@@ -1,9 +1,11 @@
 <div
   class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white/90"
 >
-  <div class="flex flex-row">
-    <span class="font-bold text-4xl dark:text-white/90">Appointments</span>
-    <div class="ml-auto">
+  <div class="flex gap-4 flex-row">
+    <span class="font-bold text-2xl md:text-4xl dark:text-white/90">Appointments</span>
+
+    <!-- DEFAULT BUTTONS -->
+    <div class="ml-auto hidden md:inline-block">
       <button
         type="button"
         class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
@@ -19,12 +21,38 @@
         Edit appointment
       </button>
     </div>
+
+    <!-- MOBILE BUTTONS -->
+    <div class="ml-auto md:hidden">
+      <button
+        type="button"
+        class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
+        (click)="newAppointment()"
+      >
+        New
+      </button>
+      <button
+        type="button"
+        class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
+        (click)="editAppointment()"
+      >
+        Edit
+      </button>
+    </div>
   </div>
 
-  <div class="bg-white dark:bg-dark-main-bg flex items-center justify-center rounded-md">
+  <div class="hidden bg-white dark:bg-dark-main-bg md:inline-flex items-center justify-center rounded-md">
     <full-calendar
       #calendar
-      [options]="calendarOptions"
+      [options]="mdCalendarOptions"
+      class="w-full"
+    ></full-calendar>
+  </div>
+
+  <div class="md:hidden bg-white dark:bg-dark-main-bg flex items-center justify-center rounded-md">
+    <full-calendar
+      #calendar
+      [options]="smCalendarOptions"
       class="w-full"
     ></full-calendar>
   </div>
@@ -42,7 +70,7 @@
 >
   <div class="relative p-4 w-full max-w-2xl max-h-full">
     <!-- MODAL CONTENT -->
-    <div class="relative bg-white dark:bg-dark-main-bg rounded-lg shadow w-[800px]">
+    <div class="relative bg-white dark:bg-dark-main-bg rounded-lg shadow">
       <!-- MODAL HEADER -->
       <div
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
@@ -104,7 +132,7 @@
 >
   <div class="relative p-4 w-full max-w-2xl max-h-full">
     <!-- MODAL CONTENT -->
-    <div class="relative bg-white dark:bg-dark-main-bg rounded-md shadow w-[800px]">
+    <div class="relative bg-white dark:bg-dark-main-bg rounded-md shadow">
       <!-- MODAL HEADER -->
       <div
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
@@ -129,7 +157,7 @@
 >
   <div class="relative p-4 w-full max-w-2xl max-h-full">
     <!-- MODAL CONTENT -->
-    <div class="relative bg-white dark:bg-dark-main-bg rounded-md shadow w-[800px]">
+    <div class="relative bg-white dark:bg-dark-main-bg rounded-md shadow">
       <!-- MODAL HEADER -->
       <div
         class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
