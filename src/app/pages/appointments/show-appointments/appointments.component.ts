@@ -30,13 +30,19 @@ export class AppointmentsComponent implements OnInit {
   ngOnInit(): void {
     this.getAppointments();
     setTimeout(() => {
-      this.calendarOptions = {
+      this.mdCalendarOptions = {
+        events: this.calendarEvents,
+      }
+    }, 1);
+
+    setTimeout(() => {
+      this.smCalendarOptions = {
         events: this.calendarEvents,
       }
     }, 1);
   }
 
-  calendarOptions: CalendarOptions = {
+  mdCalendarOptions: CalendarOptions = {
     themeSystem: 'standard',
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
@@ -50,6 +56,84 @@ export class AppointmentsComponent implements OnInit {
     headerToolbar: {
       start: 'prev,next today',
       center: 'title',
+      end: 'dayGridMonth,timeGridWeek,timeGridDay',
+    },
+    titleFormat: {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    },
+    dayMaxEventRows: true,
+    views: {
+      timeGrid: {
+        dayMaxEventRows: 4
+      }
+    },
+    eventClick(info: EventClickArg) {
+
+      // Get all modal parameters to put data
+      const $targetEl = document.getElementById('show-info-appointment');
+      const titleModal = document.getElementById('modal-header');
+      const thNamePatient = document.getElementById('th-namePatient');
+      const thDateTime = document.getElementById('th-dateTime');
+      const thNameDoctor = document.getElementById('th-nameDoctor');
+      const thComment = document.getElementById('th-comment');
+
+      if ($targetEl && titleModal && thNamePatient && thDateTime && thNameDoctor && thComment){
+
+        // Format title
+        const title = `Info appointment #${info.event.id}`;
+        
+        // Format dateTime
+        const startDate = info.event.start ? new Date(info.event.start) : null;
+        const formattedDateTime = startDate ? `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()}` : '';
+  
+        // Configure text
+        titleModal!.innerHTML = title;
+        thNamePatient!.innerHTML = info.event.title;
+        thDateTime!.innerHTML = formattedDateTime;
+        thNameDoctor!.innerHTML = info.event.extendedProps["doctor"];
+        thComment!.innerHTML = info.event.extendedProps["description"];
+  
+        // Modal Options
+        const options: ModalOptions = {
+          placement: 'bottom-right',
+          backdrop: 'dynamic',
+          backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+          closable: true,
+        };
+        
+        // Modal instance options
+        const instanceOptions: InstanceOptions = {
+          id: 'show-info-appointment',
+          override: true
+        };
+    
+        const modal: Modal = new Modal($targetEl, options, instanceOptions);
+    
+        modal.show();
+
+      } else {
+        console.error("One or more elements were not found in the DOM");
+      }
+      
+    }
+  };
+
+  smCalendarOptions: CalendarOptions = {
+    themeSystem: 'standard',
+    initialView: 'dayGridMonth',
+    plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
+    weekNumbers: true,
+    navLinks: true,
+    firstDay: 1,
+    nowIndicator: true,
+    locale: esLocale,
+    height: 725,
+    editable: false,
+    headerToolbar: {
+      start: 'prev,next today',
+      // center: 'title',
       end: 'dayGridMonth,timeGridWeek,timeGridDay',
     },
     titleFormat: {
