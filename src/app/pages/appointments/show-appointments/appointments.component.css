@@ -1,9 +1,0 @@
-.router-link-active {
-    background-color: white;
-    color: black;
-}
-
-.router-link-active:hover {
-    background-color: #854cff;
-    color: white;
-}
