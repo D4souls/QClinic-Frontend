@@ -8,8 +8,10 @@ import { Observable } from 'rxjs';
 export class ApiService {
 
   constructor(private httpclient: HttpClient) { }
-  port = '8080'
-  url = `http://localhost:${this.port}/`
+  port:number = 8080;
+  // ip: string = 'localhost';
+  ip: string = '192.168.0.142';
+  url = `http://${this.ip}:${this.port}/`
 
   login(dataToLogin: unknown): Observable<any>{
     return this.httpclient.post(this.url + 'login', dataToLogin);
