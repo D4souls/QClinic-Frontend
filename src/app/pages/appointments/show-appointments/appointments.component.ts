@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 
 // FULLCALENDAR MODULS
@@ -12,11 +11,13 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { CreateAppointmentComponent } from '../create-appointment/create-appointment.component';
+import { EditAppointmentComponent } from '../edit-appointment/edit-appointment.component';
 
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [FullCalendarModule, ReactiveFormsModule, RouterOutlet, RouterLinkActive, RouterLink],
+  imports: [FullCalendarModule, ReactiveFormsModule, CreateAppointmentComponent, EditAppointmentComponent],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.css',
 })
@@ -36,6 +37,7 @@ export class AppointmentsComponent implements OnInit {
   }
 
   calendarOptions: CalendarOptions = {
+    themeSystem: 'standard',
     initialView: 'dayGridMonth',
     plugins: [dayGridPlugin, timeGridPlugin, interactionPlugin],
     weekNumbers: true,
@@ -111,6 +113,50 @@ export class AppointmentsComponent implements OnInit {
       
     }
   };
+
+  newAppointment(): void {
+    const $targetEl = document.getElementById('new-appointment');
+  
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+      closable: true,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'new-appointment',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    modal.show();
+  }
+
+  editAppointment(): void {
+    const $targetEl = document.getElementById('edit-appointment');
+  
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+      closable: true,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'new-appointment',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl);
+
+    modal.show();
+  }
 
   hideModal(): void{
     // Get modal id
