@@ -1,10 +1,10 @@
-<div class="w-screen h-screen grid grid-cols-2">
-  <div id="mainDiv"></div>
-  <div class="flex flex-row items-center justify-center bg-white dark:bg-dark-main-bg">
+<div class="w-screen h-screen flex justify-center items-center md:grid md:grid-cols-2">
+  <img src="/assets/images/imageLogin.svg" alt="logoLogin" class="hidden md:block">
+  <div class="w-full h-screen flex flex-row items-center justify-center bg-white dark:bg-dark-main-bg">
     <form
       [formGroup]="formLogin"
       (ngSubmit)="login()"
-      class="flex flex-col gap-4 justify-center w-2/5 p-4 rounded-md"
+      class="w-full flex flex-col gap-4 justify-center md:w-2/5 p-4 rounded-md"
     >
       <img
         src="/assets/images/mini-logo.png"
