@@ -1,64 +1,64 @@
-<section
-  class="flex flex-col items-center justify-center py-4 overflow-hidden"
+<div
+  class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white"
 >
+  <span class="self-start font-bold text-2xl md:text-4xl">Patients</span>
+
   <form
-    class="bg-white p-4 rounded-md w-2/3 flex flex-col gap-2"
+    class="flex flex-col gap-2"
     [formGroup]="modifyPatientForm"
     (ngSubmit)="saveChanges()"
   >
     <!-- MAIN INFORMATION USER FORM -->
-
-    <h2 class="text-main-purple text-2xl font-normal">Personal information</h2>
-    <div class="grid grid-cols-3 grid-rows-2 gap-2">
-      <label for="patientDNI" class="flex flex-col justify-center text-sm">
-        DNI
+    <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
+      <label for="patientDNI" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">DNI*</span>
         <input
           type="text"
           id="patientDNI"
           placeholder="Enter patient's DNI here"
           formControlName="patientDNI"
           readonly
-          class="rounded-md outline-0 border border-gray-300 cursor-not-allowed"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
-      <label for="patientName" class="flex flex-col justify-center text-sm">
-        First name
+      <label for="patientName" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">First name*</span>
         <input
           type="text"
           id="patientName"
           placeholder="Enter patient's first name here"
           formControlName="patientName"
-          class="rounded-md outline-0 border border-gray-300"
-          [style.view-transition-name] ="'transition-patient-name-'+dniPatient"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          [style.view-transition-name]="'transition-patient-name-' + dniPatient"
         />
       </label>
-      <label for="patientLastname" class="flex flex-col justify-center text-sm">
-        Last name
+      <label for="patientLastname" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Last name*</span>
         <input
           type="text"
           id="patientLastname"
           placeholder="Enter patient's last name here"
           formControlName="patientLastname"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
-      <label for="patientPhone" class="flex flex-col justify-center text-sm">
-        Phone number
+      <label for="patientPhone" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Phone Number*</span>
         <input
           type="tel"
           id="patientPhone"
           placeholder="Enter patient's phone number here"
           formControlName="patientPhone"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
-      <label for="patientGender" class="flex flex-col justify-center text-sm">
-        Gender
+      <label for="patientGender" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Gender*</span>
         <select
           name="patientGender"
           id="patientGender"
           formControlName="patientGender"
-          class="rounded-md outline-0 border border-gray-300"
+          class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         >
           @if (dataPatient && dataPatient[0]){
           <option
@@ -78,13 +78,13 @@
           <option value="No binary">No binary</option>
         </select>
       </label>
-      <label for="patientDoctor" class="flex flex-col justify-center text-sm">
-        Doctor
+      <label for="patientDoctor" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Doctor*</span>
         <select
           name="patientDoctor"
           id="patientDoctor"
           formControlName="patientDoctor"
-          class="rounded-md outline-0 border border-gray-300"
+          class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         >
           @if (dataPatient && dataPatient[0]){
           <option
@@ -106,42 +106,39 @@
     </div>
 
     <!-- ADDITIONAL INFORMATION USER FROM -->
-
-    <h3 class="text-main-purple text-lg">Additional information</h3>
     <div class="grid grid-cols-2 grid-rows-1 gap-2">
-      <label for="patientEmail" class="flex flex-col justify-center text-sm">
-        Email
+      <label for="patientEmail" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Email</span>
         <input
           type="email"
           id="patientEmail"
           placeholder="Enter patient's mail here"
           formControlName="patientEmail"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
-      <label for="patientCity" class="flex flex-col justify-center text-sm">
-        City
+      <label for="patientCity" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">City</span>
         <input
           type="text"
           id="patientCity"
           placeholder="Enter patient's city here"
           formControlName="patientCity"
-          class="rounded-md outline-0 border border-gray-300"
-          [style.view-transition-name] ="'transition-patient-city-'+dniPatient"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          [style.view-transition-name]="'transition-patient-city-' + dniPatient"
         />
       </label>
     </div>
 
     <!-- FORM BUTTONS -->
-
     <div class="flex flex-row gap-4 items-center mt-7">
       <button
         type="submit"
         [disabled]="!modifyPatientForm.valid"
         class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
           !modifyPatientForm.valid
-            ? 'bg-main-purple/30 cursor-not-allowed'
-            : 'bg-main-purple cursor-pointer'
+            ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed'
+            : 'bg-main-purple dark:bg-gray-700 cursor-pointer'
         }}"
       >
         Save changes
@@ -156,11 +153,25 @@
       <button
         type="button"
         (click)="returnBack()"
-        class="ml-auto text-main-purple/80 font-semibold text-sm px-5 py-2.5 me-2 mb-2 hover:text-main-purple"
+        class="ml-auto text-main-purple/80 dark:text-white/90 font-semibold text-md px-5 py-2.5 me-2 mb-2 hover:text-main-purple"
       >
         <div class="flex flex-row items-center justify-center">
           <span>Return back</span>
-          <i class="bx bx-chevron-right bx-sm"></i>
+          <svg
+            class="rtl:rotate-180 w-3 h-3 mx-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
         </div>
       </button>
     </div>
@@ -168,30 +179,37 @@
     <hr class="w-full border border-gray-300" />
 
     <!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
-
     <div class="gap-4 flex flex-col justify-center">
-      <h3 class="text-main-purple text-2xl font-normal">Appointments</h3>
+      <h3 class="self-start font-bold text-md md:text-2xl">Appointments</h3>
       @if (appointmentsPatient.length > 0){
-      <table>
-        <tr class="border-b-2 border-b-gray-300">
-          <th>Date</th>
-          <th>Duration</th>
-          <th>Doctor</th>
-          <th>Payed</th>
-        </tr>
-        @for(dataAppointment of appointmentsPatient; track
-        appointmentsPatient.id){
-        <tr class="text-center hover:bg-main-purple/40">
-          <td class="px-2 py-3 rounded-l-lg">{{ dataAppointment.date }}</td>
-          <td class="px-2 py-3">1 hour</td>
-          <td class="px-2 py-3">
-            {{ dataAppointment.doctorFirstname }}
-            {{ dataAppointment.doctorLastname }}
-          </td>
-          <td class="px-2 py-3 rounded-r-lg">Yes</td>
-        </tr>
-        }
-      </table>
+
+        <table
+          class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
+        >
+          <thead
+            class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          >
+            <tr class="table-row">
+              <th scope="col" class="px-6 py-3 table-cell">Date</th>
+              <th scope="col" class="px-6 py-3 md:table-cell hidden">Duration</th>
+              <th scope="col" class="px-6 py-3">Doctor</th>
+              <th scope="col" class="px-6 py-3">Payed</th>
+            </tr>
+          </thead>
+          <tbody class="table-row-group">
+
+            @for(dataAppointment of appointmentsPatient; track appointmentsPatient.id){
+              <tr class="text-xs md:text-sm table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                <td scope="row"
+                class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">{{ dataAppointment.date }}</td>
+                <td class="px-6 py-4 md:table-cell hidden">1 hour</td>
+                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.doctorFirstname }} {{ dataAppointment.doctorLastname }}</td>
+                <td class="px-6 py-4">Yes</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+
       }@else {
       <div class="flex flex-row items-center justify-center">
         <img
@@ -204,4 +222,4 @@
       }
     </div>
   </form>
-</section>
+</div>
