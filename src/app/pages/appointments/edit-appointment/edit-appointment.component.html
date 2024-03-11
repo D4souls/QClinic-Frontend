@@ -1,104 +1,110 @@
 <form
-  class="bg-white p-4 rounded-md w-full flex flex-row flex-shrink items-center gap-2"
+  class="bg-white dark:bg-dark-main-bg p-4 rounded-md w-full flex flex-row flex-shrink items-center gap-2"
   [formGroup]="createAppointmentForm"
   (ngSubmit)="updateAppointment()"
 >
   <div class="flex flex-col w-full gap-2">
-
     <!-- APPOINTMENT DATA DATETIME  -->
-
-    <h2 class="text-main-purple text-2xl">Appointment date</h2>
-    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmit($event)" formGroupName="searchAppointment">
-      <label for="doctorSearch" class="flex flex-col justify-center text-md">
-        <input
-          type="date"
-          id="doctorSearch"
-          placeholder="Search doctor"
-          formControlName="date"
-          class="rounded-md outline-0 border border-gray-300"
-          #filterAppointments
-          (change)="getAppointments(filterAppointments.value)"
-        />
-      </label>
-      <label for="patientSelect" class="flex flex-col justify-center text-md">
-        <select
-          name="patientSelect"
-          id="patientSelect"
-          formControlName="selectAppointment"
-          class="rounded-md outline-0 border border-gray-300"
-          #filterPatient
-          (change)="loadData(filterPatient.value)"
+    <form (submit)="onSubmit($event)" formGroupName="searchAppointment">
+      <fieldset class="grid grid-cols-2 gap-2 w-full text-md">
+        <legend class="dark:text-white/90">Appointment*</legend>
+        <label
+          for="dateAppointment"
+          class="flex flex-col justify-center text-md"
         >
-          <option value="" disabled selected>Select appointment</option>
-          @for (appointment of dayAppointments; track dayAppointments[0]){
+          <input
+            type="date"
+            id="dateAppointment"
+            formControlName="date"
+            class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+            #filterAppointments
+            (change)="getAppointments(filterAppointments.value)"
+          />
+        </label>
+        <label for="patientSelect" class="flex flex-col justify-center text-md">
+          <select
+            name="patientSelect"
+            id="patientSelect"
+            formControlName="selectAppointment"
+            class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+            #filterPatient
+            (change)="loadData(filterPatient.value)"
+          >
+            <option value="" disabled selected>Select appointment</option>
+            @for (appointment of dayAppointments; track dayAppointments[0]){
             <option value="{{ appointment.id }}">
-              {{ appointment.patientFirstname }} {{ appointment.patientLastname }}
+              {{ appointment.patientFirstname }}
+              {{ appointment.patientLastname }}
             </option>
-          }
-        </select>
-      </label>
+            }
+          </select>
+        </label>
+      </fieldset>
     </form>
 
     <!-- APPOINTMENT DATA PATIENT -->
-
-    <h2 class="text-main-purple text-xl">Appointment information</h2>
     <div class="grid grid-cols-1 gap-2 w-full">
-      <label for="patientSearch" class="flex flex-col justify-center text-md">
+      <label for="patientName" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Patient</span>
         <input
           type="text"
-          id="patientSearch"
+          id="patientName"
           placeholder="Search patient"
           formControlName="patientName"
-          class="rounded-md outline-0 border border-gray-300 cursor-not-allowed"
+          class="text-gray-700/70 cursor-not-allowed border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
           readonly
         />
       </label>
     </div>
 
     <!-- APPOINTMENT DATA DOCTOR -->
+    <form (submit)="onSubmit($event)" formGroupName="searchDataDoctorForm">
+      <fieldset class="grid grid-cols-2 gap-2 w-full text-md">
+        <legend class="dark:text-white/90">Doctor*</legend>
+        <label for="doctorSearch" class="flex flex-col justify-center text-md">
+          <input
+            type="text"
+            id="doctorSearch"
+            placeholder="Search doctor"
+            formControlName="dataToSearch"
+            #filterDoctor
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+            (change)="filterDoctors(filterDoctor.value)"
+          />
+        </label>
 
-    <h2 class="text-main-purple text-xl">Doctor information</h2>
-    <form class="grid grid-cols-2 gap-2 w-full" (submit)="onSubmit($event)" formGroupName="searchDataDoctorForm">
-      <label for="doctorSearch" class="flex flex-col justify-center text-md">
-        <input
-          type="text"
-          id="doctorSearch"
-          placeholder="Search doctor"
-          formControlName="dataToSearch"
-          #filterDoctor
-          class="rounded-md outline-0 border border-gray-300"
-          (change)="filterDoctors(filterDoctor.value)"
-        />
-      </label>
-
-      <label for="doctorSelect" class="flex flex-col justify-center text-md">
-        <select
-          name="doctorSelect"
-          id="doctorSelect"
-          formControlName="dataSelect"
-          class="rounded-md outline-0 border border-gray-300"
-        >
-          <option value="" disabled selected>Select doctor</option>
-          @for (doctor of filteredDoctor; track filteredDoctor[0].dni){
+        <label for="doctorSelect" class="flex flex-col justify-center text-md">
+          <select
+            name="doctorSelect"
+            id="doctorSelect"
+            formControlName="dataSelect"
+            class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          >
+            <option value="" disabled selected>Select doctor</option>
+            @for (doctor of filteredDoctor; track filteredDoctor[0].dni){
             <option value="{{ doctor.dni }}">
               {{ doctor.firstname }} {{ doctor.lastname }}
             </option>
-          }
-        </select>
-      </label>
+            }
+          </select>
+        </label>
+      </fieldset>
     </form>
 
     <!-- APPOINTMENT COMMENT  -->
-
-    <h2 class="text-main-purple text-xl">Appointment comment</h2>
     <div class="grid grid-cols-1 gap-2">
-      <label for="doctorSearch" class="flex flex-col justify-center text-md">
+      <label
+        for="appointmentComment"
+        class="flex flex-col justify-center text-md"
+      >
+        <span class="dark:text-white/90"> Comment* </span>
         <input
+          required
           type="text"
-          id="doctorSearch"
+          id="appointmentComment"
           placeholder="Reason for appointment"
           formControlName="appointmentComment"
-          class="rounded-md outline-0 border border-gray-300"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
     </div>
@@ -111,8 +117,8 @@
         [disabled]="!createAppointmentForm.valid"
         class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
           !createAppointmentForm.valid
-            ? 'bg-main-purple/30 cursor-not-allowed'
-            : 'bg-main-purple cursor-pointer'
+            ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed'
+            : 'bg-main-purple dark:bg-gray-700 cursor-pointer'
         }}"
       >
         Update
@@ -128,6 +134,13 @@
         }}"
       >
         Delete
+      </button>
+      <button
+        type="button"
+        (click)="returnBack()"
+        class="ml-auto focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+      >
+        Cancel
       </button>
     </div>
   </div>
