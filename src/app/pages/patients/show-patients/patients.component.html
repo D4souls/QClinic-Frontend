@@ -4,7 +4,7 @@
   @if (data.length > 0){
   <div class="flex flex-col gap-4">
     <div class="flex flex-row">
-      <span class="font-bold text-4xl">Patients</span>
+      <span class="font-bold text-2xl md:text-4xl">Patients</span>
       <button
         
         class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
@@ -65,7 +65,6 @@
         cantPatientsPerPage, currentPage: pagination, totalItems: allPatients};
         track filteredPatient[0].dni){
         <tr
-          (click)="modifyPatient(patient.dni)"
           class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
         >
           <th
