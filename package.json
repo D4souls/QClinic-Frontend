@@ -25,6 +25,7 @@
     "@fullcalendar/interaction": "^6.1.10",
     "@fullcalendar/timegrid": "^6.1.10",
     "@midudev/tailwind-animations": "^0.0.7",
+    "@splinetool/runtime": "^1.0.94",
     "bootstrap": "^5.3.2",
     "bootstrap-icons": "^1.11.3",
     "boxicons": "^2.1.4",

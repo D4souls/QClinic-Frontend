@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavBarComponent } from './nav-bar/nav-bar.component';
 import { initFlowbite } from 'flowbite';
+import { AssistantComponent } from './assistant/assistant.component';
 
 @Component({
   selector: 'app-pages',
   standalone: true,
-  imports: [RouterOutlet, NavBarComponent],
+  imports: [RouterOutlet, NavBarComponent, AssistantComponent],
   templateUrl: './pages.component.html',
   // styleUrl: './pages.component.css'
 })
