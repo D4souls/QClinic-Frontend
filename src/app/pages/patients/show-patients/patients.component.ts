@@ -18,7 +18,7 @@ import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 })
 export class PatientsComponent implements OnInit {
   data: patientsInterfaces[] = [];
-  filteredPatient: patientsInterfaces[] = [];
+  filteredPatient: any[] = [];
 
   allPatients: number = 0;
   pagination: number = 1;

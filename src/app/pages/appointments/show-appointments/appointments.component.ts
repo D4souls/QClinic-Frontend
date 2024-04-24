@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ApiService } from '../../../core/services/api.service';
+import { forkJoin, Observable } from 'rxjs';
 
 // FULLCALENDAR MODULS
 import { FullCalendarModule } from '@fullcalendar/angular';
@@ -17,13 +18,17 @@ import { EditAppointmentComponent } from '../edit-appointment/edit-appointment.c
 @Component({
   selector: 'app-appointments',
   standalone: true,
-  imports: [FullCalendarModule, ReactiveFormsModule, CreateAppointmentComponent, EditAppointmentComponent],
+  imports: [
+    FullCalendarModule,
+    ReactiveFormsModule,
+    CreateAppointmentComponent,
+    EditAppointmentComponent,
+  ],
   templateUrl: './appointments.component.html',
   styleUrl: './appointments.component.css',
 })
 export class AppointmentsComponent implements OnInit {
-
-  constructor(private apiGetPatient: ApiService){}
+  constructor(private apiGetPatient: ApiService) {}
 
   calendarEvents: any[] = [];
 
@@ -32,13 +37,13 @@ export class AppointmentsComponent implements OnInit {
     setTimeout(() => {
       this.mdCalendarOptions = {
         events: this.calendarEvents,
-      }
-    }, 1);
+      };
+    }, 225);
 
     setTimeout(() => {
       this.smCalendarOptions = {
         events: this.calendarEvents,
-      }
+      };
     }, 1);
   }
 
@@ -61,16 +66,15 @@ export class AppointmentsComponent implements OnInit {
     titleFormat: {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     },
     dayMaxEventRows: true,
     views: {
       timeGrid: {
-        dayMaxEventRows: 4
-      }
+        dayMaxEventRows: 4,
+      },
     },
     eventClick(info: EventClickArg) {
-
       // Get all modal parameters to put data
       const $targetEl = document.getElementById('show-info-appointment');
       const titleModal = document.getElementById('modal-header');
@@ -79,22 +83,30 @@ export class AppointmentsComponent implements OnInit {
       const thNameDoctor = document.getElementById('th-nameDoctor');
       const thComment = document.getElementById('th-comment');
 
-      if ($targetEl && titleModal && thNamePatient && thDateTime && thNameDoctor && thComment){
-
+      if (
+        $targetEl &&
+        titleModal &&
+        thNamePatient &&
+        thDateTime &&
+        thNameDoctor &&
+        thComment
+      ) {
         // Format title
         const title = `Info appointment #${info.event.id}`;
-        
+
         // Format dateTime
         const startDate = info.event.start ? new Date(info.event.start) : null;
-        const formattedDateTime = startDate ? `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()}` : '';
-  
+        const formattedDateTime = startDate
+          ? `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()}`
+          : '';
+
         // Configure text
         titleModal!.innerHTML = title;
         thNamePatient!.innerHTML = info.event.title;
         thDateTime!.innerHTML = formattedDateTime;
-        thNameDoctor!.innerHTML = info.event.extendedProps["doctor"];
-        thComment!.innerHTML = info.event.extendedProps["description"];
-  
+        thNameDoctor!.innerHTML = info.event.extendedProps['doctor'];
+        thComment!.innerHTML = info.event.extendedProps['description'];
+
         // Modal Options
         const options: ModalOptions = {
           placement: 'bottom-right',
@@ -102,22 +114,20 @@ export class AppointmentsComponent implements OnInit {
           backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
           closable: true,
         };
-        
+
         // Modal instance options
         const instanceOptions: InstanceOptions = {
           id: 'show-info-appointment',
-          override: true
+          override: true,
         };
-    
-        const modal: Modal = new Modal($targetEl, options, instanceOptions);
-    
-        modal.show();
 
+        const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+        modal.show();
       } else {
-        console.error("One or more elements were not found in the DOM");
+        console.error('One or more elements were not found in the DOM');
       }
-      
-    }
+    },
   };
 
   smCalendarOptions: CalendarOptions = {
@@ -139,16 +149,15 @@ export class AppointmentsComponent implements OnInit {
     titleFormat: {
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
     },
     dayMaxEventRows: true,
     views: {
       timeGrid: {
-        dayMaxEventRows: 4
-      }
+        dayMaxEventRows: 4,
+      },
     },
     eventClick(info: EventClickArg) {
-
       // Get all modal parameters to put data
       const $targetEl = document.getElementById('show-info-appointment');
       const titleModal = document.getElementById('modal-header');
@@ -157,22 +166,30 @@ export class AppointmentsComponent implements OnInit {
       const thNameDoctor = document.getElementById('th-nameDoctor');
       const thComment = document.getElementById('th-comment');
 
-      if ($targetEl && titleModal && thNamePatient && thDateTime && thNameDoctor && thComment){
-
+      if (
+        $targetEl &&
+        titleModal &&
+        thNamePatient &&
+        thDateTime &&
+        thNameDoctor &&
+        thComment
+      ) {
         // Format title
         const title = `Info appointment #${info.event.id}`;
-        
+
         // Format dateTime
         const startDate = info.event.start ? new Date(info.event.start) : null;
-        const formattedDateTime = startDate ? `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()}` : '';
-  
+        const formattedDateTime = startDate
+          ? `${startDate.toLocaleDateString()} ${startDate.toLocaleTimeString()}`
+          : '';
+
         // Configure text
         titleModal!.innerHTML = title;
         thNamePatient!.innerHTML = info.event.title;
         thDateTime!.innerHTML = formattedDateTime;
-        thNameDoctor!.innerHTML = info.event.extendedProps["doctor"];
-        thComment!.innerHTML = info.event.extendedProps["description"];
-  
+        thNameDoctor!.innerHTML = info.event.extendedProps['doctor'];
+        thComment!.innerHTML = info.event.extendedProps['description'];
+
         // Modal Options
         const options: ModalOptions = {
           placement: 'bottom-right',
@@ -180,27 +197,25 @@ export class AppointmentsComponent implements OnInit {
           backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
           closable: true,
         };
-        
+
         // Modal instance options
         const instanceOptions: InstanceOptions = {
           id: 'show-info-appointment',
-          override: true
+          override: true,
         };
-    
-        const modal: Modal = new Modal($targetEl, options, instanceOptions);
-    
-        modal.show();
 
+        const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+        modal.show();
       } else {
-        console.error("One or more elements were not found in the DOM");
+        console.error('One or more elements were not found in the DOM');
       }
-      
-    }
+    },
   };
 
   newAppointment(): void {
     const $targetEl = document.getElementById('new-appointment');
-  
+
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
@@ -208,11 +223,11 @@ export class AppointmentsComponent implements OnInit {
       backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
       closable: true,
     };
-    
+
     // Modal instance options
     const instanceOptions: InstanceOptions = {
       id: 'new-appointment',
-      override: true
+      override: true,
     };
 
     const modal: Modal = new Modal($targetEl, options, instanceOptions);
@@ -222,7 +237,7 @@ export class AppointmentsComponent implements OnInit {
 
   editAppointment(): void {
     const $targetEl = document.getElementById('edit-appointment');
-  
+
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
@@ -230,11 +245,11 @@ export class AppointmentsComponent implements OnInit {
       backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
       closable: true,
     };
-    
+
     // Modal instance options
     const instanceOptions: InstanceOptions = {
       id: 'new-appointment',
-      override: true
+      override: true,
     };
 
     const modal: Modal = new Modal($targetEl);
@@ -242,10 +257,10 @@ export class AppointmentsComponent implements OnInit {
     modal.show();
   }
 
-  hideModal(): void{
+  hideModal(): void {
     // Get modal id
     const $targetEl = document.getElementById('show-info-appointment');
-  
+
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
@@ -253,41 +268,64 @@ export class AppointmentsComponent implements OnInit {
       backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
       closable: true,
     };
-    
+
     // Modal instance options
     const instanceOptions: InstanceOptions = {
       id: 'show-info-appointment',
-      override: true
+      override: true,
     };
 
     const modal: Modal = new Modal($targetEl, options, instanceOptions);
-  
+
     modal.hide();
-
   }
-
 
   getAppointments(): void {
-
     const token = localStorage.getItem('token')!;
-
-    this.apiGetPatient.getAppointments(token).subscribe((data: any) => {
-      const dataEvent = data.data.map((appointments: any) => {
-        return {
-          id: appointments.id,
-          title: `${appointments.patientFirstname} ${appointments.patientLastname}`,
-          start: appointments.date,
-          extendedProps: {
-            description: appointments.comment,
-            doctor: `${appointments.doctorFirstname} ${appointments.doctorLastname}`
+  
+    this.apiGetPatient.getAppointments(token).subscribe((appointmentsData: any) => {
+      // console.log(appointmentsData);
+      if (appointmentsData) {
+        const appointmentsObservables: Observable<any>[] = [];
+  
+        appointmentsData.forEach((appointment: any) => {
+          
+          const patientData$ = this.apiGetPatient.getPatientData({ dni: appointment.assignedPatient, token });
+  
+          const doctorData$ = this.apiGetPatient.getDoctorByDNI({ dni: appointment.assignedDoctor, token });
+  
+          appointmentsObservables.push(patientData$);
+          appointmentsObservables.push(doctorData$);
+        });
+  
+        forkJoin(appointmentsObservables).subscribe((results: any[]) => {
+          const calendarEvents: any[] = [];
+  
+          for (let i = 0; i < results.length; i += 2) {
+            const patientData = results[i];
+            const doctorData = results[i + 1];
+            const appointment = appointmentsData[i / 2];
+  
+            const event = {
+              id: appointment.id,
+              title: `${patientData.firstname} ${patientData.lastname}`,
+              start: appointment.appointmentDate,
+              extendedProps: {
+                description: appointment.comment,
+                doctor: `${doctorData.firstname} ${doctorData.lastname}`
+              }
+            };
+  
+            calendarEvents.push(event);
           }
-        };
-      });
-      
-      this.calendarEvents = dataEvent;
-
-      // console.log(dataEvent);
-
-    })
+  
+          // console.log(calendarEvents);
+          this.calendarEvents = calendarEvents;
+        }, (error) => {
+          console.error('Error retrieving appointment data:', error);
+        });
+      }
+    });
   }
+  
 }

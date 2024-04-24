@@ -8,10 +8,10 @@ import { Observable } from 'rxjs';
 export class ApiService {
 
   constructor(private httpclient: HttpClient) { }
-  port:number = 8080;
-  // ip: string = 'localhost';
-  ip: string = '192.168.0.142';
-  url = `http://${this.ip}:${this.port}/`
+  port: number = 5172;
+  ip: string = 'localhost';
+  ip2: string = '192.168.0.142';
+  url = `http://${this.ip}:${this.port}/api/`
 
   login(dataToLogin: unknown): Observable<any>{
     return this.httpclient.post(this.url + 'login', dataToLogin);
@@ -22,7 +22,7 @@ export class ApiService {
   configureAuthHeader(token: string){
     const httpOptions = {
       headers: new HttpHeaders({
-        'Authorization': token
+        'Authorization': `Bearer ${token}`
       })
     }
 
@@ -30,35 +30,40 @@ export class ApiService {
   }
 
   getPatients(data: any): Observable<any>{
-    return this.httpclient.get(this.url + 'patients' + '?page=' + data.pagination, this.configureAuthHeader(data.token));
+    // return this.httpclient.get(this.url + 'patient' + '?page=' + data.pagination, /*this.configureAuthHeader(data.token)*/);
+    return this.httpclient.get(this.url + 'patient', this.configureAuthHeader(data.token));
   }
 
   getPatientData(data: any): Observable<any>{
-    return this.httpclient.get(this.url + `patient/${data.dni}`, this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `patient-info/${data.dni}`, this.configureAuthHeader(data.token));
   }  
 
   deletePatient(data: any): Observable<any> {
-    return this.httpclient.delete(this.url + `delete-patient/${data.dni}`, this.configureAuthHeader(data.token));
+    return this.httpclient.delete(this.url + `patient-delete/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
   createPatient(data: any): Observable<any> {
-    return this.httpclient.post(this.url + 'create-patient', data.patientData, this.configureAuthHeader(data.token));
+    return this.httpclient.post(this.url + 'patient-create', data.patientData, this.configureAuthHeader(data.token));
   }
 
   modifyPatient(data: any): Observable<any> {
-    return this.httpclient.post(this.url + 'modify-patient', data.patientData, this.configureAuthHeader(data.token));
+    return this.httpclient.put(this.url + 'patient-update', data.patientData, this.configureAuthHeader(data.token));
   }
 
   getDoctors(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'doctors', this.configureAuthHeader(token));
+    return this.httpclient.get(this.url + 'doctor', this.configureAuthHeader(token));
+  }
+
+  getDoctorByDNI(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-info/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
   getAppointments(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'appointments', this.configureAuthHeader(token));
+    return this.httpclient.get(this.url + 'appointment', this.configureAuthHeader(token));
   }
 
   createAppointments(data: any): Observable<any> {
-    return this.httpclient.post(this.url + 'create-appointment', data.appointmentData, this.configureAuthHeader(data.token));
+    return this.httpclient.post(this.url + 'appointment-create', data.appointmentData, this.configureAuthHeader(data.token));
   }
 
   getUserAppointments(data: any): Observable<any> {

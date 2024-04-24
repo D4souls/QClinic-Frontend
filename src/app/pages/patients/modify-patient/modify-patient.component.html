@@ -78,6 +78,10 @@
           <option value="No binary">No binary</option>
         </select>
       </label>
+
+
+
+      <!-- DOCTOR PART -->
       <label for="patientDoctor" class="flex flex-col justify-center text-md">
         <span class="dark:text-white/90">Doctor*</span>
         <select
@@ -86,13 +90,13 @@
           formControlName="patientDoctor"
           class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         >
-          @if (dataPatient && dataPatient[0]){
+          @if (dataPatient.assigneddoctor && dataDoctor){
           <option
-            value="{{ dataPatient[0].assignedDoctor }}"
+            value="{{ dataPatient.assigneddoctor }}"
             [selected]="true"
             class="text-gray-300"
           >
-            {{ dataPatient[0].doctorName }} {{ dataPatient[0].doctorLastname }}
+            {{ dataDoctor.doctorName }} {{ dataDoctor.doctorLastname }}
           </option>
           }@else{
           <option value="" disabled selected>Select Doctor</option>

@@ -26,7 +26,11 @@ export class ModifyPatientComponent implements OnInit {
 
   doctors: any = [];
 
+  dataDoctor: any = [];
+
   appointmentsPatient: any = [];
+
+  token = localStorage.getItem('token');
 
   constructor(
     private router: Router,
@@ -71,29 +75,59 @@ export class ModifyPatientComponent implements OnInit {
 
   getDataPatient(dniToFind: string){
 
-    const data = {
+    let patientData = {
       token: localStorage.getItem('token'),
       dni: dniToFind
     }
-
-    this.apiService.getPatientData(data).subscribe((data: patientsInterfaces[]) => {
-
-      if(data && data.length > 0){
-        this.dataPatient = data;
-
+  
+    this.apiService.getPatientData(patientData).subscribe((patientResponse: any) => {
+      if(patientResponse){
+        this.dataPatient = patientResponse;
+  
         this.modifyPatientForm.patchValue({
-          patientDNI: this.dataPatient[0].dni,
-          patientName: this.dataPatient[0].firstname,
-          patientLastname: this.dataPatient[0].lastname,
-          patientCity: this.dataPatient[0].city,
-          patientPhone: this.dataPatient[0].phone,
-          patientEmail: this.dataPatient[0].email,
-          patientGender: this.dataPatient[0].gender,
-          patientDoctor: this.dataPatient[0].assignedDoctor
+          patientDNI: this.dataPatient.dni,
+          patientName: this.dataPatient.firstname,
+          patientLastname: this.dataPatient.lastname,
+          patientCity: this.dataPatient.city,
+          patientPhone: this.dataPatient.phone,
+          patientEmail: this.dataPatient.email,
+          patientGender: this.dataPatient.gender,
+          patientDoctor: this.dataPatient.assigneddoctor != null ? this.dataPatient.assigneddoctor : null,
         });
-      }
+        
+        if (this.dataPatient.assigneddoctor){
+          let doctorData = {
+            dni: this.dataPatient.assigneddoctor,
+            token: this.token
+          }
+    
+          this.apiService.getDoctorByDNI(doctorData).subscribe((doctorResponse: any) => {
+            if(doctorResponse) {
+              // console.log(doctorResponse);
+    
+              const doctorInfo = {
+                doctorName: doctorResponse.firstname,
+                doctorLastname: doctorResponse.lastname
+              };
+    
+              this.dataDoctor = doctorInfo;
+              // console.log(this.dataDoctor);
+            }
+          });
+        }
 
-    })
+  
+      }
+    });
+  }
+
+  getDoctors(){
+    this.apiService.getDoctors(this.token!).subscribe((data: any) => {
+      if (data){
+        this.doctors = data;
+        // console.log(this.doctors);
+      }
+    });
   }
 
   getPatientAppointments(dni: string) {
@@ -109,21 +143,6 @@ export class ModifyPatientComponent implements OnInit {
     })
   }
 
-  getDoctors(){
-
-    const token = localStorage.getItem('token')!;
-
-    this.apiService.getDoctors(token).subscribe((data: any) => {
-
-      if (data.success){
-        this.doctors = data.data
-        // console.log(this.doctors);
-      } else {
-        console.log(data);
-      }
-
-    })
-  }
 
   returnBack(){
     this.router.navigate(['/patients']);
@@ -146,10 +165,12 @@ export class ModifyPatientComponent implements OnInit {
         gender: this.modifyPatientForm.value.patientGender,
         city: formattedCity,
         email: this.modifyPatientForm.value.patientEmail,
-        assignedDoctor: this.modifyPatientForm.value.patientDoctor,
         phone: this.modifyPatientForm.value.patientPhone,
+        assigneddoctor: this.modifyPatientForm.value.patientDoctor,
       }
     }
+
+    // console.log(data);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -164,7 +185,7 @@ export class ModifyPatientComponent implements OnInit {
           (data: any) => {
             // console.log(data);
 
-            if (data.message) {
+            if (data) {
               Swal.fire({
                 text: 'Changes saved!',
                 icon: 'success',
@@ -222,10 +243,10 @@ export class ModifyPatientComponent implements OnInit {
           (data: any) => {
             // console.log(data);
 
-            if (data.message) {
+            if (data) {
               Swal.fire({
                 icon: 'success',
-                text: data.message,
+                text: data.msn,
                 toast: true,
                 showConfirmButton: false,
                 timer: 3000,

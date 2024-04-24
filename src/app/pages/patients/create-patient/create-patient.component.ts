@@ -104,9 +104,14 @@ export class CreatePatientComponent implements OnInit {
       }
     };
 
+    if (data.patientData.email === '') data.patientData.email = null;
+    if (data.patientData.city === '') data.patientData.city = null;
+
+    // console.log(data.patientData);
+
     this.apiPatient.createPatient(data).subscribe(
       (response: any) => {
-        if (response.message) {
+        if (response) {
           Swal.fire({
             text: 'Patient created!',
             icon: 'success',
@@ -118,7 +123,7 @@ export class CreatePatientComponent implements OnInit {
           });
 
           setTimeout(() => {
-            this.router.navigate(['/patients']);
+            this.returnBack();
           }, 3000);     
 
         } else {
@@ -147,9 +152,9 @@ export class CreatePatientComponent implements OnInit {
     const token = localStorage.getItem('token')!;
 
     this.apiPatient.getDoctors(token).subscribe((data: any) => {
-      if (data.success) {
-        this.doctors = data.data;
-        // console.log(this.doctors);
+      if (data) {
+        this.doctors = data;
+        console.log(this.doctors);
       } else {
         console.log(data);
       }

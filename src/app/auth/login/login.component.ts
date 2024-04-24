@@ -28,17 +28,27 @@ export class LoginComponent implements OnInit{
   login(): void{
 
     const dataLogin = {
-      user: this.formLogin.value.username,
-      password: this.formLogin.value.password,
+      username: this.formLogin.value.username,
+      passwd: this.formLogin.value.password
     }
 
     // console.log(dataLogin);
 
     this.api.login(dataLogin).subscribe((data: any) => {
-      if (!data.token) {
-        alert("Password or")
+      // console.log(data);
+      if (data.status != 200) {
+        Swal.fire({
+          timer: 4000,
+          position: "bottom",
+          timerProgressBar: true,
+          showConfirmButton: false,
+          text: 'Password or username invalid...',
+          icon: 'error',
+          toast: true
+        })
+
       } else {
-        localStorage.setItem('token', data.token);
+        localStorage.setItem('token', data.msn);
         this.router.navigate(['/']);
       }
     }, (error: any) =>{
