@@ -20,7 +20,7 @@ export class DoctorsComponent {
   alldoctors: number = 0;
   pagination: number = 1;
 
-  cantdoctorsPerPage: number = 7;
+  cantdoctorsPerPage: number = 6;
 
   token = localStorage.getItem('token');
 
@@ -51,6 +51,14 @@ export class DoctorsComponent {
 
   modifydoctor(dni: string): void {
     this.router.navigate(['/doctors/modify-doctor', dni]);
+  }
+
+  redirectToDoctorType(): void {
+    this.router.navigate(['/doctors/specializations']);
+  }
+
+  redirectToSchedules(): void {
+    this.router.navigate(['/doctors/schedules']);
   }
 
   newdoctor(): void {

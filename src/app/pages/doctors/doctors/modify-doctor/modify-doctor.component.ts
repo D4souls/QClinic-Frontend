@@ -50,7 +50,7 @@ export class ModifyDoctorComponent implements OnInit {
     })
   }
 
-  modifyDoctorTypeForm = new FormGroup({
+  modifyDoctorScheduleForm = new FormGroup({
     doctorDNI: new FormControl('', [
       Validators.required,
       dniValidator
@@ -84,7 +84,7 @@ export class ModifyDoctorComponent implements OnInit {
       if(doctorResponse){
         this.dataDoctor = doctorResponse;
   
-        this.modifyDoctorTypeForm.patchValue({
+        this.modifyDoctorScheduleForm.patchValue({
           doctorDNI: this.dataDoctor.dni,
           doctorName: this.dataDoctor.firstname,
           doctorLastname: this.dataDoctor.lastname,
@@ -95,18 +95,18 @@ export class ModifyDoctorComponent implements OnInit {
         });
 
         if (this.dataDoctor.doctorType != null){
-          this.modifyDoctorTypeForm.patchValue({
+          this.modifyDoctorScheduleForm.patchValue({
             doctorType: this.dataDoctor.doctorType
           });
         }
 
         if (this.dataDoctor.doctorSchedule != null){
-          this.modifyDoctorTypeForm.patchValue({
+          this.modifyDoctorScheduleForm.patchValue({
             doctorSchedule: this.dataDoctor.doctorSchedule
           });
         }
 
-        console.log(this.modifyDoctorTypeForm.value.doctorSchedule);
+        console.log(this.modifyDoctorScheduleForm.value.doctorSchedule);
         
         if (doctorResponse.doctorType != null){
           let doctorTypeData = {
@@ -197,23 +197,23 @@ export class ModifyDoctorComponent implements OnInit {
   saveChanges(): void {
 
     // FORMAT DATA doctor
-    const formattedName = this.formatForm.formatTextToUpper(this.modifyDoctorTypeForm.value.doctorName!);
-    const formattedLastName = this.formatForm.formatTextToUpper(this.modifyDoctorTypeForm.value.doctorLastname!);
-    const formattedCity = this.modifyDoctorTypeForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyDoctorTypeForm.value.doctorCity!) : this.modifyDoctorTypeForm.value.doctorCity;
+    const formattedName = this.formatForm.formatTextToUpper(this.modifyDoctorScheduleForm.value.doctorName!);
+    const formattedLastName = this.formatForm.formatTextToUpper(this.modifyDoctorScheduleForm.value.doctorLastname!);
+    const formattedCity = this.modifyDoctorScheduleForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyDoctorScheduleForm.value.doctorCity!) : this.modifyDoctorScheduleForm.value.doctorCity;
 
 
     const data = {
       token: localStorage.getItem('token'),
       doctorData: {
-        dni: this.modifyDoctorTypeForm.value.doctorDNI,
+        dni: this.modifyDoctorScheduleForm.value.doctorDNI,
         firstname: formattedName,
         lastname: formattedLastName,
-        gender: this.modifyDoctorTypeForm.value.doctorGender,
+        gender: this.modifyDoctorScheduleForm.value.doctorGender,
         city: formattedCity,
-        email: this.modifyDoctorTypeForm.value.doctorEmail,
-        phone: this.modifyDoctorTypeForm.value.doctorPhone,
-        doctorTye: this.modifyDoctorTypeForm.value.doctorType,
-        doctorSchedule: this.modifyDoctorTypeForm.value.doctorSchedule
+        email: this.modifyDoctorScheduleForm.value.doctorEmail,
+        phone: this.modifyDoctorScheduleForm.value.doctorPhone,
+        doctorTye: this.modifyDoctorScheduleForm.value.doctorType,
+        doctorSchedule: this.modifyDoctorScheduleForm.value.doctorSchedule
       }
     }
 
@@ -283,7 +283,7 @@ export class ModifyDoctorComponent implements OnInit {
 
         const data = {
           token: localStorage.getItem('token'),
-          dni: this.modifyDoctorTypeForm.value.doctorDNI!
+          dni: this.modifyDoctorScheduleForm.value.doctorDNI!
         }
 
         this.apiService.deleteDoctor(data).subscribe(

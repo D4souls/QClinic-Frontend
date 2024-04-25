@@ -1,0 +1,81 @@
+<form
+  class="p-4 rounded-md flex flex-col md:flex-row flex-shrink items-center gap-4"
+  [formGroup]="createScheduleForm"
+  (ngSubmit)="createDoctor()"
+>
+  <!-- UPLOAD USER'S AVATAR -->
+  <!--   
+   <div class="flex items-center justify-center order-2 absolute top-24 right-72">
+    <label for="doctorAvatar" class="flex flex-col items-center justify-center h-32 w-32 border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 relative overflow-hidden">
+        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+            <svg class="w-4 h-4 mb-1 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+            </svg>
+            <p class="mb-2 text-xs text-gray-500 font-semibold">Click to upload</p>
+        </div>
+        <input id="doctorAvatar" type="file" class="hidden z-10" formControlName="doctorAvatar" (change)="filePreview($event)"/>
+        <img [src]="previewAvatar" class="absolute z-0 rounded-full object-cover">
+    </label>
+  </div> -->
+
+  <!-- INFORMATION CONTAINER -->
+
+  <div class="flex flex-col order-1 w-full gap-4">
+    <!-- MAIN INFORMATION USER FORM -->
+    <div class="grid grid-rows-2 md:grid-cols-2 gap-2">
+      <label for="scheduleName" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Name*</span>
+        <input
+          type="text"
+          id="scheduleName"
+          placeholder="Enter doctor's first name here"
+          formControlName="scheduleName"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+        />
+      </label>
+
+      <label for="doctorLastname" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Schedule start</span>
+        <input
+          type="time"
+          name="scheduleStart"
+          id="scheduleStart"
+          formControlName="scheduleStart"
+        />
+      </label>
+
+      <label for="doctorLastname" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Schedule end</span>
+        <input
+          type="time"
+          name="scheduleEnd"
+          id="scheduleEnd"
+          formControlName="scheduleEnd"
+        />
+      </label>
+    </div>
+
+    <!-- FORM BUTTONS -->
+
+    <div class="flex flex-row gap-4 items-center mt-7">
+      <button
+        type="submit"
+        [disabled]="!createScheduleForm.valid"
+        class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
+          !createScheduleForm.valid
+            ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed'
+            : 'bg-main-purple dark:bg-gray-700 cursor-pointer'
+        }}"
+      >
+        Create
+      </button>
+      <button
+        type="button"
+        (click)="returnBack()"
+        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+</form>

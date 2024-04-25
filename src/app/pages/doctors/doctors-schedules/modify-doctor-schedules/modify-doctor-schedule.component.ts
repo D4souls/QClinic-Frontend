@@ -1,27 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ApiService } from '../../../core/services/api.service';
+import { ApiService } from '../../../../core/services/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { phoneNumberValidator } from '../../../shared/validators/phone.validator';
-import { dniValidator } from '../../../shared/validators/dni.validator';
+import { phoneNumberValidator } from '../../../../shared/validators/phone.validator';
+import { dniValidator } from '../../../../shared/validators/dni.validator';
 
-import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
-import { textValidator } from '../../../shared/validators/text.validator';
+import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
+import { textValidator } from '../../../../shared/validators/text.validator';
+import { dateTimeValidator } from '../../../../shared/validators/dateTime.validator';
 
 @Component({
-  selector: 'app-modify-doctor',
+  selector: 'app-modify-doctor-schedule',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './modify-doctor.component.html',
-  styleUrl: './modify-doctor.component.css',
+  templateUrl: './modify-doctor-schedule.component.html',
+  styleUrl: './modify-doctor-schedule.component.css',
 })
-export class ModifyDoctorComponent implements OnInit {
+export class ModifyDoctorScheduleComponent implements OnInit {
 
   datadoctor: any = [];
 
-  dnidoctor: string = '';
+  idSchedule: string = '';
 
   doctors: any = [];
 
@@ -42,116 +43,61 @@ export class ModifyDoctorComponent implements OnInit {
 
     this.activatedRouter.params.subscribe(req => {
 
-      this.dnidoctor = req['dniDoctor'];
+      this.idSchedule = req['idSchedule'];
 
-      this.getDataDoctor(this.dnidoctor);
-      this.getDoctors();
+      this.getDataSchedule(this.idSchedule);
     })
   }
 
-  modifyDoctorForm = new FormGroup({
-    doctorDNI: new FormControl('', [
-      Validators.required,
-      dniValidator
-    ]),
-    doctorName: new FormControl('', [
-      Validators.required,
-      textValidator
-    ]),
-    doctorLastname: new FormControl('', [
-      Validators.required, textValidator
-    ]),
-    doctorPhone: new FormControl('', [
-      Validators.required,
-      phoneNumberValidator
-    ]),
-    doctorGender: new FormControl('', Validators.required),
-    doctorDoctor: new FormControl('', Validators.required),
-    doctorEmail: new FormControl('', Validators.email),
-    doctorCity: new FormControl('', [Validators.nullValidator, textValidator]),
+  modifyScheduleForm = new FormGroup({
+    scheduleId: new FormControl('', [ Validators.required ]),
+    scheduleName: new FormControl('', [ Validators.required, textValidator ]),
+    scheduleStart: new FormControl('', [ Validators.required, dateTimeValidator ]),
+    scheduleEnd: new FormControl('', [ Validators.required, dateTimeValidator ]),
   });
 
-  getDataDoctor(dniToFind: string){
+  getDataSchedule(idToFind: string){
 
-    let doctorData = {
+    let doctorScheduleData = {
       token: localStorage.getItem('token'),
-      dni: dniToFind
+      dni: idToFind
     }
   
-    this.apiService.getDoctorByDNI(doctorData).subscribe((doctorResponse: any) => {
-      if(doctorResponse){
-        this.dataDoctor = doctorResponse;
+    this.apiService.getDoctorScheduleById(doctorScheduleData).subscribe((doctorScheduleResponse: any) => {
+      if(doctorScheduleResponse){
+        this.dataDoctor = doctorScheduleResponse;
   
-        this.modifyDoctorForm.patchValue({
-          doctorDNI: this.dataDoctor.dni,
-          doctorName: this.dataDoctor.firstname,
-          doctorLastname: this.dataDoctor.lastname,
-          doctorCity: this.dataDoctor.city,
-          doctorPhone: this.dataDoctor.phone,
-          doctorEmail: this.dataDoctor.email,
-          doctorGender: this.dataDoctor.gender,
-          doctorDoctor: this.dataDoctor.assigneddoctor != null ? this.dataDoctor.assigneddoctor : null,
+        this.modifyScheduleForm.patchValue({
+          scheduleId: doctorScheduleResponse.id,
+          scheduleName: doctorScheduleResponse.name,
+          scheduleStart: doctorScheduleResponse.scheduleStart,
+          scheduleEnd: doctorScheduleResponse.scheduleEnd
         });
         
-        if (this.dataDoctor.assigneddoctor){
-          let doctorData = {
-            dni: this.dataDoctor.assigneddoctor,
-            token: this.token
-          }
-    
-          this.apiService.getDoctorByDNI(doctorData).subscribe((doctorResponse: any) => {
-            if(doctorResponse) {
-              // console.log(doctorResponse);
-    
-              const doctorInfo = {
-                doctorName: doctorResponse.firstname,
-                doctorLastname: doctorResponse.lastname
-              };
-    
-              this.dataDoctor = doctorInfo;
-              // console.log(this.dataDoctor);
-            }
-          });
-        }
-
-  
-      }
-    });
-  }
-
-  getDoctors(){
-    this.apiService.getDoctors(this.token!).subscribe((data: any) => {
-      if (data){
-        this.doctors = data;
-        // console.log(this.doctors);
       }
     });
   }
 
 
   returnBack(){
-    this.router.navigate(['/doctors']);
+    this.router.navigate(['/schedules']);
   }
 
   saveChanges(): void {
 
     // FORMAT DATA doctor
-    const formattedName = this.formatForm.formatTextToUpper(this.modifyDoctorForm.value.doctorName!);
-    const formattedLastName = this.formatForm.formatTextToUpper(this.modifyDoctorForm.value.doctorLastname!);
-    const formattedCity = this.modifyDoctorForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyDoctorForm.value.doctorCity!) : this.modifyDoctorForm.value.doctorCity;
+    // const formattedName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorName!);
+    // const formattedLastName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorLastname!);
+    // const formattedCity = this.modifyScheduleForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorCity!) : this.modifyScheduleForm.value.doctorCity;
 
 
     const data = {
       token: localStorage.getItem('token'),
-      doctorData: {
-        dni: this.modifyDoctorForm.value.doctorDNI,
-        firstname: formattedName,
-        lastname: formattedLastName,
-        gender: this.modifyDoctorForm.value.doctorGender,
-        city: formattedCity,
-        email: this.modifyDoctorForm.value.doctorEmail,
-        phone: this.modifyDoctorForm.value.doctorPhone,
-        assigneddoctor: this.modifyDoctorForm.value.doctorDoctor,
+      doctorScheduleData: {
+        id: this.modifyScheduleForm.value.scheduleId,
+        name: this.modifyScheduleForm.value.scheduleName,
+        schaduleStart: this.modifyScheduleForm.value.scheduleStart + ':00',
+        schaduleEnd: this.modifyScheduleForm.value.scheduleEnd + ':00'
       }
     }
 
@@ -221,7 +167,7 @@ export class ModifyDoctorComponent implements OnInit {
 
         const data = {
           token: localStorage.getItem('token'),
-          dni: this.modifyDoctorForm.value.doctorDNI!
+          dni: this.modifyScheduleForm.value.scheduleId
         }
 
         this.apiService.deleteDoctor(data).subscribe(

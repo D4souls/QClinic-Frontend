@@ -111,7 +111,7 @@ export class ApiService {
   }
 
   createDoctorSchedule(data: any): Observable<any> {
-    return this.httpclient.post(this.url + 'doctorSchedule-create', data.doctorScheduleData, this.configureAuthHeader(data.token));
+    return this.httpclient.post(this.url + 'doctorSchedule-create', data.scheduleData, this.configureAuthHeader(data.token));
   }
 
   modifyDoctorSchedule(data: any): Observable<any> {

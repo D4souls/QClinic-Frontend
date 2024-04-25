@@ -2,25 +2,25 @@ import { Component } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../core/services/api.service';
-import { CreateDoctorComponent } from '../create-doctor/create-doctor.component';
+import { ApiService } from '../../../../core/services/api.service';
+import { CreateDoctorSchedulesComponent } from '../create-doctor-schedules/create-doctor-schedules.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
-  selector: 'app-doctors',
+  selector: 'app-show-doctors-schedules',
   standalone: true,
-  imports: [CreateDoctorComponent, NgxPaginationModule],
-  templateUrl: './doctors.component.html',
-  styleUrl: './doctors.component.css'
+  imports: [CreateDoctorSchedulesComponent, NgxPaginationModule],
+  templateUrl: './show-doctors-schedules.component.html',
+  styleUrl: './show-doctors-schedules.component.css'
 })
-export class DoctorsComponent {
-  data: any[] = [];
-  filtereddoctor: any[] = [];
+export class DoctorsScheduleComponent {
+  dataSchedules: any[] = [];
+  filteredSchedules: any[] = [];
 
   alldoctors: number = 0;
   pagination: number = 1;
 
-  cantdoctorsPerPage: number = 11;
+  cantdoctorsPerPage: number = 6;
 
   token = localStorage.getItem('token');
 
@@ -30,27 +30,35 @@ export class DoctorsComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getUser();
+    this.getSchedules();
   }
 
-  getUser(): void {
+  getSchedules(): void {
 
     try {
 
       const token = localStorage.getItem('token')!;
 
-      this.doctorapiservice.getDoctors(token).subscribe((data: any[]) => {
-        this.data = data;
-        this.filtereddoctor = data;
+      this.doctorapiservice.getDoctorsSchedule(token).subscribe((doctorsSchedules: any[]) => {
+        this.dataSchedules = doctorsSchedules;
+        this.filteredSchedules = doctorsSchedules;
       });
     } catch (error) {
-      console.log('Error while getting users: ',error);
+      console.log('Error while getting schedules: ',error);
     }
 
   }
 
   modifydoctor(dni: string): void {
     this.router.navigate(['/doctors/modify-doctor', dni]);
+  }
+
+  redirectToDoctors(): void {
+    this.router.navigate(['/doctors']);
+  }
+
+  redirectToDoctorType(): void {
+    this.router.navigate(['/doctors/specializations']);
   }
 
   newdoctor(): void {
@@ -80,10 +88,10 @@ export class DoctorsComponent {
     // console.log(dataToSearch);
 
     if (!dataToSearch) {
-      this.filtereddoctor = this.data.slice();
-      // console.log(this.filtereddoctor);
+      this.filteredSchedules= this.dataSchedules.slice();
+      // console.log(this.filteredSchedules);
     } else {
-      const searchName = this.data.filter((datadoctorToFilter: any) =>
+      const searchName = this.dataSchedules.filter((datadoctorToFilter: any) =>
         datadoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
         datadoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
         datadoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
@@ -93,9 +101,9 @@ export class DoctorsComponent {
       );
 
       if (searchName.length > 0) {
-        this.filtereddoctor = searchName;
+        this.filteredSchedules = searchName;
       } else {
-        this.filtereddoctor = this.data;
+        this.filteredSchedules = this.dataSchedules;
 
         Swal.fire({
           text: "We didn't found any doctors..." ,
@@ -117,7 +125,7 @@ export class DoctorsComponent {
 
   renderPage(event: any) {
     this.pagination = event;
-    this.getUser();
+    this.getSchedules();
   }
 
   hideModal(): void{
