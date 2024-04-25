@@ -3,18 +3,32 @@
 >
   <div class="flex flex-col gap-4">
     <div class="flex flex-row">
-      <span class="font-bold text-2xl md:text-4xl">Patients</span>
-      <button
-        class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
-        (click)="newPatient()"
-      >
-        New patient
-      </button>
+      <span class="font-bold text-2xl md:text-4xl">Doctors</span>
+      <div class="flex justify-center gap-2 ml-auto">
+        <button
+          class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
+          (click)="newdoctor()"
+        >
+          New doctor
+        </button>
+        <button
+          class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
+          (click)="newdoctor()"
+        >
+          New type
+        </button>
+        <button
+          class="font-medium text-sm rounded-lg px-5 py-2.5 me-2 text-white/90 bg-main-purple/50 hover:bg-main-purple/80 focus:ring-main-purple focus:ring-4 dark:bg-gray-700 dark:text-white/90 transition ease-in-out ml-auto"
+          (click)="newdoctor()"
+        >
+          Schedules
+        </button>
+      </div>
     </div>
 
     <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
       <label
-        for="filterPatient"
+        for="filterdoctor"
         class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
       >
         <svg
@@ -33,11 +47,11 @@
         </svg>
         <input
           type="search"
-          name="filterPatient"
-          placeholder="Search patient by name, dni, city, email or phone number"
+          name="filterdoctor"
+          placeholder="Search doctor by name, dni, city, email or phone number"
           #filter
           class="bg-transparent border-none w-full focus:border-0"
-          (keydown.enter)="filterPatients(filter.value)"
+          (keydown.enter)="filterdoctors(filter.value)"
         />
       </label>
     </form>
@@ -63,9 +77,9 @@
       </tr>
     </thead>
     <tbody class="table-row-group">
-      @for (patient of filteredPatient | paginate : { itemsPerPage:
-      cantPatientsPerPage, currentPage: pagination, totalItems: allPatients};
-      track filteredPatient[0].dni){
+      @for (doctor of filtereddoctor | paginate : { itemsPerPage:
+      cantdoctorsPerPage, currentPage: pagination, totalItems: alldoctors};
+      track filtereddoctor[0].dni){
       <tr
         class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
       >
@@ -73,26 +87,26 @@
           scope="row"
           class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
         >
-          {{ patient.firstname }} {{ patient.lastname }}
+          {{ doctor.firstname }} {{ doctor.lastname }}
         </th>
 
-        @if (patient.city){
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.city }}</td>
+        @if (doctor.city){
+        <td class="px-6 py-4 md:table-cell hidden">{{ doctor.city }}</td>
         } @else {
         <td class="px-6 py-4 md:table-cell hidden">No city</td>
         }
 
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.gender }}</td>
+        <td class="px-6 py-4 md:table-cell hidden">{{ doctor.gender }}</td>
 
-        @if (patient.email){
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.email }}</td>
+        @if (doctor.email){
+        <td class="px-6 py-4 md:table-cell hidden">{{ doctor.email }}</td>
         } @else {
         <td class="px-6 py-4 md:table-cell hidden">No email</td>
         }
 
         <td class="px-6 py-4 text-right table-cell">
           <a
-            (click)="modifyPatient(patient.dni)"
+            (click)="modifydoctor(doctor.dni)"
             class="font-medium text-main-purple dark:text-white/90 hover:underline cursor-pointer"
             >Edit</a
           >
@@ -125,7 +139,7 @@
       width="150"
       height="150"
     />
-    <p class="text-gray-500">Ups! There are no patients...</p>
+    <p class="text-gray-500">Ups! There are no doctors...</p>
   </div>
   }
 </div>
@@ -133,7 +147,7 @@
 
  <!-- MODALS -->
  <div
-    id="modal-create-patient"
+    id="modal-create-doctor"
     tabindex="-1"
     aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
@@ -147,14 +161,14 @@
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
-          <span class="font-bold text-2xl md:text-4xl dark:text-white">Create patient</span>
+          <span class="font-bold text-4xl">Create doctor</span>
         </div>
 
         <!-- MODAL BODY -->
         <div class="relative overflow-x-auto">
-          <app-create-patient
-            modalId="modal-create-patient"
-          ></app-create-patient>
+          <app-create-doctor
+            modalId="modal-create-doctor"
+          ></app-create-doctor>
         </div>
       </div>
     </div>

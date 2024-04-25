@@ -9,48 +9,50 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../core/services/api.service';
+import { ApiService } from '../../../../core/services/api.service';
 
-import { phoneNumberValidator } from '../../../shared/validators/phone.validator';
-import { dniValidator } from '../../../shared/validators/dni.validator';
-import { textValidator } from '../../../shared/validators/text.validator';
+import { phoneNumberValidator } from '../../../../shared/validators/phone.validator';
+import { dniValidator } from '../../../../shared/validators/dni.validator';
+import { textValidator } from '../../../../shared/validators/text.validator';
 
-import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
+import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 
 @Component({
-  selector: 'app-create-patient',
+  selector: 'app-create-doctor',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './create-patient.component.html',
-  styleUrl: './create-patient.component.css',
+  templateUrl: './create-doctor.component.html',
+  styleUrl: './create-doctor.component.css',
 })
-export class CreatePatientComponent implements OnInit {
+export class CreateDoctorComponent implements OnInit {
   constructor(
     private router: Router,
-    private apiPatient: ApiService,
+    private apidoctor: ApiService,
     private formatForm: FormatFormsInputsService
   ) {}
 
   ngOnInit(): void {
-    this.getDoctors();
+    this.getDoctorsType();
+    this.getDoctorSchedule();
   }
 
   @Input() modalId?: string;
 
-  createPatientForm = new FormGroup({
-    patientDNI: new FormControl('', [Validators.required, dniValidator]),
-    patientName: new FormControl('', [Validators.required, textValidator]),
-    patientLastname: new FormControl('', [Validators.required, textValidator]),
-    patientPhone: new FormControl('', [
+  createDoctorForm = new FormGroup({
+    doctorDNI: new FormControl('', [Validators.required, dniValidator]),
+    doctorName: new FormControl('', [Validators.required, textValidator]),
+    doctorLastname: new FormControl('', [Validators.required, textValidator]),
+    doctorPhone: new FormControl('', [
       Validators.required,
       phoneNumberValidator,
     ]),
-    patientGender: new FormControl('', Validators.required),
-    patientDoctor: new FormControl('', Validators.required),
-    patientEmail: new FormControl('', Validators.email),
-    patientCity: new FormControl('', Validators.nullValidator),
+    doctorGender: new FormControl('', Validators.required),
+    doctorEmail: new FormControl('', Validators.email),
+    doctorCity: new FormControl('', Validators.nullValidator),
+    doctorType: new FormControl('', Validators.required),
+    doctorSchedule: new FormControl('', Validators.required),
   });
 
   returnBack(): void {
@@ -78,42 +80,44 @@ export class CreatePatientComponent implements OnInit {
     }
   }
 
-  createPatient() {
-    // FORMAT DATA PATIENT
+  createDoctor() {
+    // FORMAT DATA doctor
     const formattedDNI = this.formatForm.formatDNI(
-      this.createPatientForm.value.patientDNI!
+      this.createDoctorForm.value.doctorDNI!
     );
     const formattedName = this.formatForm.formatTextToUpper(
-      this.createPatientForm.value.patientName!
+      this.createDoctorForm.value.doctorName!
     );
     const formattedLastName = this.formatForm.formatTextToUpper(
-      this.createPatientForm.value.patientLastname!
+      this.createDoctorForm.value.doctorLastname!
     );
 
     const data = {
       token: localStorage.getItem('token'),
-      patientData: {
+      doctorData: {
         dni: formattedDNI,
         firstname: formattedName,
         lastname: formattedLastName,
-        gender: this.createPatientForm.value.patientGender,
-        city: this.createPatientForm.value.patientCity,
-        email: this.createPatientForm.value.patientEmail,
-        phone: this.createPatientForm.value.patientPhone,
-        assignedDoctor: this.createPatientForm.value.patientDoctor,
+        gender: this.createDoctorForm.value.doctorGender,
+        city: this.createDoctorForm.value.doctorCity,
+        email: this.createDoctorForm.value.doctorEmail,
+        phone: this.createDoctorForm.value.doctorPhone,
+        isActive: true,
+        doctorType: this.createDoctorForm.value.doctorType,
+        doctorSchedule: this.createDoctorForm.value.doctorSchedule
       }
     };
 
-    if (data.patientData.email === '') data.patientData.email = null;
-    if (data.patientData.city === '') data.patientData.city = null;
+    if (data.doctorData.email === '') data.doctorData.email = null;
+    if (data.doctorData.city === '') data.doctorData.city = null;
 
-    // console.log(data.patientData);
+    // console.log(data.doctorData);
 
-    this.apiPatient.createPatient(data).subscribe(
+    this.apidoctor.createDoctor(data).subscribe(
       (response: any) => {
         if (response) {
           Swal.fire({
-            text: 'Patient created!',
+            text: 'doctor created!',
             icon: 'success',
             toast: true,
             showConfirmButton: false,
@@ -146,15 +150,31 @@ export class CreatePatientComponent implements OnInit {
     );
   }
 
-  doctors: any = [];
+  doctorType: any = [];
 
-  getDoctors() {
+  getDoctorsType() {
 
     const token = localStorage.getItem('token')!;
 
-    this.apiPatient.getDoctors(token).subscribe((data: any) => {
+    this.apidoctor.getDoctorsType(token).subscribe((data: any) => {
       if (data) {
-        this.doctors = data;
+        this.doctorType = data;
+        // console.log(this.doctors);
+      } else {
+        console.log(data);
+      }
+    });
+  }
+
+  doctorSchedule: any = [];
+
+  getDoctorSchedule() {
+
+    const token = localStorage.getItem('token')!;
+
+    this.apidoctor.getDoctorsSchedule(token).subscribe((data: any) => {
+      if (data) {
+        this.doctorSchedule = data;
         // console.log(this.doctors);
       } else {
         console.log(data);

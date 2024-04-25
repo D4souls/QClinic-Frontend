@@ -39,7 +39,7 @@ export const page_routes: Routes = [
         path: 'doctors',
         title: 'Manage doctors',
         loadChildren: () =>
-          import('./doctors/doctors.routes').then((m) => m.patients_routes),
+          import('./doctors/doctors.routes').then((m) => m.doctorsPages_routes),
       },
     ]
   },

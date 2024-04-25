@@ -29,6 +29,7 @@ export class ApiService {
     return httpOptions;
   }
 
+  // PATIENTS METHODS
   getPatients(data: any): Observable<any>{
     // return this.httpclient.get(this.url + 'patient' + '?page=' + data.pagination, /*this.configureAuthHeader(data.token)*/);
     return this.httpclient.get(this.url + 'patient', this.configureAuthHeader(data.token));
@@ -50,6 +51,9 @@ export class ApiService {
     return this.httpclient.put(this.url + 'patient-update', data.patientData, this.configureAuthHeader(data.token));
   }
 
+
+
+  // DOCTORS METHODS
   getDoctors(token: string): Observable<any> {
     return this.httpclient.get(this.url + 'doctor', this.configureAuthHeader(token));
   }
@@ -58,6 +62,65 @@ export class ApiService {
     return this.httpclient.get(this.url + `doctor-info/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
+  deleteDoctor(data: any): Observable<any> {
+    return this.httpclient.delete(this.url + `doctor-delete/${data.dni}`, this.configureAuthHeader(data.token));
+  }
+
+  createDoctor(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'doctor-create', data.doctorData, this.configureAuthHeader(data.token));
+  }
+
+  modifyDoctor(data: any): Observable<any> {
+    return this.httpclient.put(this.url + 'doctor-update', data.doctorData, this.configureAuthHeader(data.token));
+  }
+
+
+  // DOCTOR TYPE METHODS
+  getDoctorsType(token: string): Observable<any> {
+    return this.httpclient.get(this.url + 'doctorType', this.configureAuthHeader(token));
+  }
+
+  getDoctorTypeById(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorType-info/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
+  deleteDoctorType(data: any): Observable<any> {
+    return this.httpclient.delete(this.url + `doctorType-delete/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
+  createDoctorType(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'doctorType-create', data.doctorTypeData, this.configureAuthHeader(data.token));
+  }
+
+  modifyDoctorType(data: any): Observable<any> {
+    return this.httpclient.put(this.url + 'doctorType-update', data.doctorTypeData, this.configureAuthHeader(data.token));
+  }
+
+
+  // DOCTOR SCHEDULE METHODS
+  getDoctorsSchedule(token: string): Observable<any> {
+    return this.httpclient.get(this.url + 'doctorSchedule', this.configureAuthHeader(token));
+  }
+
+  getDoctorScheduleById(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorSchedule-info/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
+  deleteDoctorSchedule(data: any): Observable<any> {
+    return this.httpclient.delete(this.url + `doctorSchedule-delete/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
+  createDoctorSchedule(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'doctorSchedule-create', data.doctorScheduleData, this.configureAuthHeader(data.token));
+  }
+
+  modifyDoctorSchedule(data: any): Observable<any> {
+    return this.httpclient.put(this.url + 'doctorSchedule-update', data.doctorScheduleData, this.configureAuthHeader(data.token));
+  }
+
+
+
+  // APPOINMENTS METHODS
   getAppointments(token: string): Observable<any> {
     return this.httpclient.get(this.url + 'appointment', this.configureAuthHeader(token));
   }

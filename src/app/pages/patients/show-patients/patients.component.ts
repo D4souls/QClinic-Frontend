@@ -47,7 +47,7 @@ export class PatientsComponent implements OnInit {
 
       this.patientapiservice.getPatients(data).subscribe((data: patientsInterfaces[]) => {
         this.data = data;
-        this.filteredPatient = this.data.slice();
+        this.filteredPatient = data;
       });
     } catch (error) {
       console.log('Error while getting users: ',error);
@@ -83,8 +83,11 @@ export class PatientsComponent implements OnInit {
 
   filterPatients(dataToSearch: string): void {
 
+    // console.log(dataToSearch);
+
     if (!dataToSearch) {
       this.filteredPatient = this.data.slice();
+      // console.log(this.filteredPatient);
     } else {
       const searchName = this.data.filter((dataPatientToFilter: any) =>
         dataPatientToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
