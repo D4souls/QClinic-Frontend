@@ -106,7 +106,7 @@ export class ModifyDoctorComponent implements OnInit {
           });
         }
 
-        console.log(this.modifyDoctorForm.value.doctorSchedule);
+        // console.log(this.modifyDoctorForm.value.doctorSchedule);
         
         if (doctorResponse.doctorType != null){
           let doctorTypeData = {
@@ -147,7 +147,28 @@ export class ModifyDoctorComponent implements OnInit {
               };
     
               this.dataDoctor = doctorScheduleInfo;
-              console.log(this.dataDoctor);
+              // console.log(this.dataDoctor);
+            }
+          });
+        }
+
+        if (doctorResponse.doctorTye != null){
+          let dataDoctorType = {
+            id: doctorResponse.doctorTye,
+            token: this.token
+          }
+  
+          this.apiService.getDoctorTypeById(dataDoctorType).subscribe((doctorTypeResponse: any) => {
+            if(doctorTypeResponse) {
+              // console.log(doctorResponse);
+    
+              const doctorTypeInfo = {
+                doctorScheduleName: doctorTypeResponse.name,
+                doctorScheduleStart: doctorTypeResponse.description,
+              };
+    
+              this.dataDoctor = doctorTypeInfo;
+              // console.log(this.dataDoctor);
             }
           });
         }
@@ -212,12 +233,12 @@ export class ModifyDoctorComponent implements OnInit {
         city: formattedCity,
         email: this.modifyDoctorForm.value.doctorEmail,
         phone: this.modifyDoctorForm.value.doctorPhone,
-        doctorTye: this.modifyDoctorForm.value.doctorType,
+        doctorType: this.modifyDoctorForm.value.doctorType,
         doctorSchedule: this.modifyDoctorForm.value.doctorSchedule
       }
     }
 
-    // console.log(data);
+    // console.log(data.doctorData);
 
     Swal.fire({
       title: 'Do you want to save changes?',

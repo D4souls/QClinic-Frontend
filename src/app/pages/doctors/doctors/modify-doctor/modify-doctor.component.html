@@ -84,10 +84,7 @@
       <label for="doctorType" class="flex flex-col justify-center text-md">
         <span class="dark:text-white/90">Doctor specialization*</span>
         <select name="doctorType" id="doctorType" formControlName="doctorType" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
-          @if(dataDoctor.doctorType != null){
-            <option value="" disabled selected>Select specialization</option>
-          }
-
+          <option value="" disabled [selected]="modifyDoctorForm.value.doctorType === null">Select specialization</option>
           @for (doctorData of doctorType; track doctorType.dni){
             <option value="{{doctorData.id}}">{{doctorData.name}}</option>
           }
@@ -99,7 +96,7 @@
       <label for="doctorSchedule" class="flex flex-col justify-center text-md">
         <span class="dark:text-white/90">Doctor schedule</span>
         <select name="doctorSchedule" id="doctorSchedule" formControlName="doctorSchedule" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
-          <option value="" disabled [selected]="modifyDoctorForm.value.doctorSchedule === null">Select specialization</option>
+          <option value="" disabled [selected]="modifyDoctorForm.value.doctorSchedule === null">Select schedule</option>
           @for (doctorData of doctorSchedule; track doctorSchedule.dni){
             <option value="{{doctorData.id}}">{{doctorData.name}} ({{doctorData.scheduleStart}} - {{doctorData.scheduleEnd}})</option>
           }
