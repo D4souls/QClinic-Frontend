@@ -2,20 +2,20 @@ import { Component } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../core/services/api.service';
-import { CreateDoctorComponent } from '../create-doctor/create-doctor.component';
+import { ApiService } from '../../../../core/services/api.service';
+import { CreateDoctorTypeComponent } from '../create-doctor-type/create-doctor-type.component';
 import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
-  selector: 'app-doctors',
+  selector: 'app-doctors-type',
   standalone: true,
-  imports: [CreateDoctorComponent, NgxPaginationModule],
-  templateUrl: './doctors.component.html',
-  styleUrl: './doctors.component.css'
+  imports: [CreateDoctorTypeComponent, NgxPaginationModule],
+  templateUrl: './doctors-type.component.html',
+  styleUrl: './doctors-type.component.css'
 })
-export class DoctorsComponent {
+export class DoctorsTypeComponent {
   data: any[] = [];
-  filtereddoctor: any[] = [];
+  filteredDoctorType: any[] = [];
 
   alldoctors: number = 0;
   pagination: number = 1;
@@ -30,31 +30,39 @@ export class DoctorsComponent {
   ) {}
 
   ngOnInit(): void {
-    this.getUser();
+    this.getDoctorType();
   }
 
-  getUser(): void {
+  getDoctorType(): void {
 
     try {
 
       const token = localStorage.getItem('token')!;
 
-      this.doctorapiservice.getDoctors(token).subscribe((data: any[]) => {
+      this.doctorapiservice.getDoctorsType(token).subscribe((data: any[]) => {
         this.data = data;
-        this.filtereddoctor = data;
+        this.filteredDoctorType = data;
       });
     } catch (error) {
-      console.log('Error while getting users: ',error);
+      console.log('Error while getting doctor types: ',error);
     }
 
   }
 
-  modifydoctor(dni: string): void {
-    this.router.navigate(['/doctors/modify-doctor', dni]);
+  modifyDoctorType(id: number): void {
+    this.router.navigate(['/doctors/specializations/modify-specialization', id]);
   }
 
-  newdoctor(): void {
-    const $targetEl = document.getElementById('modal-create-doctor');
+  redirectToDoctors(): void {
+    this.router.navigate(['/doctors']);
+  }
+
+  redirectToSchedules(): void {
+    this.router.navigate(['/doctors/schedules']);
+  }
+
+  newDoctorType(): void {
+    const $targetEl = document.getElementById('modal-create-doctor-type');
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
@@ -65,7 +73,7 @@ export class DoctorsComponent {
     
     // Modal instance options
     const instanceOptions: InstanceOptions = {
-      id: 'modal-create-doctor',
+      id: 'modal-create-doctor-type',
       override: true
     };
 
@@ -75,30 +83,27 @@ export class DoctorsComponent {
     modal.show();
   }
 
-  filterdoctors(dataToSearch: string): void {
+  filterDoctorType(dataToSearch: string): void {
 
     // console.log(dataToSearch);
 
     if (!dataToSearch) {
-      this.filtereddoctor = this.data.slice();
-      // console.log(this.filtereddoctor);
+      this.filteredDoctorType = this.data.slice();
+      // console.log(this.filteredDoctorType);
     } else {
-      const searchName = this.data.filter((datadoctorToFilter: any) =>
-        datadoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.city.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
+      const searchName = this.data.filter((doctorType: any) =>
+        doctorType.name.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+        doctorType.description.toLowerCase().includes(dataToSearch.toLowerCase())
 
       );
 
       if (searchName.length > 0) {
-        this.filtereddoctor = searchName;
+        this.filteredDoctorType = searchName;
       } else {
-        this.filtereddoctor = this.data;
+        this.filteredDoctorType = this.data;
 
         Swal.fire({
-          text: "We didn't found any doctors..." ,
+          text: "We didn't found any specializations..." ,
           icon: 'error',
           toast: true,
           showConfirmButton: false,
@@ -117,7 +122,7 @@ export class DoctorsComponent {
 
   renderPage(event: any) {
     this.pagination = event;
-    this.getUser();
+    this.getDoctorType();
   }
 
   hideModal(): void{

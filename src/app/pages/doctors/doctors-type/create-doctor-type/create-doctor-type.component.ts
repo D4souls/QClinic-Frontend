@@ -9,24 +9,24 @@ import {
 import { Router } from '@angular/router';
 
 import Swal from 'sweetalert2';
-import { ApiService } from '../../../core/services/api.service';
+import { ApiService } from '../../../../core/services/api.service';
 
-import { phoneNumberValidator } from '../../../shared/validators/phone.validator';
-import { dniValidator } from '../../../shared/validators/dni.validator';
-import { textValidator } from '../../../shared/validators/text.validator';
+import { phoneNumberValidator } from '../../../../shared/validators/phone.validator';
+import { dniValidator } from '../../../../shared/validators/dni.validator';
+import { textValidator } from '../../../../shared/validators/text.validator';
 
-import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
+import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 
 @Component({
-  selector: 'app-create-doctor',
+  selector: 'app-create-doctor-type',
   standalone: true,
   imports: [ReactiveFormsModule],
-  templateUrl: './create-doctor.component.html',
-  styleUrl: './create-doctor.component.css',
+  templateUrl: './create-doctor-type.component.html',
+  styleUrl: './create-doctor-type.component.css',
 })
-export class CreateDoctorComponent implements OnInit {
+export class CreateDoctorTypeComponent implements OnInit {
   constructor(
     private router: Router,
     private apidoctor: ApiService,
@@ -39,18 +39,10 @@ export class CreateDoctorComponent implements OnInit {
 
   @Input() modalId?: string;
 
-  createDoctorForm = new FormGroup({
-    doctorDNI: new FormControl('', [Validators.required, dniValidator]),
-    doctorName: new FormControl('', [Validators.required, textValidator]),
-    doctorLastname: new FormControl('', [Validators.required, textValidator]),
-    doctorPhone: new FormControl('', [
-      Validators.required,
-      phoneNumberValidator,
-    ]),
-    doctorGender: new FormControl('', Validators.required),
-    doctorDoctor: new FormControl('', Validators.required),
-    doctorEmail: new FormControl('', Validators.email),
-    doctorCity: new FormControl('', Validators.nullValidator),
+  createDoctorTypeForm = new FormGroup({
+    typeName: new FormControl('', [Validators.required]),
+    typeDescription: new FormControl('', [Validators.required, textValidator]),
+    typeSalary: new FormControl('', [Validators.required])
   });
 
   returnBack(): void {
@@ -78,42 +70,24 @@ export class CreateDoctorComponent implements OnInit {
     }
   }
 
-  createDoctor() {
-    // FORMAT DATA doctor
-    const formattedDNI = this.formatForm.formatDNI(
-      this.createDoctorForm.value.doctorDNI!
-    );
-    const formattedName = this.formatForm.formatTextToUpper(
-      this.createDoctorForm.value.doctorName!
-    );
-    const formattedLastName = this.formatForm.formatTextToUpper(
-      this.createDoctorForm.value.doctorLastname!
-    );
+  createDoctorType() {
 
     const data = {
       token: localStorage.getItem('token'),
-      doctorData: {
-        dni: formattedDNI,
-        firstname: formattedName,
-        lastname: formattedLastName,
-        gender: this.createDoctorForm.value.doctorGender,
-        city: this.createDoctorForm.value.doctorCity,
-        email: this.createDoctorForm.value.doctorEmail,
-        phone: this.createDoctorForm.value.doctorPhone,
-        assignedDoctor: this.createDoctorForm.value.doctorDoctor,
+      doctorTypeData: {
+        name: this.createDoctorTypeForm.value.typeName,
+        description: this.createDoctorTypeForm.value.typeDescription,
+        salary: this.createDoctorTypeForm.value.typeSalary,
       }
     };
 
-    if (data.doctorData.email === '') data.doctorData.email = null;
-    if (data.doctorData.city === '') data.doctorData.city = null;
-
     // console.log(data.doctorData);
 
-    this.apidoctor.createDoctor(data.token!).subscribe(
+    this.apidoctor.createDoctorType(data).subscribe(
       (response: any) => {
         if (response) {
           Swal.fire({
-            text: 'doctor created!',
+            text: 'Specialization created!',
             icon: 'success',
             toast: true,
             showConfirmButton: false,

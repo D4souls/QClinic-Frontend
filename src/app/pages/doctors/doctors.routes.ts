@@ -12,4 +12,9 @@ export const doctorsPages_routes: Routes = [
     title: 'Manage doctors Schedules',
     loadChildren: () => import('./doctors-schedules/doctorsSchedules.routes').then(m => m.doctorSchedules_routes),
   },
+  {
+    path: 'specializations',
+    title: 'Manage doctor specializations',
+    loadChildren: () => import('./doctors-type/doctors-type.routes').then(m => m.doctors_type)
+  }
 ];

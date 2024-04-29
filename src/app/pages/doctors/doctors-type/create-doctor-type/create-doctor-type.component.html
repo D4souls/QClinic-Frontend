@@ -1,0 +1,65 @@
+<form
+    class="p-4 rounded-md flex flex-col md:flex-row flex-shrink items-center gap-4"
+    [formGroup]="createDoctorTypeForm"
+    (ngSubmit)="createDoctorType()"
+  >
+
+  <!-- INFORMATION CONTAINER -->
+  <div class="flex flex-col order-1 w-full gap-4">
+    <!-- MAIN INFORMATION USER FORM -->
+    <div class="grid grid-rows-2 md:grid-cols-2 gap-2">
+      <label for="typeName" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Name
+          @if(createDoctorTypeForm.get('typeName') && !createDoctorTypeForm.get('typeName')!.valid){
+            <span>*</span>
+          }
+        </span>
+        <input
+          type="text"
+          id="typeName"
+          placeholder="Enter specialziation's name here"
+          formControlName="typeName"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+        />
+      </label>
+
+      <label for="typeDescription" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Description
+          @if(createDoctorTypeForm.get('typeDescription') && !createDoctorTypeForm.get('typeDescription')!.valid){
+            <span>*</span>
+          }
+        </span>
+        <input
+          type="text"
+          id="typeDescription"
+          placeholder="Enter specialziation's description here"
+          formControlName="typeDescription"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+        />
+      </label>
+
+      <label for="typeSalary" class="flex flex-col justify-center text-md relative">
+        <span class="dark:text-white/90">
+          Salary
+          @if(createDoctorTypeForm.get('typeSalary') && !createDoctorTypeForm.get('typeSalary')!.valid){
+            <span>*</span>
+          }
+        </span>
+        <input
+          type="text"
+          id="typeSalary"
+          placeholder="Enter specialziation's salary here"
+          formControlName="typeSalary"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+        />
+      </label>
+    </div>
+
+    <div class="flex flex-row gap-4 items-center mt-7">
+      <button type="submit" [disabled]="!createDoctorTypeForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createDoctorTypeForm.valid ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed' : 'bg-main-purple dark:bg-gray-700 cursor-pointer'}}">Create</button>
+      <button type="button" (click)="returnBack()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+    </div>
+
+  </div>
+
+  </form>
