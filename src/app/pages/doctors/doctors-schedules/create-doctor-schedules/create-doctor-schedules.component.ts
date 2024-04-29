@@ -84,34 +84,48 @@ export class CreateDoctorSchedulesComponent implements OnInit {
     return diffH == 8 ? true : false;
   }
 
+  formatScheduleHours(time: string){
+    const splitHours = time.split(':');
+
+    const hours = parseInt(splitHours[0], 10);
+    const minutes = parseInt(splitHours[1], 10);
+
+    var now = new Date();
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    now.setSeconds(0);
+
+    const hoursStr = now.getHours().toString().padStart(2, '0');
+    const minutesStr = now.getMinutes().toString().padStart(2, '0');
+
+    const res = `${hoursStr}:${minutesStr}:00`;
+
+    console.log(res);
+    return res;
+
+  }
+
   createDoctor() {
-    // FORMAT DATA doctor
-    // const formattedDNI = this.formatForm.formatDNI(
-    //   this.createScheduleForm.value.doctorDNI!
-    // );
-    // const formattedName = this.formatForm.formatTextToUpper(
-    //   this.createScheduleForm.value.doctorName!
-    // );
-    // const formattedLastName = this.formatForm.formatTextToUpper(
-    //   this.createScheduleForm.value.doctorLastname!
-    // );
+    
+    // Format scheduleStart
+    const formattedScheduleStart = this.formatScheduleHours(this.createScheduleForm.value.scheduleStart!);
+
+    // Format scheduleEnd
+    const formattedScheduleEnd = this.formatScheduleHours(this.createScheduleForm.value.scheduleEnd!);
 
     const data = {
       token: localStorage.getItem('token'),
       scheduleData: {
         name: this.createScheduleForm.value.scheduleName,
-        scheduleStart: this.createScheduleForm.value.scheduleStart + ':00',
-        scheduleEnd: this.createScheduleForm.value.scheduleEnd + ':00',
+        scheduleStart: formattedScheduleStart,
+        scheduleEnd: formattedScheduleEnd,
       },
     };
 
-    if (
-      this.checkTimesDiferences(
-        data.scheduleData.scheduleStart,
-        data.scheduleData.scheduleEnd
-      )
-    ) {
-      // console.log(data.scheduleData);
+    const checkTime = this.checkTimesDiferences(data.scheduleData.scheduleStart, data.scheduleData.scheduleEnd);
+
+    if (checkTime) {
+      console.log(data.scheduleData);
       this.apidoctor.createDoctorSchedule(data).subscribe(
         (response: any) => {
           if (response) {

@@ -119,11 +119,9 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
     // Format scheduleStart
     const formattedScheduleStart = this.formatScheduleHours(this.modifyScheduleForm.value.scheduleStart!);
-    const formattedScheduleEnd = this.formatScheduleHours(this.modifyScheduleForm.value.scheduleEnd!);
-    // const formattedName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorName!);
-    // const formattedLastName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorLastname!);
-    // const formattedCity = this.modifyScheduleForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorCity!) : this.modifyScheduleForm.value.doctorCity;
 
+    // Format scheduleEnd
+    const formattedScheduleEnd = this.formatScheduleHours(this.modifyScheduleForm.value.scheduleEnd!);
     
     const data = {
       token: localStorage.getItem('token'),
@@ -135,7 +133,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
       }
     }
     
-    console.log(data.doctorScheduleData);
+    // console.log(data.doctorScheduleData);
 
     const checkdiference = this.checkTimesDiferences(this.modifyScheduleForm.value.scheduleStart!, this.modifyScheduleForm.value.scheduleEnd!);
 
@@ -218,10 +216,10 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
         const data = {
           token: localStorage.getItem('token'),
-          dni: this.modifyScheduleForm.value.scheduleId
+          id: this.modifyScheduleForm.value.scheduleId
         }
 
-        this.apiService.deleteDoctor(data).subscribe(
+        this.apiService.deleteDoctorSchedule(data).subscribe(
           (data: any) => {
             // console.log(data);
 
@@ -237,23 +235,23 @@ export class ModifyDoctorScheduleComponent implements OnInit {
               });
 
               setTimeout(() => {
-                this.router.navigate(['/doctors']);
+                this.router.navigate(['/doctors/schedules']);
               }, 3000);    
               
             } else {
               Swal.fire({
                 title: 'Error',
-                text: 'Error deleting doctor. Please try again.',
+                text: 'Error deleting schedule. Please try again.',
                 icon: 'error',
               });
             }
           },
           (error) => {
-            console.error('Error deleting doctor:', error);
+            console.error('Error deleting schedule:', error);
 
             Swal.fire({
               title: 'Error',
-              text: 'Error deleting doctor. Please try again.',
+              text: 'Error deleting schedule. Please try again.',
               icon: 'error',
             });
           }
