@@ -14,15 +14,22 @@ export class AssistantComponent implements OnInit{
     this.loadAssistant();
   }
 
+  chatData: any = [];
+
   loadAssistant(): void {
     const canvas  = document.getElementById('canvas3d') as HTMLCanvasElement;
     const app = new Application(canvas);
     app
-      .load('https://prod.spline.design/6jlAda9nH8-1nHnF/scene.splinecode')
-      .then(() => {
-        app.addEventListener('mouseDown', (e) => {
-          app.stop();
-        });
-      });
+      .load('https://prod.spline.design/6jlAda9nH8-1nHnF/scene.splinecode');
+  }
+
+  showChatBot(){
+    const canvas = document.getElementById('canvas3d');
+    const chatAI = document.getElementById('chatAI');
+
+    if (canvas && chatAI) {
+      canvas!.style.display = 'none';
+      chatAI!.style.display = 'block';
+    }
   }
 }
