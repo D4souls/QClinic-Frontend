@@ -49,8 +49,8 @@ export class DoctorsScheduleComponent {
 
   }
 
-  modifydoctor(dni: string): void {
-    this.router.navigate(['/doctors/modify-doctor', dni]);
+  modifySchedule(dni: string): void {
+    this.router.navigate(['/doctors/schedules/modify-schedule', dni]);
   }
 
   redirectToDoctors(): void {

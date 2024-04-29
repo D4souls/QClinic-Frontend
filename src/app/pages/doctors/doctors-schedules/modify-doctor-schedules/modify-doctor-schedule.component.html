@@ -10,123 +10,34 @@
   >
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
-      <label for="doctorDNI" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">DNI*</span>
+      <label for="scheduleName" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Name*</span>
         <input
           type="text"
-          id="doctorDNI"
-          placeholder="Enter doctor's DNI here"
-          formControlName="doctorDNI"
-          readonly
+          id="scheduleName"
+          placeholder="Enter schedule's name here"
+          formControlName="scheduleName"
           class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
-      <label for="doctorName" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">First name*</span>
+      <label for="scheduleStart" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Schedule starts*</span>
         <input
-          type="text"
-          id="doctorName"
-          placeholder="Enter doctor's first name here"
-          formControlName="doctorName"
+          type="time"
+          id="scheduleStart"
+          placeholder="Configure schedule starts"
+          formControlName="scheduleStart"
           class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
-      </label>
-      <label for="doctorLastname" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Last name*</span>
-        <input
-          type="text"
-          id="doctorLastname"
-          placeholder="Enter doctor's last name here"
-          formControlName="doctorLastname"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
-      <label for="doctorPhone" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Phone Number*</span>
-        <input
-          type="tel"
-          id="doctorPhone"
-          placeholder="Enter doctor's phone number here"
-          formControlName="doctorPhone"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
-      <label for="doctorGender" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Gender*</span>
-        <select
-          name="doctorGender"
-          id="doctorGender"
-          formControlName="doctorGender"
-          class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        >
-          @if (dataDoctor && dataDoctor[0]){
-          <option
-            value="{{ dataDoctor[0].gender }}"
-            [selected]="true"
-            class="text-gray-300"
-          >
-            {{ dataDoctor[0].gender }}
-          </option>
-          }@else {
-          <option value="" disabled selected class="text-gray-300">
-            Select doctor's gender
-          </option>
-          }
-          <option value="Male">Male</option>
-          <option value="Female">Female</option>
-          <option value="No binary">No binary</option>
-        </select>
       </label>
 
-
-
-      <!-- DOCTOR PART -->
-      <label for="doctorDoctor" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Doctor*</span>
-        <select
-          name="doctorDoctor"
-          id="doctorDoctor"
-          formControlName="doctorDoctor"
-          class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        >
-          @if (dataDoctor.assigneddoctor && dataDoctor){
-          <option
-            value="{{ dataDoctor.assigneddoctor }}"
-            [selected]="true"
-            class="text-gray-300"
-          >
-            {{ dataDoctor.doctorName }} {{ dataDoctor.doctorLastname }}
-          </option>
-          }@else{
-          <option value="" disabled selected>Select Doctor</option>
-          } @for (doctorData of doctors; track doctors.dni){
-          <option value="{{ doctorData.dni }}">
-            {{ doctorData.firstname }} {{ doctorData.lastname }}
-          </option>
-          }
-        </select>
-      </label>
-    </div>
-
-    <!-- ADDITIONAL INFORMATION USER FROM -->
-    <div class="grid grid-cols-2 grid-rows-1 gap-2">
-      <label for="doctorEmail" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Email</span>
+      <label for="scheduleEnd" class="flex flex-col justify-center text-md">
+        <span class="dark:text-white/90">Schedule ends*</span>
         <input
-          type="email"
-          id="doctorEmail"
-          placeholder="Enter doctor's mail here"
-          formControlName="doctorEmail"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
-      <label for="doctorCity" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">City</span>
-        <input
-          type="text"
-          id="doctorCity"
-          placeholder="Enter doctor's city here"
-          formControlName="doctorCity"
+          type="time"
+          id="scheduleEnd"
+          placeholder="Configure schedule ends"
+          formControlName="scheduleEnd"
           class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
@@ -151,7 +62,7 @@
         (click)="deleteDoctor()"
         class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
       >
-        Delete <span class="hidden md:inline-block">doctor</span>
+        Delete <span class="hidden md:inline-block">schedule</span>
       </button>
       <button
         type="button"
@@ -180,6 +91,5 @@
     </div>
 
     <hr class="w-full border border-gray-300" />
-
   </form>
 </div>

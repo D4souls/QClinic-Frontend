@@ -60,7 +60,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
     let doctorScheduleData = {
       token: localStorage.getItem('token'),
-      dni: idToFind
+      id: idToFind
     }
   
     this.apiService.getDoctorScheduleById(doctorScheduleData).subscribe((doctorScheduleResponse: any) => {
@@ -80,77 +80,128 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
 
   returnBack(){
-    this.router.navigate(['/schedules']);
+    this.router.navigate(['/doctors/schedules']);
+  }
+
+  checkTimesDiferences(startTime: string, endTime: string) {
+    const start = new Date(`2004-10-11T${startTime}`);
+    const end = new Date(`2004-10-11T${endTime}`);
+
+    const diffMs = end.getTime() - start.getTime();
+
+    const diffH = diffMs / (1000 * 60 * 60);
+
+    return diffH == 8 ? true : false;
+  }
+
+  formatScheduleHours(time: string){
+    const splitHours = time.split(':');
+
+    const hours = parseInt(splitHours[0], 10);
+    const minutes = parseInt(splitHours[1], 10);
+
+    var now = new Date();
+    now.setHours(hours);
+    now.setMinutes(minutes);
+    now.setSeconds(0);
+
+    const hoursStr = now.getHours().toString().padStart(2, '0');
+    const minutesStr = now.getMinutes().toString().padStart(2, '0');
+
+    const res = `${hoursStr}:${minutesStr}:00`;
+
+    console.log(res);
+    return res;
+
   }
 
   saveChanges(): void {
 
-    // FORMAT DATA doctor
+    // Format scheduleStart
+    const formattedScheduleStart = this.formatScheduleHours(this.modifyScheduleForm.value.scheduleStart!);
+    const formattedScheduleEnd = this.formatScheduleHours(this.modifyScheduleForm.value.scheduleEnd!);
     // const formattedName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorName!);
     // const formattedLastName = this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorLastname!);
     // const formattedCity = this.modifyScheduleForm.value.doctorCity ? this.formatForm.formatTextToUpper(this.modifyScheduleForm.value.doctorCity!) : this.modifyScheduleForm.value.doctorCity;
 
-
+    
     const data = {
       token: localStorage.getItem('token'),
       doctorScheduleData: {
-        id: this.modifyScheduleForm.value.scheduleId,
-        name: this.modifyScheduleForm.value.scheduleName,
-        schaduleStart: this.modifyScheduleForm.value.scheduleStart + ':00',
-        schaduleEnd: this.modifyScheduleForm.value.scheduleEnd + ':00'
+        Id: this.modifyScheduleForm.value.scheduleId,
+        Name: this.modifyScheduleForm.value.scheduleName,
+        ScheduleStart: formattedScheduleStart,
+        ScheduleEnd: formattedScheduleEnd
       }
     }
-
-    // console.log(data);
-
-    Swal.fire({
-      title: 'Do you want to save changes?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.apiService.modifyDoctor(data).subscribe(
-          (data: any) => {
-            // console.log(data);
-
-            if (data) {
-              Swal.fire({
-                text: 'Changes saved!',
-                icon: 'success',
-                toast: true,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                position: 'bottom'
-              });
     
-              setTimeout(() => {
-                this.router.navigate(['/doctors']);
-              }, 3000);   
-              
-            } else {
+    console.log(data.doctorScheduleData);
+
+    const checkdiference = this.checkTimesDiferences(this.modifyScheduleForm.value.scheduleStart!, this.modifyScheduleForm.value.scheduleEnd!);
+
+
+    if (checkdiference){
+
+      Swal.fire({
+        title: 'Do you want to save changes?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes!',
+      }).then((result) => {
+        if (result.isConfirmed) {
+          this.apiService.modifyDoctorSchedule(data).subscribe(
+            (data: any) => {
+              console.log(data);
+  
+              if (data) {
+                Swal.fire({
+                  text: 'Changes saved!',
+                  icon: 'success',
+                  toast: true,
+                  showConfirmButton: false,
+                  timer: 3000,
+                  timerProgressBar: true,
+                  position: 'bottom'
+                });
+      
+                setTimeout(() => {
+                  this.router.navigate(['/doctors/schedules']);
+                }, 3000);   
+                
+              } else {
+                Swal.fire({
+                  title: 'Error',
+                  text: 'Error saving schedule. Please try again.',
+                  icon: 'error',
+                });
+              }
+            },
+            (error) => {
+              console.error('Error saving schedule:', error);
+  
               Swal.fire({
                 title: 'Error',
-                text: 'Error deleting doctor. Please try again.',
+                text: 'Error saving schedule. Please try again.',
                 icon: 'error',
               });
             }
-          },
-          (error) => {
-            console.error('Error deleting doctor:', error);
+          );
+        }
+      });
+    } else {
+      Swal.fire({
+        text: 'Workers can work only 8h',
+        icon: 'error',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom',
+      });
+    }
 
-            Swal.fire({
-              title: 'Error',
-              text: 'Error deleting doctor. Please try again.',
-              icon: 'error',
-            });
-          }
-        );
-      }
-    });
   }
 
   deleteDoctor(): void {
