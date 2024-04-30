@@ -59,8 +59,11 @@ export class CreateAppointmentComponent implements OnInit{
     }
 
     this.apiService.getPatients(data).subscribe((data: any) => {
-      this.patients = data;
-      this.filteredPatient = this.patients.slice();
+      
+      if (data){
+        this.patients = data;
+        this.filteredPatient = this.patients.slice();
+      }
     });
   }
 
@@ -70,11 +73,9 @@ export class CreateAppointmentComponent implements OnInit{
 
     this.apiService.getDoctors(token).subscribe((data: any) => {
 
-      if (data.success){
-        this.doctors = data.data
+      if (data){
+        this.doctors = data;
         this.filteredDoctor = this.doctors.slice();
-      } else {
-        console.log(data);
       }
 
     })
@@ -82,68 +83,85 @@ export class CreateAppointmentComponent implements OnInit{
 
   createAppointment(): void {
 
-    // FROMAT DATE
-    const splitDate = this.createAppointmentForm.value.dateTime?.split("T");
-    const formattedDate = `${splitDate![0]} ${splitDate![1]}`
+    // First we need to get appointment per day
+    this.apiService.countDayAppointments({token: localStorage.getItem('token'), date: this.createAppointmentForm.value.dateTime}).subscribe((countResponse: any) => {
+      if (countResponse && countResponse.msn < 8) {
 
-    const data = {
-      token: localStorage.getItem('token'),
-      appointmentData: {
-        date: formattedDate,
-        dniPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
-        dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
-        comment: this.createAppointmentForm.value.appointmentComment,
-      }
-    };
-
-    Swal.fire({
-      title: 'Do you want to create this appointment?',
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes!',
-    }).then((result) => {
-      if (result.isConfirmed) {
-        this.apiService.createAppointments(data).subscribe(
-          (data: any) => {
-            // console.log(data);
-
-             if (data.message) {
-              Swal.fire({
-                title: 'Appointment created!',
-                icon: 'success',
-                toast: true,
-                showConfirmButton: false,
-                timer: 2000,
-                timerProgressBar: true,
-                position: 'bottom'
-              });
+        // If appointment count is less than 8
+        const data = {
+          token: localStorage.getItem('token'),
+          appointmentData: {
+            appointmentDate: this.createAppointmentForm.value.dateTime,
+            assignedPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
+            assignedDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+            comment: this.createAppointmentForm.value.appointmentComment,
+          }
+        };
     
-              setTimeout(() => {
-                window.location.reload();
-              }, 2000);
-            
-             } else {
-               Swal.fire({
-                 title: 'Error',
-                 text: 'Error deleting patient. Please try again.',
-                 icon: 'error',
-               });
-             }
-           },
-           (error) => {
-             console.error('Error deleting patient:', error);
-
-             Swal.fire({
-               title: 'Error',
-               text: 'Error deleting patient. Please try again.',
-               icon: 'error',
-             });
+    
+        Swal.fire({
+          title: 'Do you want to create this appointment?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes!',
+        }).then((result) => {
+          if (result.isConfirmed) {
+            this.apiService.createAppointments(data).subscribe(
+              (data: any) => {
+    
+                 if (data) {
+                  Swal.fire({
+                    title: 'Appointment created!',
+                    icon: 'success',
+                    toast: true,
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true,
+                    position: 'bottom'
+                  });
+        
+                  setTimeout(() => {
+                    window.location.reload();
+                  }, 2000);
+                
+                 } else {
+                   Swal.fire({
+                     title: 'Error',
+                     text: 'Error creating new appointment. Please try again.',
+                     icon: 'error',
+                   });
+                 }
+               },
+               (error) => {
+                 console.error('Error creating new appointment:', error);
+    
+                 Swal.fire({
+                   title: 'Error',
+                   text: 'Error creating new appointment. Please try again.',
+                   icon: 'error',
+                 });
+               }
+             );
            }
-         );
-       }
-     });
+         });
+
+      } else {
+        Swal.fire({
+          title: 'Appointments per day limit exceeded',
+          text: `There are ${countResponse.msn}`,
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 2000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+    })
+
+    
   }
 
 
@@ -154,9 +172,7 @@ export class CreateAppointmentComponent implements OnInit{
       const searchName = this.patients.filter((dataAppointmentToFilter: any) =>
         dataAppointmentToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
         dataAppointmentToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataAppointmentToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataAppointmentToFilter.city.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataAppointmentToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
+        dataAppointmentToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase())
 
       );
 

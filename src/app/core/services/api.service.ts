@@ -130,18 +130,22 @@ export class ApiService {
   }
 
   getUserAppointments(data: any): Observable<any> {
-    return this.httpclient.get(this.url + `user-appointments/${data.dni}`, this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `appointment-info-patient/${data.dni}`, this.configureAuthHeader(data.token));
   }
 
   getDayAppointments(data: any): Observable<any> {
-    return this.httpclient.get(this.url + `day-appointments/${data.date}`, this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `appointment-info-day/${data.date}`, this.configureAuthHeader(data.token));
+  }
+
+  countDayAppointments(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `appointment-count-day/${data.date}`, this.configureAuthHeader(data.token));
   }
 
   updateAppointments(data: any): Observable<any> {
-    return this.httpclient.post(this.url + `update-appointment/`, data.appointmentData, this.configureAuthHeader(data.token));
+    return this.httpclient.put(this.url + `appointment-update/`, data.appointmentData, this.configureAuthHeader(data.token));
   }
 
   deleteAppointments(data: any): Observable<any> {
-    return this.httpclient.delete(this.url + `delete-appointment/${data.id}`, this.configureAuthHeader(data.token));
+    return this.httpclient.delete(this.url + `appointment-delete/${data.id}`, this.configureAuthHeader(data.token));
   }
 }

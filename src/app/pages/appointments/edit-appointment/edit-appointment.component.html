@@ -31,10 +31,9 @@
             (change)="loadData(filterPatient.value)"
           >
             <option value="" disabled selected>Select appointment</option>
-            @for (appointment of dayAppointments; track dayAppointments[0]){
-            <option value="{{ appointment.id }}">
-              {{ appointment.patientFirstname }}
-              {{ appointment.patientLastname }}
+            @for (appointments of generalData; track generalData.id){
+            <option value="{{ appointments.id }}">
+              {{ appointments.firstname }} {{ appointments.lastname }}
             </option>
             }
           </select>

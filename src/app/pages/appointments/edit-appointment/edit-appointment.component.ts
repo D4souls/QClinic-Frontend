@@ -18,23 +18,35 @@ export class EditAppointmentComponent implements OnInit {
 
   @Input() modalId?: string;
   
-  apiService = inject(ApiService);
+  // Save info appointment
+  infoAppointmentDay: any = [];
 
-  dayAppointments: any[] = [];
+  // Save info patient
+  infoPatient: any = [];
+
+  // Merge infoAppointmentDay + infoPatient
+  generalData: any = [];
+
+  apiService = inject(ApiService);
   
+  // Save doctorInfo
   doctors: any = [];
+
+  // Save doctorFilter
   filteredDoctor: any [] = [];
   
   ngOnInit(): void {
     this.getDoctors();
   }
 
+  // FormGroup to creat appointment
   createAppointmentForm = new FormGroup({
     searchAppointment: new FormGroup({
       date : new FormControl('', [Validators.required, dateValidator]),
       selectAppointment: new FormControl('', Validators.required),
     }),
     patientName: new FormControl('', Validators.required),
+    patientDNI: new FormControl(''),
     searchDataDoctorForm: new FormGroup({
       dataToSearch: new FormControl(''),
       dataSelect : new FormControl('', Validators.required)
@@ -44,47 +56,51 @@ export class EditAppointmentComponent implements OnInit {
   });
 
   getAppointments(date: string): void {
-
-    const data = {
+    let data = {
       date: date,
       token: localStorage.getItem('token')
-    }
+    };
 
-    this.apiService.getDayAppointments(data).subscribe((data: any) => {
 
-      this.createAppointmentForm.patchValue({
-        searchAppointment: {
-          selectAppointment: '',
-        },
-        searchDataDoctorForm: {
-          dataToSearch: '',
-          dataSelect: '',
-        },
-        patientName: '',
-        appointmentComment: '',
-      });
-      
-      if (data.data.length == 1) {
-
-        this.createAppointmentForm.patchValue({
-          searchAppointment: {
-            selectAppointment: data.data[0].id
-          },
-          patientName: `${data.data[0].patientFirstname} ${data.data[0].patientLastname}`,
-          searchDataDoctorForm: {
-            dataToSearch: `${data.data[0].doctorFirstname} ${data.data[0].doctorLastname}`,
-            dataSelect: data.data[0].dniDoctor
-        },
-        appointmentComment: data.data[0].comment,
-        })
-
-        this.dayAppointments = data.data;
-      } else {
-        this.dayAppointments = data.data;
+    // Reset arrays to clear data
+    this.infoAppointmentDay = [];
+    this.infoPatient = [];
+    this.generalData = [];
+    
+    // Patch value to form
+    this.createAppointmentForm.patchValue({
+      searchAppointment: {
+        selectAppointment: '',
+      },
+      searchDataDoctorForm: {
+        dataToSearch: '',
+        dataSelect: '',
+      },
+      patientName: '',
+      patientDNI: '',
+      appointmentComment: '',
+    });
+    
+    // Fetch dayAppointmentData from API
+    this.apiService.getDayAppointments(data).subscribe((appointmentPerDayDataResponse: any) => {
+      if (appointmentPerDayDataResponse) { 
+        this.infoAppointmentDay = appointmentPerDayDataResponse;
+        
+        // Fetch dataPatient for each patient from dayAppointmentData
+        const requests = appointmentPerDayDataResponse.map((patient: any) => {
+          return this.apiService.getPatientData({dni: patient.assignedPatient, token: localStorage.getItem('token')}).toPromise();
+        });
+        
+        // Create new promise to merge patientDataResponses with dayAppointmentData
+        Promise.all(requests).then((patientDataResponses: any) => {
+          patientDataResponses.forEach((patientDataResponse: any, index: any) => {
+            if (patientDataResponse) {
+              const combinedObject = Object.assign({}, appointmentPerDayDataResponse[index], patientDataResponse);
+              this.generalData.push(combinedObject); 
+            }
+          });
+        });
       }
-
-      // console.log(this.dayAppointments);
-
     }, (error) => {
       Swal.fire({
         icon: 'error',
@@ -98,19 +114,36 @@ export class EditAppointmentComponent implements OnInit {
     });
   }
 
+
   loadData(id: string): void {
 
-    const dataAppointment = this.dayAppointments;
-    const patientInfo = dataAppointment.findIndex((appointment) => appointment.id == id);
+    let findDoctorAppointment = this.generalData.findIndex((appointment:any) => appointment.id == id);
+    let doctorInfo = this.doctors.findIndex((doctor: any) => doctor.dni = this.infoAppointmentDay[findDoctorAppointment].assignedDoctor)
+    let infoAppointment = this.generalData[findDoctorAppointment];
+    let infoDoctor = this.doctors[doctorInfo];
 
+
+    // Reset the form values
     this.createAppointmentForm.patchValue({
-      patientName: `${dataAppointment[patientInfo].patientFirstname} ${dataAppointment[patientInfo].patientLastname}`,
       searchDataDoctorForm: {
-        dataToSearch: `${dataAppointment[patientInfo].doctorFirstname} ${dataAppointment[patientInfo].doctorLastname}`,
-        dataSelect: dataAppointment[patientInfo].dniDoctor
+        dataToSearch: '',
+        dataSelect: '',
       },
-      appointmentComment: dataAppointment[patientInfo].comment,
+      patientName: '',
+      patientDNI: '',
+      appointmentComment: '',
     });
+
+    // Set all values to the form
+    this.createAppointmentForm.patchValue({
+      patientName: `${infoAppointment.firstname} ${infoAppointment.lastname}`,
+      patientDNI: `${infoAppointment.dni}`,
+      appointmentComment: `${infoAppointment.comment}`,
+      searchDataDoctorForm: {
+        dataToSearch: `${infoDoctor.firstname} ${infoDoctor.lastname}`,
+        dataSelect: `${infoDoctor.dni}`
+      }
+    })
   }
 
   getDoctors(): void{
@@ -119,11 +152,10 @@ export class EditAppointmentComponent implements OnInit {
 
     this.apiService.getDoctors(token).subscribe((data: any) => {
 
-      if (data.success){
-        this.doctors = data.data
-        this.filteredDoctor = this.doctors.slice();
-      } else {
-        console.log(data);
+      if (data){
+        this.doctors = data;
+        this.filteredDoctor = data;
+        // console.log(data);
       }
 
     });
@@ -131,16 +163,17 @@ export class EditAppointmentComponent implements OnInit {
 
   updateAppointment(): void {
 
-    const data = {
+    const dataAppointment = {
       token: localStorage.getItem('token'),
       appointmentData: {
         id: this.createAppointmentForm.value.searchAppointment?.selectAppointment,
-        dniDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+        assignedPatient: this.createAppointmentForm.value.patientDNI,
+        assignedDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
         comment: this.createAppointmentForm.value.appointmentComment
       }
     }
 
-    // console.log(dataAppointment);
+    // console.log(dataAppointment.appointmentData);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -151,11 +184,11 @@ export class EditAppointmentComponent implements OnInit {
       confirmButtonText: 'Yes!',
     }).then((result) => {
       if (result.isConfirmed) {
-        this.apiService.updateAppointments(data).subscribe(
+        this.apiService.updateAppointments(dataAppointment).subscribe(
           (data: any) => {
             // console.log(data);
 
-             if (data.message) {
+             if (data) {
                 Swal.fire({
                   title: 'Appointment edited!',
                   icon: 'success',
@@ -200,7 +233,7 @@ export class EditAppointmentComponent implements OnInit {
         dataDoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
         dataDoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
         dataDoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
+        dataDoctorToFilter.phone.toLowerCase().includes(dataToSearch.toLowerCase())
 
       );
 
@@ -262,7 +295,7 @@ export class EditAppointmentComponent implements OnInit {
           (data: any) => {
             // console.log(data);
 
-             if (data.message) {
+             if (data) {
                 Swal.fire({
                   title: 'Appointment deleted!',
                   icon: 'success',
