@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -13,14 +13,14 @@ import { NgxPaginationModule } from 'ngx-pagination';
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css'
 })
-export class DoctorsComponent {
+export class DoctorsComponent implements OnInit{
   data: any[] = [];
   filtereddoctor: any[] = [];
 
   alldoctors: number = 0;
   pagination: number = 1;
 
-  cantdoctorsPerPage: number = 6;
+  cantdoctorsPerPage: number = 8;
 
   token = localStorage.getItem('token');
 
@@ -29,9 +29,23 @@ export class DoctorsComponent {
     public doctorapiservice: ApiService
   ) {}
 
+  // Change number of doctors per page
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    let height = window.innerHeight;
+
+    if (height < 800) {
+      this.cantdoctorsPerPage = 8;
+    } else {
+      this.cantdoctorsPerPage = 12;
+    }
+  }
+
   ngOnInit(): void {
     this.getUser();
+    this.onResize();
   }
+
 
   getUser(): void {
 

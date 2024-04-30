@@ -82,7 +82,7 @@ export class ModifyDoctorTypeComponent implements OnInit {
       doctorTypeData: {
         id: this.modifyDoctorTypeForm.value.id,
         name: this.modifyDoctorTypeForm.value.name,
-        desciption: this.modifyDoctorTypeForm.value.description,
+        description: this.modifyDoctorTypeForm.value.description,
         salary: this.modifyDoctorTypeForm.value.salary,
       }
     }

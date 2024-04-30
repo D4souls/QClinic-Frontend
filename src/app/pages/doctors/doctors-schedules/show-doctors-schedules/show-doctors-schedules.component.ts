@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -31,6 +31,18 @@ export class DoctorsScheduleComponent {
 
   ngOnInit(): void {
     this.getSchedules();
+  }
+
+  // Change number of doctors per page
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    let height = window.innerHeight;
+
+    if (height < 800) {
+      this.cantdoctorsPerPage = 8;
+    } else {
+      this.cantdoctorsPerPage = 12;
+    }
   }
 
   getSchedules(): void {
