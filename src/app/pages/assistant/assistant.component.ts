@@ -76,9 +76,15 @@ export class AssistantComponent implements OnInit{
     const chatAI = document.getElementById('chatAI');
 
     if (canvas && chatAI) {
-      canvas!.style.display = 'none';
+
+      chatAI!.classList.add('animate-expand-vertically');
       chatAI!.style.display = 'block';
-      chatAI!.classList.toggle('animate-slide-in-left');
+
+      setTimeout(() => {
+        canvas!.style.display = 'none';
+      }, 500)
+
+
 
     }
   }
@@ -88,11 +94,14 @@ export class AssistantComponent implements OnInit{
     const chatAI = document.getElementById('chatAI');
 
     if (canvas && chatAI) {
-      canvas!.style.display = 'block';
-      chatAI!.style.display = 'none';
 
-      chatAI!.classList.remove('animate-slide-in-left');
-      chatAI!.classList.add('animate-slide-out-right');
+      chatAI!.classList.remove('animate-expand-vertically');
+      chatAI!.classList.add('animate-contract-vertically');
+      canvas!.style.display = 'block';
+      
+      setTimeout(() => {
+        chatAI!.style.display = 'none';
+      }, 500)
     }
   }
 }
