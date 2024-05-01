@@ -1,8 +1,9 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, OnInit, signal, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Application } from '@splinetool/runtime';
 import { textValidator } from '../../shared/validators/text.validator';
 import { CommonModule } from '@angular/common';
+import { ApiService } from '../../core/services/api.service';
 
 @Component({
   selector: 'app-assistant',
@@ -13,26 +14,40 @@ import { CommonModule } from '@angular/common';
 })
 export class AssistantComponent implements OnInit{
 
+  constructor(
+    private apiService: ApiService
+  ){}
+
   ngOnInit(): void {
     this.loadAssistant();
+    this
   }
 
-  chatData = signal<any[]>([
-    {
-      role: "user",
-      prompt: "Hi, im Sam!",
-      date: "10:36"
-    },
-    {
-      role: "assistant",
-      prompt: "Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae provident aspernatur animi reiciendis sit eligendi voluptates repudiandae cum maxime quod sint illum magni, beatae, voluptatem fugit atque incidunt quis accusantium!",
-      date: "10:37"
-    }
-  ]);
+  statusAIResponse = signal<boolean>(true);
+
+  chatData = signal<any[]>([]);
 
   formAI = new FormGroup({
-    prompt: new FormControl('', [Validators.required, textValidator])
+    prompt: new FormControl('', [Validators.required])
   })
+
+  handleResize(){
+    const textArea = document.querySelector('textarea');
+    textArea!.style.height = 'auto';
+    textArea!.style.height = textArea!.scrollHeight + 'px';
+
+    // Handle border radius
+    const lines = textArea!.value.split('\n').length;
+    if (lines > 1) {
+      textArea!.classList.remove('rounded-full');
+      textArea!.classList.add('rounded-md');
+    }
+
+    if (lines <= 1) {
+      textArea!.classList.add('rounded-full');
+      textArea!.classList.remove('rounded-md');
+    }
+  }
 
   currentTimeStamp() {
     const now = new Date();
@@ -51,16 +66,60 @@ export class AssistantComponent implements OnInit{
   }
 
   askToAI(): void{
-    
+
+    // Set status to show loading
+    this.statusAIResponse.set(false);
+
     const userPrompt = {
       role: "user",
       prompt: this.formAI.value.prompt,
       date: this.currentTimeStamp()
     }
-
+    
     this.chatData.update((messages: any) => ([...messages, userPrompt]));
 
-    // console.log(this.chatData());
+    // Call asistant
+    const dataToSend = {
+      prompt: this.formAI.value.prompt
+      // token: localStorage.getItem('token'),
+    }
+    
+    // Reset form values
+    this.formAI.reset();
+
+    this.apiService.callAssistant(dataToSend).subscribe((responseAI: any) => {
+      if (responseAI.status == 200){
+        
+        // Create new object
+        const aiRole = {
+          role: "assistant",
+          prompt: responseAI.data.response,
+          date: responseAI.data.created
+        }
+
+        // Add to chatData
+        this.chatData.update((messages: any) => ([...messages, aiRole]));
+
+        // Set status to show loading
+        this.statusAIResponse.set(true);
+
+      } else {
+
+        // Create new object
+        const aiRole = {
+          role: "assistant",
+          prompt: "Ups... An error ocurred while asking to the AI",
+          date: this.currentTimeStamp()
+        }
+
+        // Add to chatData
+        this.chatData.update((messages: any) => ([...messages, aiRole]));
+
+        // Set status to show loading
+        this.statusAIResponse.set(true);
+
+      }
+    })
     
   }
 
@@ -103,5 +162,9 @@ export class AssistantComponent implements OnInit{
         chatAI!.style.display = 'none';
       }, 500)
     }
+  }
+
+  clearChat(){
+    this.chatData = signal<any[]>([]);
   }
 }

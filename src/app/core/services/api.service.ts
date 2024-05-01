@@ -148,4 +148,9 @@ export class ApiService {
   deleteAppointments(data: any): Observable<any> {
     return this.httpclient.delete(this.url + `appointment-delete/${data.id}`, this.configureAuthHeader(data.token));
   }
+
+  // AI METHOD
+  callAssistant(data: any): Observable<any>{
+    return this.httpclient.post('http://localhost:4047/api/v1/ollama', data);
+  }
 }
