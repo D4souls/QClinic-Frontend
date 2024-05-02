@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Component, Input, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -10,11 +10,14 @@ import { dniValidator } from '../../../shared/validators/dni.validator';
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../shared/validators/text.validator';
 import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
+import { CommonModule } from '@angular/common';
+
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 
 @Component({
   selector: 'app-modify-patient',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './modify-patient.component.html',
   styleUrl: './modify-patient.component.css',
 })
@@ -40,7 +43,6 @@ export class ModifyPatientComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-
     this.activatedRouter.params.subscribe(req => {
 
       this.dniPatient = req['dniPatient'];
@@ -49,6 +51,11 @@ export class ModifyPatientComponent implements OnInit {
       this.getPatientAppointments(this.dniPatient);
       this.getDoctors();
     })
+  }
+
+  getDNIValue(): any {
+    const dniValue = document.getElementById('app-modify-patient')!.getAttribute('dni');
+    return dniValue;
   }
 
   modifyPatientForm = new FormGroup({
@@ -70,7 +77,7 @@ export class ModifyPatientComponent implements OnInit {
     patientGender: new FormControl('', Validators.required),
     patientDoctor: new FormControl('', Validators.required),
     patientEmail: new FormControl('', Validators.email),
-    patientCity: new FormControl('', [Validators.nullValidator, textValidator]),
+    patientCity: new FormControl('', [Validators.nullValidator]),
   });
 
   getDataPatient(dniToFind: string){
@@ -138,14 +145,51 @@ export class ModifyPatientComponent implements OnInit {
     }
 
     this.apiService.getUserAppointments(data).subscribe((data: any) => {
-      this.appointmentsPatient = data.data;
-      console.log(this.appointmentsPatient);
+      
+      if (data) {
+        this.appointmentsPatient = data;
+
+        // Get doctors info
+        this.appointmentsPatient.forEach((appointment: any) => {
+          const assigneddoctorDNI = appointment.assignedDoctor;
+
+          this.apiService.getDoctorByDNI({token: localStorage.getItem('token'), dni: assigneddoctorDNI}).subscribe((doctorInfo: any) => {
+            appointment.doctor = `${doctorInfo.firstname} ${doctorInfo.lastname}`;
+          }, err => {
+            console.error(err);
+          });
+
+        });
+
+      }
     })
   }
 
 
   returnBack(){
-    this.router.navigate(['/patients']);
+    
+    const $targetEl = document.getElementById('modal-edit-patient');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-patient',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
+
+    this.router.navigate(["/patients"]);
+
   }
 
   saveChanges(): void {

@@ -8,10 +8,12 @@ export const patients_routes: Routes = [
     path: '',
     title: 'Manage patients',
     component: PatientsComponent,
-  },
-  {
-    path: 'modify-patient/:dniPatient',
-    title: 'Modify patient',
-    component: ModifyPatientComponent,
+    children: [
+      {
+        path: 'modify-patient/:dniPatient',
+        title: 'Modify patient',
+        component: ModifyPatientComponent,
+      },
+    ]
   },
 ];

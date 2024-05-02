@@ -11,7 +11,7 @@
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
       <label for="doctorDNI" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">DNI*</span>
+        <span class="dark:text-white/90">DNI</span>
         <input
           type="text"
           id="doctorDNI"
@@ -22,7 +22,7 @@
         />
       </label>
       <label for="doctorName" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">First name*</span>
+        <span class="dark:text-white/90">First name @if(!modifyDoctorForm.get('doctorName')!.valid){ <span>*</span> }</span>
         <input
           type="text"
           id="doctorName"
@@ -32,7 +32,7 @@
         />
       </label>
       <label for="doctorLastname" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Last name*</span>
+        <span class="dark:text-white/90">Last name @if(!modifyDoctorForm.get('doctorLastname')!.valid){ <span>*</span> }</span>
         <input
           type="text"
           id="doctorLastname"
@@ -42,7 +42,7 @@
         />
       </label>
       <label for="doctorPhone" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Phone Number*</span>
+        <span class="dark:text-white/90">Phone Number @if(!modifyDoctorForm.get('doctorPhone')!.valid){ <span>*</span> }</span>
         <input
           type="tel"
           id="doctorPhone"
@@ -52,7 +52,7 @@
         />
       </label>
       <label for="doctorGender" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Gender*</span>
+        <span class="dark:text-white/90">Gender @if(!modifyDoctorForm.get('doctorEmail')!.valid){ <span>*</span> }</span>
         <select
           name="doctorGender"
           id="doctorGender"
@@ -82,7 +82,7 @@
 
       <!-- DOCTOR TYPE -->
       <label for="doctorType" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Doctor specialization*</span>
+        <span class="dark:text-white/90">Doctor specialization @if(!modifyDoctorForm.get('doctorEmail')!.valid){ <span>*</span> }</span>
         <select name="doctorType" id="doctorType" formControlName="doctorType" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
           <option value="" disabled [selected]="modifyDoctorForm.value.doctorType === null">Select specialization</option>
           @for (doctorData of doctorType; track doctorType.dni){

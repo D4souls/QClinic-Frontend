@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import { NgxPaginationModule } from 'ngx-pagination';
@@ -8,11 +8,12 @@ import { patientsInterfaces } from '../../../core/interfaces/patients/patients-i
 import { CreatePatientComponent } from '../create-patient/create-patient.component';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { ModifyPatientComponent } from '../modify-patient/modify-patient.component';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreatePatientComponent],
+  imports: [NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreatePatientComponent, ModifyPatientComponent],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.css',
 })
@@ -24,6 +25,8 @@ export class PatientsComponent implements OnInit {
   pagination: number = 1;
 
   cantPatientsPerPage: number = 11;
+
+  dniSelected: string = '';
 
   constructor(
     private router: Router,
@@ -56,7 +59,33 @@ export class PatientsComponent implements OnInit {
   }
 
   modifyPatient(dni: string): void {
-    this.router.navigate(['/patients/modify-patient', dni]);
+
+    const appModify = document.getElementById('app-modify-patient');
+    appModify?.setAttribute('dni', dni);
+
+    const $targetEl = document.getElementById('modal-edit-patient');
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-patient',
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
+
+    this.router.navigate(["/patients/modify-patient", dni]);
+
   }
 
   newPatient(): void {

@@ -11,7 +11,7 @@
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
       <label for="patientDNI" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">DNI*</span>
+        <span class="dark:text-white/90">DNI</span>
         <input
           type="text"
           id="patientDNI"
@@ -22,7 +22,7 @@
         />
       </label>
       <label for="patientName" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">First name*</span>
+        <span class="dark:text-white/90">First name @if(!modifyPatientForm.get('patientName')!.valid){ <span>*</span> }</span>
         <input
           type="text"
           id="patientName"
@@ -33,7 +33,7 @@
         />
       </label>
       <label for="patientLastname" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Last name*</span>
+        <span class="dark:text-white/90">Last name @if(!modifyPatientForm.get('patientLastname')!.valid){ <span>*</span> }</span>
         <input
           type="text"
           id="patientLastname"
@@ -43,7 +43,7 @@
         />
       </label>
       <label for="patientPhone" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Phone Number*</span>
+        <span class="dark:text-white/90">Phone Number @if(!modifyPatientForm.get('patientPhone')!.valid){ <span>*</span> }</span>
         <input
           type="tel"
           id="patientPhone"
@@ -53,7 +53,7 @@
         />
       </label>
       <label for="patientGender" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Gender*</span>
+        <span class="dark:text-white/90">Gender @if(!modifyPatientForm.get('patientGender')!.valid){ <span>*</span> }</span>
         <select
           name="patientGender"
           id="patientGender"
@@ -83,7 +83,7 @@
 
       <!-- DOCTOR PART -->
       <label for="patientDoctor" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Doctor*</span>
+        <span class="dark:text-white/90">Doctor @if(!modifyPatientForm.get('patientDoctor')!.valid){ <span>*</span> }</span>
         <select
           name="patientDoctor"
           id="patientDoctor"
@@ -112,7 +112,7 @@
     <!-- ADDITIONAL INFORMATION USER FROM -->
     <div class="grid grid-cols-2 grid-rows-1 gap-2">
       <label for="patientEmail" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Email</span>
+        <span class="dark:text-white/90">Email @if(!modifyPatientForm.get('patientEmail')!.valid){ <span>*</span> } </span>
         <input
           type="email"
           id="patientEmail"
@@ -122,7 +122,7 @@
         />
       </label>
       <label for="patientCity" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">City</span>
+        <span class="dark:text-white/90">City @if(!modifyPatientForm.get('patientCity')!.valid){ <span>*</span> }</span>
         <input
           type="text"
           id="patientCity"
@@ -196,6 +196,7 @@
           >
             <tr class="table-row">
               <th scope="col" class="px-6 py-3 table-cell">Date</th>
+              <th scope="col" class="px-6 py-3 md:table-cell hidden">Comment</th>
               <th scope="col" class="px-6 py-3 md:table-cell hidden">Duration</th>
               <th scope="col" class="px-6 py-3">Doctor</th>
               <th scope="col" class="px-6 py-3">Payed</th>
@@ -205,10 +206,10 @@
 
             @for(dataAppointment of appointmentsPatient; track appointmentsPatient.id){
               <tr class="text-xs md:text-sm table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td scope="row"
-                class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ dataAppointment.date }}</td>
+                <td scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ dataAppointment.appointmentStart | date: 'dd/MM/yyyy hh:mm' }}</td>
+                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.comment }}</td>
                 <td class="px-6 py-4 md:table-cell hidden">1 hour</td>
-                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.doctorFirstname }} {{ dataAppointment.doctorLastname }}</td>
+                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.doctor }}</td>
                 <td class="px-6 py-4">Yes</td>
               </tr>
             }
