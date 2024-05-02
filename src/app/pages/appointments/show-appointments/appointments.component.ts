@@ -285,10 +285,10 @@ export class AppointmentsComponent implements OnInit {
   
     this.apiGetPatient.getAppointments(token).subscribe((appointmentsData: any) => {
       // console.log(appointmentsData);
-      if (appointmentsData) {
+      if (appointmentsData.status == 200) {
         const appointmentsObservables: Observable<any>[] = [];
   
-        appointmentsData.forEach((appointment: any) => {
+        appointmentsData.msn.forEach((appointment: any) => {
           
           const patientData$ = this.apiGetPatient.getPatientData({ dni: appointment.assignedPatient, token });
   
@@ -304,12 +304,12 @@ export class AppointmentsComponent implements OnInit {
           for (let i = 0; i < results.length; i += 2) {
             const patientData = results[i];
             const doctorData = results[i + 1];
-            const appointment = appointmentsData[i / 2];
+            const appointment = appointmentsData.msn[i / 2];
   
             const event = {
               id: appointment.id,
               title: `${patientData.firstname} ${patientData.lastname}`,
-              start: appointment.appointmentDate,
+              start: appointment.appointmentStart,
               extendedProps: {
                 description: appointment.comment,
                 doctor: `${doctorData.firstname} ${doctorData.lastname}`
