@@ -29,6 +29,11 @@ export class ApiService {
     return httpOptions;
   }
 
+  // UPLOAD IMAGES METHODS
+  uploadImg(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'patient-avatar', data.img, this.configureAuthHeader(data.token));
+  }
+
   // PATIENTS METHODS
   getPatients(data: any): Observable<any>{
     // return this.httpclient.get(this.url + 'patient' + '?page=' + data.pagination, /*this.configureAuthHeader(data.token)*/);
