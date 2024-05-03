@@ -108,6 +108,30 @@ export class NavBarComponent implements OnInit{
 
   }
 
+  hideModal(): void {
+
+    const $targetEl = document.getElementById('mobile-navbar');
+  
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
+      closable: true,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'new-appointment',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    modal.hide();
+    
+  }
+
   logout(): void {
 
     const $targetEl = document.getElementById('mobile-navbar');
@@ -155,26 +179,5 @@ export class NavBarComponent implements OnInit{
     const modal: Modal = new Modal($targetEl, options, instanceOptions);
 
     modal.show();
-  }
-
-  //? NEED LOGIN DATA TO USE THIS
-
-  // data: any = [];
-
-  // constructor(
-  //   public patientApiService: PatientApiService,
-  // ){}
-
-  // ngOnInit(): void {
-  //   this.getUserName();
-  // }
-
-  // getUserName(): void {
-  //   this.patientApiService.getPatientData().subscribe((data: any) => {
-  //     console.log(data);
-  //     this.data = data;
-  //   });
-  // }
-
-  
+  }  
 }
