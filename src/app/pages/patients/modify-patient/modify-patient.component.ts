@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiService } from '../../../core/services/api.service';
 import Swal from 'sweetalert2';
@@ -13,17 +13,22 @@ import { patientsInterfaces } from '../../../core/interfaces/patients/patients-i
 import { CommonModule } from '@angular/common';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { NgxPaginationModule } from 'ngx-pagination';
 
 @Component({
   selector: 'app-modify-patient',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxPaginationModule],
   templateUrl: './modify-patient.component.html',
   styleUrl: './modify-patient.component.css',
 })
 export class ModifyPatientComponent implements OnInit {
 
   dataPatient: any = [];
+  filterAppointmentsPatient = signal<any[]>([]);
+  typeOrder: string = 'DSC';
+
+  actualStatus = signal<boolean>(false);
 
   dniPatient: string = '';
 
@@ -34,6 +39,10 @@ export class ModifyPatientComponent implements OnInit {
   appointmentsPatient: any = [];
 
   token = localStorage.getItem('token');
+
+  allAppointments: number = 0;
+  pagination: number = 1;
+  cantAppointmentsPerPage: number = 4;
 
   constructor(
     private router: Router,
@@ -90,21 +99,23 @@ export class ModifyPatientComponent implements OnInit {
     this.apiService.getPatientData(patientData).subscribe((patientResponse: any) => {
       if(patientResponse){
         this.dataPatient = patientResponse;
+
+        this.actualStatus.set(patientResponse.isActive);
   
         this.modifyPatientForm.patchValue({
-          patientDNI: this.dataPatient.dni,
-          patientName: this.dataPatient.firstname,
-          patientLastname: this.dataPatient.lastname,
-          patientCity: this.dataPatient.city,
-          patientPhone: this.dataPatient.phone,
-          patientEmail: this.dataPatient.email,
-          patientGender: this.dataPatient.gender,
-          patientDoctor: this.dataPatient.assigneddoctor != null ? this.dataPatient.assigneddoctor : null,
+          patientDNI: patientResponse.dni,
+          patientName: patientResponse.firstname,
+          patientLastname: patientResponse.lastname,
+          patientCity: patientResponse.city,
+          patientPhone: patientResponse.phone,
+          patientEmail: patientResponse.email,
+          patientGender: patientResponse.gender,
+          patientDoctor: patientResponse.assigneddoctor != null ? patientResponse.assigneddoctor : null,
         });
         
-        if (this.dataPatient.assigneddoctor){
+        if (patientResponse.assigneddoctor){
           let doctorData = {
-            dni: this.dataPatient.assigneddoctor,
+            dni: patientResponse.assigneddoctor,
             token: this.token
           }
     
@@ -147,7 +158,12 @@ export class ModifyPatientComponent implements OnInit {
     this.apiService.getUserAppointments(data).subscribe((data: any) => {
       
       if (data) {
+        data.sort((a: any, b: any) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime())
         this.appointmentsPatient = data;
+        
+        if (this.filterAppointmentsPatient().length == 0 ) this.filterAppointmentsPatient.set(data);
+
+        // console.log(this.filterAppointmentsPatient().length);
 
         // Get doctors info
         this.appointmentsPatient.forEach((appointment: any) => {
@@ -165,6 +181,150 @@ export class ModifyPatientComponent implements OnInit {
     })
   }
 
+  filterAppoinments(dataToSearch: string): void {
+
+    // console.log(dataToSearch);
+
+    if (!dataToSearch) {
+      this.filterAppointmentsPatient.set(this.appointmentsPatient);
+      // console.log(this.filteredPatient);
+    } else {
+
+      if (dataToSearch == 'payed'){
+
+        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => dataPatientToFilter.payed);
+        this.filterAppointmentsPatient.set(searchName);
+
+      } else if (dataToSearch == 'no payed'){
+
+        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => !dataPatientToFilter.payed);
+        this.filterAppointmentsPatient.set(searchName);
+
+      } else {
+
+        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) =>
+          dataPatientToFilter.comment.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+          dataPatientToFilter.doctor.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+          dataPatientToFilter.appointmentDate.toLowerCase().includes(dataToSearch.toLowerCase())
+        );
+  
+        if (searchName.length > 0) {
+          this.filterAppointmentsPatient.set(searchName);
+        } else {
+  
+          this.filterAppointmentsPatient.set(this.appointmentsPatient);
+  
+          Swal.fire({
+            text: "We didn't found any appointment..." ,
+            icon: 'error',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+        }
+      }
+      
+
+    }
+  }
+
+  changeSVGIcon(){
+
+    // Get 2 svg id
+    const svgDSC = document.getElementById('svgFilterDSC');
+    const svgASC = document.getElementById('svgFilterASC');
+
+    if (svgDSC?.style.display == 'block') {
+
+      this.typeOrder = 'ASC';
+      this.shortByDate();
+
+      svgDSC!.style.display = 'none';
+      svgASC!.style.display = 'block';
+
+    } else {
+      this.typeOrder = 'DSC';
+      this.shortByDate();
+
+      svgASC!.style.display = 'none';
+      svgDSC!.style.display = 'block';
+
+    }
+  }
+
+  shortByDate(): void {
+
+    if (this.typeOrder == 'ASC') {
+     
+      // Change order to DSC
+      const originalData = this.filterAppointmentsPatient();
+      const orderASC= originalData.sort((a: any, b: any) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime());
+      this.filterAppointmentsPatient.set(orderASC);
+
+    } else {
+
+      // Change order to DSC
+      const originalData = this.filterAppointmentsPatient();
+      const orderDSC= originalData.sort((a: any, b: any) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
+      this.filterAppointmentsPatient.set(orderDSC);
+
+    }
+
+
+  }
+
+  updateSatusPaymentSignal(id: number): void {
+    
+    const currentAppointmetns = this.filterAppointmentsPatient();
+
+    const appoinmentToUpdate = currentAppointmetns.find((a: any) => a.id == id);
+
+    if (appoinmentToUpdate) appoinmentToUpdate['payed'] = true;
+  }
+
+  updateStatusPayment(id: number){
+    
+    this.apiService.updatePaymentStatus({id: id, token: localStorage.getItem('token')}).subscribe((updatePayStatusRes: any) => {
+
+      if (updatePayStatusRes.status == 200) {
+
+        this.updateSatusPaymentSignal(id);
+
+        Swal.fire({
+          text: 'Now appoinment is payed',
+          icon: 'success',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      } else {
+        Swal.fire({
+          text: updatePayStatusRes.msn,
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+    })
+  }
+
+  renderPage(event: number) {
+    this.pagination = event;
+    this.getPatientAppointments(this.dniPatient);
+  }
+
+  onSubmit(event: Event): void {
+    event.preventDefault();
+  }
 
   returnBack(){
     
@@ -299,7 +459,8 @@ export class ModifyPatientComponent implements OnInit {
               });
 
               setTimeout(() => {
-                this.router.navigate(['/patients']);
+                this.returnBack();
+                window.location.reload();
               }, 3000);    
               
             } else {
@@ -322,5 +483,51 @@ export class ModifyPatientComponent implements OnInit {
         );
       }
     });
+  }
+
+  changeStatusPatient(): void {
+
+    const data = {dni: this.dataPatient.dni , token: this.token};
+
+    this.apiService.changeStatusPatient(data).subscribe((changeSatusRes: any) => {
+
+      // console.log(changeSatusRes);
+
+      if (changeSatusRes.status == 200){
+
+        Swal.fire({
+          icon: 'success',
+          text: "Patient status changed!",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      } else {
+        Swal.fire({
+          icon: 'error',
+          text: changeSatusRes.msn,
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+    }, err => {
+      Swal.fire({
+        icon: 'error',
+        text: err.message,
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+    });
+
   }
 }

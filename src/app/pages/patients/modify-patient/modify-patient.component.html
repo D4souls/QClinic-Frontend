@@ -1,14 +1,13 @@
 <div
   class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white"
 >
-  <span class="self-start font-bold text-2xl md:text-4xl">Patients</span>
-
   <form
     class="flex flex-col gap-2"
     [formGroup]="modifyPatientForm"
     (ngSubmit)="saveChanges()"
   >
     <!-- MAIN INFORMATION USER FORM -->
+    <h3 class="self-start font-bold text-sm md:text-2xl">Personal information</h3>
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
       <label for="patientDNI" class="flex flex-col justify-center text-md">
         <span class="dark:text-white/90">DNI</span>
@@ -132,10 +131,29 @@
           [style.view-transition-name]="'transition-patient-city-' + dniPatient"
         />
       </label>
+
+      <!-- EXTRA OPTIONS -->
+      <div class="gap-4 flex flex-col justify-center">
+      
+        <h3 class="self-start font-bold text-sm md:text-md">Extra options</h3>
+  
+        <label class="inline-flex items-center cursor-pointer" (click)="changeStatusPatient()">
+          @if (actualStatus()){
+            <input type="checkbox" value="1" class="sr-only peer" checked id="statusPatient">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusPatientMsg">Patient is actived</span>
+          } @else {
+            <input type="checkbox" value="1" class="sr-only peer" id="statusPatient">
+            <div class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+            <span class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300" id="statusPatientMsg">Temporarily disable</span>
+          }
+        </label>
+  
+      </div>
+
     </div>
 
     <!-- FORM BUTTONS -->
-
     <div class="flex flex-row gap-4 items-center mt-7">
       <button
         type="submit"
@@ -179,52 +197,171 @@
           </svg>
         </div>
       </button>
-    </div>
+    </div> 
 
     <hr class="w-full border border-gray-300" />
 
     <!-- PATIENT'S APPOINTMENTS DATA TABLE  -->
     <div class="gap-4 flex flex-col justify-center">
       <h3 class="self-start font-bold text-md md:text-2xl">Appointments</h3>
-      @if (appointmentsPatient.length > 0){
+      @defer (on viewport){
+        @if (appointmentsPatient.length > 0){
+          
+          <!-- SEARCH BAR -->
+          <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
+            <label
+              for="filterPatient"
+              class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke-width="1.5"
+                stroke="currentColor"
+                class="w-6 h-6"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                />
+              </svg>
+              <input
+                type="search"
+                name="filterPatient"
+                placeholder="Search appointment by status, comment, date, doctor"
+                #filter
+                class="bg-transparent border-none w-full focus:border-0"
+                (keydown.enter)="filterAppoinments(filter.value)"
+              />
+            </label>
+          </form>
 
-        <table
-          class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
-        >
-          <thead
-            class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+          <!-- APPOINTMENTS TABLE -->
+          <table
+            class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
           >
-            <tr class="table-row">
-              <th scope="col" class="px-6 py-3 table-cell">Date</th>
-              <th scope="col" class="px-6 py-3 md:table-cell hidden">Comment</th>
-              <th scope="col" class="px-6 py-3 md:table-cell hidden">Duration</th>
-              <th scope="col" class="px-6 py-3">Doctor</th>
-              <th scope="col" class="px-6 py-3">Payed</th>
-            </tr>
-          </thead>
-          <tbody class="table-row-group">
-
-            @for(dataAppointment of appointmentsPatient; track appointmentsPatient.id){
-              <tr class="text-xs md:text-sm table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <td scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ dataAppointment.appointmentStart | date: 'dd/MM/yyyy hh:mm' }}</td>
-                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.comment }}</td>
-                <td class="px-6 py-4 md:table-cell hidden">1 hour</td>
-                <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.doctor }}</td>
-                <td class="px-6 py-4">Yes</td>
+            <thead
+              class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+            >
+              <tr class="table-row">
+  
+                <!-- SVG ICONS TO SHORT -->
+                <th scope="col" class="table-cell cursor-pointer px-2 w-2" (click)="changeSVGIcon()">
+                  <svg  id="svgFilterDSC" style="display: block;" xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-sort-descending"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l9 0" /><path d="M4 12l7 0" /><path d="M4 18l7 0" /><path d="M15 15l3 3l3 -3" /><path d="M18 6l0 12" /></svg>
+                  <svg  id="svgFilterASC" style="display: none;" xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-sort-ascending"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 6l7 0" /><path d="M4 12l7 0" /><path d="M4 18l9 0" /><path d="M15 9l3 -3l3 3" /><path d="M18 6l0 12" /></svg>
+                </th>
+  
+                <th scope="col" class="px-6 py-3 table-cell">
+                  Date
+                </th>
+                <th scope="col" class="px-6 py-3 md:table-cell hidden">Comment</th>
+                <th scope="col" class="px-6 py-3 md:table-cell hidden">Duration</th>
+                <th scope="col" class="px-6 py-3">Doctor</th>
+                <th scope="col" class="px-6 py-3">Payed</th>
               </tr>
-            }
-          </tbody>
-        </table>
+            </thead>
+            <tbody class="table-row-group">
+              @for(dataAppointment of filterAppointmentsPatient() | paginate : { itemsPerPage: cantAppointmentsPerPage, currentPage: pagination, totalItems: allAppointments }; track dataAppointment.id){
+                <tr class="text-xs md:text-sm table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td class="text-left table-cell"></td>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white">{{ dataAppointment.appointmentDate | date: 'dd/MM/yyyy' }}</td>
+                  <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.comment }}</td>
+                  <td class="px-6 py-4 md:table-cell hidden">1 hour</td>
+                  <td class="px-6 py-4 line-clamp-1">{{ dataAppointment.doctor }}</td>
+  
+                  @if (dataAppointment.payed) {
+                    <td class="px-6 py-4">
+                      <svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="#1daa39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-currency-euro"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17.2 7a6 7 0 1 0 0 10" /><path d="M13 10h-8m0 4h8" /></svg>
+                    </td>
+                  } @else {
+                    <td class="px-6 py-4 cursor-pointer" (click)="updateStatusPayment(dataAppointment.id)">
+                      <svg  xmlns="http://www.w3.org/2000/svg"  width="15"  height="15"  viewBox="0 0 24 24"  fill="none"  stroke="#aa1d1d"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-currency-euro-off"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M17.2 7c-1.977 -2.26 -4.954 -2.602 -7.234 -1.04m-1.913 2.079c-1.604 2.72 -1.374 6.469 .69 8.894c2.292 2.691 6 2.758 8.356 .18" /><path d="M10 10h-5m0 4h8" /><path d="M3 3l18 18" /></svg>
+                    </td>
+                  }
+  
+                </tr>
+              }
+            </tbody>
+          </table>
+  
+          <!-- PAGINATION CONTROLS -->
+          <div class="self-center mb-auto">
+            <pagination-controls
+              (pageChange)="renderPage($event)"
+              previousLabel=""
+              nextLabel=""
+              screenReaderPaginationLabel="Pagination"
+              screenReaderPageLabel="page"
+              screenReaderCurrentLabel="You're on page"
+            ></pagination-controls>
+          </div>
+  
+        }@else {
+          <div class="flex flex-row items-center justify-center">
+            <img
+              src="/assets/images/calendar-flatline.png"
+              alt="earch-engine"
+              width="150"
+            />
+            <span class="text-gray-500">We didn't find any appointments</span>
+          </div>
+        }
+      } @placeholder {
+        <div role="status" class="animate-pulse">
+          <form class="flex flex-row items-center w-full">
+            <label
+              for="filterPatient"
+              class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
+            >
+              <input class="bg-transparent border-none w-full focus:border-0"/>
+            </label>
+          </form>
+  
+          <table class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400" >
+              <thead class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400" >
+                <tr class="table-row">
 
-      }@else {
-      <div class="flex flex-row items-center justify-center">
-        <img
-          src="/assets/images/calendar-flatline.png"
-          alt="earch-engine"
-          width="150"
-        />
-        <span class="text-gray-500">We didn't find any appointments</span>
-      </div>
+                  <!-- SVG ICONS TO SHORT -->
+                  <th scope="col" class="table-cell">
+                    <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-4 mb-4"></div>
+                  </th>
+
+                  <th scope="col" class="px-6 py-3 table-cell">
+                    <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+                  </th>
+                  <th scope="col" class="px-6 py-3 md:table-cell hidden"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></th>
+                  <th scope="col" class="px-6 py-3 md:table-cell hidden"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></th>
+                  <th scope="col" class="px-6 py-3"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></th>
+                  <th scope="col" class="px-6 py-3"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></th>
+                </tr>
+              </thead>
+              <tbody class="table-row-group">
+                
+                <tr class="text-xs md:text-sm table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                  <td class="px-3 py-2 text-left table-cell"></td>
+                  <td scope="row" class="px-6 py-4 font-medium text-gray-900 dark:text-white"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></td>
+                  <td class="px-6 py-4 line-clamp-1"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></td>
+                  <td class="px-6 py-4 md:table-cell hidden"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></td>
+                  <td class="px-6 py-4 line-clamp-1"><div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div></td>
+                  <td class="px-6 py-4">
+                    <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+                  </td>  
+                </tr>
+
+              </tbody>
+            </table>
+        </div>
+
+      } @loading {
+        <div class="spinner">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
       }
     </div>
   </form>

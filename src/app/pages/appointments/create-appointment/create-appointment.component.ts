@@ -108,6 +108,8 @@ export class CreateAppointmentComponent implements OnInit{
         this.apiService.createAppointments(data).subscribe(
           (data: any) => {
 
+            // console.log(data);
+
             if (data.status == 200) {
               Swal.fire({
                 title: 'Appointment created!',

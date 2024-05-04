@@ -2,6 +2,7 @@
   class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white"
 >
   <div class="flex flex-col gap-4">
+
     <div class="flex flex-row">
       <span class="font-bold text-2xl md:text-4xl">Patients</span>
       <button
@@ -12,121 +13,199 @@
       </button>
     </div>
 
-    <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
-      <label
-        for="filterPatient"
-        class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="1.5"
-          stroke="currentColor"
-          class="w-6 h-6"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
-          />
-        </svg>
-        <input
-          type="search"
-          name="filterPatient"
-          placeholder="Search patient by name, dni, city, email or phone number"
-          #filter
-          class="bg-transparent border-none w-full focus:border-0"
-          (keydown.enter)="filterPatients(filter.value)"
-        />
-      </label>
+    <form (submit)="onSubmit($event)">   
+      <label for="default-search" class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
+      <div class="relative">
+          <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+              <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                  <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"/>
+              </svg>
+          </div>
+          <input 
+            #filter 
+            (keydown.enter)="filterPatients(filter.value)" 
+            type="search" 
+            id="default-search" 
+            class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300/20 rounded-lg bg-gray-300/50 focus:ring-main-purple focus:border-main-purple dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-300/40 dark:focus:border-gray-300/40" placeholder="Search patient by name, dni..." />
+      </div>
     </form>
+    
   </div>
-  @if (data.length > 0){
+  @defer (on viewport){
 
-  <table
-    class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
-  >
-    <thead
-      class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
-    >
-      <tr class="table-row">
-        <th scope="col" class="px-6 py-3 table-cell">Name</th>
-        <th scope="col" class="px-6 py-3 md:table-cell hidden">City</th>
-        <th scope="col" class="px-6 py-3 md:table-cell hidden">
-          Gender
-        </th>
-        <th scope="col" class="px-6 py-3 md:table-cell hidden">Email</th>
-        <th scope="col" class="px-6 py-3 table-cell">
-          <span class="sr-only">Edit</span>
-        </th>
-      </tr>
-    </thead>
-    <tbody class="table-row-group">
-      @for (patient of filteredPatient | paginate : { itemsPerPage:
-      cantPatientsPerPage, currentPage: pagination, totalItems: allPatients};
-      track filteredPatient[0].dni){
-      <tr
-        class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+    @if (data.length > 0){
+
+      <table
+        class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
       >
-        <th
-          scope="row"
-          class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+        <thead
+          class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
         >
-          {{ patient.firstname }} {{ patient.lastname }}
-        </th>
+          <tr class="table-row">
+            <th scope="col" class="p-4">
+              <span class="sr-only">Avatar</span>
+            </th>
+            <th scope="col" class="px-6 py-3 table-cell">Name</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">City</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">
+              Gender
+            </th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Email</th>
+            <th scope="col" class="px-6 py-3 table-cell">
+              <span class="sr-only">Edit</span>
+            </th>
+          </tr>
+        </thead>
 
-        @if (patient.city){
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.city }}</td>
-        } @else {
-        <td class="px-6 py-4 md:table-cell hidden">No city</td>
-        }
-
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.gender }}</td>
-
-        @if (patient.email){
-        <td class="px-6 py-4 md:table-cell hidden">{{ patient.email }}</td>
-        } @else {
-        <td class="px-6 py-4 md:table-cell hidden">No email</td>
-        }
-
-        <td class="px-6 py-4 text-right table-cell">
-          <a
-            (click)="modifyPatient(patient.dni)"
-            class="font-medium text-main-purple dark:text-white/90 hover:underline cursor-pointer"
-            >Edit</a
+        <tbody class="table-row-group">
+          @for (patient of filteredPatient | paginate : { itemsPerPage:
+          cantPatientsPerPage, currentPage: pagination, totalItems: allPatients};
+          track filteredPatient[0].dni){
+            
+          <tr
+            class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
           >
-        </td>
-      </tr>
-      }
-    </tbody>
-  </table>
+            <td class="md:w-16 md:px-4 px-2">
+              <div class="relative">
+                <img
+                  class="w-8 h-8 rounded-md"
+                  src="http://localhost:8080/patients/avatar/{{patient.dni}}.jpg"
+                  alt="chatBot-icon"
+                />
 
-  <!-- PAGINATION CONTROLS -->
+                @if(patient.isActive){
+                  <span class="top-0 left-7 absolute w-3.5 h-3.5 bg-green-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+                } @else {
+                  <span class="top-0 left-7 absolute w-3.5 h-3.5 bg-red-400 border-2 border-white dark:border-gray-800 rounded-full"></span>
+                }
 
-  <div class="self-center mb-auto">
-    <pagination-controls
-      (pageChange)="renderPage($event)"
-      previousLabel=""
-      nextLabel=""
-      screenReaderPaginationLabel="Pagination"
-      screenReaderPageLabel="page"
-      screenReaderCurrentLabel="You're on page"
-    ></pagination-controls>
-  </div>
+              </div>    
+            </td>
 
-  <!-- FALLBACK TO DATA -->
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              {{ patient.firstname }} {{ patient.lastname }}
+            </th>
+  
+            @if (patient.city){
+            <td class="px-6 py-4 md:table-cell hidden">{{ patient.city }}</td>
+            } @else {
+            <td class="px-6 py-4 md:table-cell hidden">No city</td>
+            }
+  
+            <td class="px-6 py-4 md:table-cell hidden">{{ patient.gender }}</td>
+  
+            @if (patient.email){
+            <td class="px-6 py-4 md:table-cell hidden">{{ patient.email }}</td>
+            } @else {
+            <td class="px-6 py-4 md:table-cell hidden">No email</td>
+            }
+  
+            <td class="px-6 py-4 text-right table-cell">
+              <a
+                (click)="modifyPatient(patient.dni)"
+                class="font-medium text-main-purple dark:text-white/90 hover:underline cursor-pointer"
+                >Edit</a
+              >
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+  
+      <!-- PAGINATION CONTROLS -->
+      <div class="self-center mb-auto">
+        <pagination-controls
+          (pageChange)="renderPage($event)"
+          previousLabel=""
+          nextLabel=""
+          screenReaderPaginationLabel="Pagination"
+          screenReaderPageLabel="page"
+          screenReaderCurrentLabel="You're on page"
+        ></pagination-controls>
+      </div>
+  
+      
+    } @else {
+  
+      <!-- FALLBACK TO DATA -->
+      <div class="flex flex-row items-center justify-center">
+        <img
+          src="/assets/images/question-flatline.png"
+          alt="earch-engine"
+          width="150"
+          height="150"
+        />
+        <p class="text-gray-500">Ups! There are no patients...</p>
+      </div>
+    }
 
-  } @else {
-  <div class="flex flex-row items-center justify-center">
-    <img
-      src="/assets/images/question-flatline.png"
-      alt="earch-engine"
-      width="150"
-      height="150"
-    />
-    <p class="text-gray-500">Ups! There are no patients...</p>
-  </div>
+  } @placeholder {
+    <div role="status" class="animate-pulse">
+
+      <table class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400" >
+        <thead
+          class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr class="table-row">
+            <th scope="col" class="px-6 py-3 table-cell">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+            <th scope="col" class="px-6 py-3 table-cell">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody class="table-row-group">
+          <tr
+            class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </th>
+
+            <td class="px-6 py-4 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </td>
+  
+            <td class="px-6 py-4 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </td>
+  
+            <td class="px-6 py-4 md:table-cell hidden">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </td>
+  
+            <td class="px-6 py-4 text-right table-cell">
+              <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+            </td>
+          </tr>
+          
+        </tbody>
+          
+      </table>
+
+    </div>
+  } @loading {
+    <div class="spinner">
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+      <div></div>
+    </div>
   }
 </div>
 
@@ -175,7 +254,7 @@
         <div
           class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
         >
-          <span class="font-bold text-2xl md:text-4xl dark:text-white">Create patient</span>
+          <span class="font-bold text-2xl md:text-4xl dark:text-white">Modify patient</span>
         </div>
 
         <!-- MODAL BODY -->

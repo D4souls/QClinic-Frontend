@@ -48,9 +48,10 @@ export class PatientsComponent implements OnInit {
         pagination: this.pagination
       }
 
-      this.patientapiservice.getPatients(data).subscribe((data: patientsInterfaces[]) => {
+      this.patientapiservice.getPatients(data).subscribe((data: any) => {
         this.data = data;
         this.filteredPatient = data;
+
       });
     } catch (error) {
       console.log('Error while getting users: ',error);
