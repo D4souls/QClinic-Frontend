@@ -56,6 +56,9 @@ export class ApiService {
     return this.httpclient.put(this.url + 'patient-update', data.patientData, this.configureAuthHeader(data.token));
   }
 
+  changeStatusPatient(data: any): Observable<any> {
+    return this.httpclient.put(this.url + `patient-changestatus/${data.dni}`, null, this.configureAuthHeader(data.token));
+  }
 
 
   // DOCTORS METHODS
@@ -153,6 +156,10 @@ export class ApiService {
   deleteAppointments(data: any): Observable<any> {
     return this.httpclient.delete(this.url + `appointment-delete/${data.id}`, this.configureAuthHeader(data.token));
   }
+
+  updatePaymentStatus(data: any): Observable<any> {
+    return this.httpclient.put(this.url + `appointment-pay`, data.id, this.configureAuthHeader(data.token));
+  };
 
   // AI METHOD
   callAssistant(data: any): Observable<any>{
