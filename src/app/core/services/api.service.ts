@@ -36,8 +36,11 @@ export class ApiService {
 
   // PATIENTS METHODS
   getPatients(data: any): Observable<any>{
-    // return this.httpclient.get(this.url + 'patient' + '?page=' + data.pagination, /*this.configureAuthHeader(data.token)*/);
-    return this.httpclient.get(this.url + 'patient', this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `patient?offset=${data.offset}&limit=${data.limit}`, this.configureAuthHeader(data.token));
+  }
+
+  countPatients(token: string): Observable<any>{
+    return this.httpclient.get(this.url + `patient-count`, this.configureAuthHeader(token));
   }
 
   getPatientData(data: any): Observable<any>{
@@ -129,8 +132,8 @@ export class ApiService {
 
 
   // APPOINMENTS METHODS
-  getAppointments(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'appointment', this.configureAuthHeader(token));
+  getAppointments(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `appointment?limit=${data.limit}&offset=${data.offset}`, this.configureAuthHeader(data.token));
   }
 
   createAppointments(data: any): Observable<any> {
@@ -138,7 +141,7 @@ export class ApiService {
   }
 
   getUserAppointments(data: any): Observable<any> {
-    return this.httpclient.get(this.url + `appointment-info-patient/${data.dni}`, this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `appointment-info-patient/${data.dni}?limit=${data.limit}&offset=${data.offset}&order=${data.order}&date=${data.date}`, this.configureAuthHeader(data.token));
   }
 
   getDayAppointments(data: any): Observable<any> {
@@ -147,6 +150,10 @@ export class ApiService {
 
   countDayAppointments(data: any): Observable<any> {
     return this.httpclient.get(this.url + `appointment-count-day/${data.date}`, this.configureAuthHeader(data.token));
+  }
+
+  countAppointments(token: string): Observable<any> {
+    return this.httpclient.get(this.url + `appointment-count`, this.configureAuthHeader(token));
   }
 
   updateAppointments(data: any): Observable<any> {

@@ -26,7 +26,10 @@ export class ModifyPatientComponent implements OnInit {
 
   dataPatient: any = [];
   filterAppointmentsPatient = signal<any[]>([]);
-  typeOrder: string = 'DSC';
+
+  copyFilterAppointmentsPatient = signal<any[]>([]);
+
+  typeOrder: string = 'DESC';
 
   actualStatus = signal<boolean>(false);
 
@@ -44,6 +47,13 @@ export class ModifyPatientComponent implements OnInit {
   pagination: number = 1;
   cantAppointmentsPerPage: number = 4;
 
+  offset: number = 0;
+  limit: number = 4;
+  maxAppointments: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
+  filterActive: boolean = false;
+
   constructor(
     private router: Router,
     private apiService: ApiService,
@@ -59,7 +69,80 @@ export class ModifyPatientComponent implements OnInit {
       this.getDataPatient(this.dniPatient);
       this.getPatientAppointments(this.dniPatient);
       this.getDoctors();
+      this.countAppointments();
     })
+  }
+
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    if (!this.filterActive) {
+      this.getPatientAppointments(this.dniPatient);
+    } else {
+
+      if(this.currentPage == 1){
+        this.filterAppointmentsPatient().slice(0, this.limit + 1);
+        console.log(this.filterAppointmentsPatient())
+      } else {
+
+        const startIndex = (this.currentPage - 1) * this.limit;
+        const endIndex = startIndex + this.limit;
+
+        this.filterAppointmentsPatient().slice(startIndex, endIndex);
+        console.log(this.filterAppointmentsPatient())
+      }
+
+
+    }
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    if (!this.filterActive) this.getPatientAppointments(this.dniPatient);
+  }
+
+  countAppointments() {
+
+    if (!this.filterActive){
+      const token = localStorage.getItem('token')!;
+  
+      this.apiService.countAppointments(token).subscribe((countRes: any) => {
+        this.maxAppointments = countRes.msn;
+      });
+    } else {
+      this.maxAppointments = this.filterAppointmentsPatient().length;
+    }
+
+
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxAppointments / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    
+    if (!this.filterActive){
+      this.getPatientAppointments(this.dniPatient);
+    } else {
+
+    }
+    
   }
 
   getDNIValue(): any {
@@ -148,22 +231,23 @@ export class ModifyPatientComponent implements OnInit {
     });
   }
 
-  getPatientAppointments(dni: string) {
+  getPatientAppointments(dni: string, payed?: boolean, date?: string) {
 
     const data = {
       token: localStorage.getItem('token'),
-      dni: dni
+      dni: dni,
+      limit: this.limit,
+      offset: this.offset,
+      order: this.typeOrder,
+      payed: payed,
+      date: date
     }
 
     this.apiService.getUserAppointments(data).subscribe((data: any) => {
       
       if (data) {
-        data.sort((a: any, b: any) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime())
         this.appointmentsPatient = data;
-        
-        if (this.filterAppointmentsPatient().length == 0 ) this.filterAppointmentsPatient.set(data);
-
-        // console.log(this.filterAppointmentsPatient().length);
+        this.filterAppointmentsPatient.set(data)
 
         // Get doctors info
         this.appointmentsPatient.forEach((appointment: any) => {
@@ -175,6 +259,16 @@ export class ModifyPatientComponent implements OnInit {
             console.error(err);
           });
 
+          if (appointment.appointmentEnd != null && appointment.appointmentStart != null) {
+            const startDate = new Date(appointment.appointmentStart);
+            const endDate = new Date(appointment.appointmentEnd);
+            const hoursDiff = this.calculateHourDifference(startDate, endDate);
+            appointment.hoursDifference = hoursDiff;
+        } else {
+            appointment.hoursDifference = null;
+        }
+
+
         });
 
       }
@@ -183,52 +277,85 @@ export class ModifyPatientComponent implements OnInit {
 
   filterAppoinments(dataToSearch: string): void {
 
-    // console.log(dataToSearch);
+    // if (!dataToSearch) {
+    //   this.filterAppointmentsPatient.set(this.appointmentsPatient);
+    // } else {
 
-    if (!dataToSearch) {
-      this.filterAppointmentsPatient.set(this.appointmentsPatient);
-      // console.log(this.filteredPatient);
-    } else {
+    //   if (dataToSearch == 'payed'){
 
-      if (dataToSearch == 'payed'){
+    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => dataPatientToFilter.payed);
+    //     this.filterAppointmentsPatient.set(searchName);
+    //     this.filterActive = true;
+    //     this.currentPage = 1;
 
-        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => dataPatientToFilter.payed);
-        this.filterAppointmentsPatient.set(searchName);
+    //   } else if (dataToSearch == 'no payed'){
 
-      } else if (dataToSearch == 'no payed'){
+    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => !dataPatientToFilter.payed);
+    //     this.filterAppointmentsPatient.set(searchName);
+    //     this.filterActive = true;
 
-        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => !dataPatientToFilter.payed);
-        this.filterAppointmentsPatient.set(searchName);
+    //   } else {
 
-      } else {
-
-        const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) =>
-          dataPatientToFilter.comment.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-          dataPatientToFilter.doctor.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-          dataPatientToFilter.appointmentDate.toLowerCase().includes(dataToSearch.toLowerCase())
-        );
+    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) =>
+    //       dataPatientToFilter.comment.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+    //       dataPatientToFilter.doctor.toLowerCase().includes(dataToSearch.toLowerCase()) ||
+    //       dataPatientToFilter.appointmentDate.toLowerCase().includes(dataToSearch.toLowerCase())
+    //     );
   
-        if (searchName.length > 0) {
-          this.filterAppointmentsPatient.set(searchName);
-        } else {
+    //     if (searchName.length > 0) {
+    //       this.filterAppointmentsPatient.set(searchName);
+    //       this.filterActive = true;
+    //     } else {
   
-          this.filterAppointmentsPatient.set(this.appointmentsPatient);
+    //       this.filterAppointmentsPatient.set(this.appointmentsPatient);
   
-          Swal.fire({
-            text: "We didn't found any appointment..." ,
-            icon: 'error',
-            toast: true,
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            position: 'bottom'
-          });
-        }
-      }
+    //       Swal.fire({
+    //         text: "We didn't found any appointment..." ,
+    //         icon: 'error',
+    //         toast: true,
+    //         showConfirmButton: false,
+    //         timer: 3000,
+    //         timerProgressBar: true,
+    //         position: 'bottom'
+    //       });
+    //     }
+    //   }
       
 
+    // }
+
+    if (dataToSearch) {
+      const lowerCaseDataToSearch = dataToSearch.toLocaleLowerCase();
+  
+      if (lowerCaseDataToSearch === 'payed') {
+        this.getPatientAppointments(this.dniPatient, true, undefined);
+      } else if (lowerCaseDataToSearch === 'no payed') {
+        this.getPatientAppointments(this.dniPatient, false, undefined);
+      } else {
+        this.getPatientAppointments(this.dniPatient, undefined, dataToSearch);
+      }
+
+    } else {
+      this.getPatientAppointments(this.dniPatient);
     }
+  
   }
+
+  calculateHourDifference(startDate: Date, endDate: Date): string {
+    const startHours = startDate.getHours();
+    const startMinutes = startDate.getMinutes();
+    const endHours = endDate.getHours();
+    const endMinutes = endDate.getMinutes();
+
+    const totalStartMinutes = (startHours * 60) + startMinutes;
+    const totalEndMinutes = (endHours * 60) + endMinutes;
+
+    const differenceInMinutes = totalEndMinutes - totalStartMinutes;
+    const hours = Math.floor(differenceInMinutes / 60);
+    const minutes = differenceInMinutes % 60;
+
+    return `${hours} hours y ${minutes} minutes`;
+}
 
   changeSVGIcon(){
 
@@ -239,14 +366,14 @@ export class ModifyPatientComponent implements OnInit {
     if (svgDSC?.style.display == 'block') {
 
       this.typeOrder = 'ASC';
-      this.shortByDate();
+      this.getPatientAppointments(this.dniPatient);
 
       svgDSC!.style.display = 'none';
       svgASC!.style.display = 'block';
 
     } else {
-      this.typeOrder = 'DSC';
-      this.shortByDate();
+      this.typeOrder = 'DESC';
+      this.getPatientAppointments(this.dniPatient);
 
       svgASC!.style.display = 'none';
       svgDSC!.style.display = 'block';
@@ -258,14 +385,14 @@ export class ModifyPatientComponent implements OnInit {
 
     if (this.typeOrder == 'ASC') {
      
-      // Change order to DSC
+      // Change order to DESC
       const originalData = this.filterAppointmentsPatient();
       const orderASC= originalData.sort((a: any, b: any) => new Date(a.appointmentDate).getTime() - new Date(b.appointmentDate).getTime());
       this.filterAppointmentsPatient.set(orderASC);
 
     } else {
 
-      // Change order to DSC
+      // Change order to DESC
       const originalData = this.filterAppointmentsPatient();
       const orderDSC= originalData.sort((a: any, b: any) => new Date(b.appointmentDate).getTime() - new Date(a.appointmentDate).getTime());
       this.filterAppointmentsPatient.set(orderDSC);

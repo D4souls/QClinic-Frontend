@@ -9,11 +9,12 @@ import { CreatePatientComponent } from '../create-patient/create-patient.compone
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { ModifyPatientComponent } from '../modify-patient/modify-patient.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-patients',
   standalone: true,
-  imports: [NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreatePatientComponent, ModifyPatientComponent],
+  imports: [NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreatePatientComponent, ModifyPatientComponent, ReactiveFormsModule ],
   templateUrl: './patients.component.html',
   styleUrl: './patients.component.css',
 })
@@ -28,6 +29,12 @@ export class PatientsComponent implements OnInit {
 
   dniSelected: string = '';
 
+  offset: number = 0;
+  limit: number = 11;
+  maxPatients: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
+
   constructor(
     private router: Router,
     public patientapiservice: ApiService
@@ -35,8 +42,52 @@ export class PatientsComponent implements OnInit {
 
   ngOnInit(): void {
     this.getUser();
+    this.countPatients();
   }
 
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    this.getUser();
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    this.getUser();
+  }
+
+  countPatients() {
+    const token = localStorage.getItem('token')!;
+
+    this.patientapiservice.countPatients(token).subscribe((countRes: any) => {
+      this.maxPatients = countRes.msn;
+    });
+
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxPatients / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getUser();
+  }
+  
   getUser(): void {
 
     try {
@@ -45,7 +96,8 @@ export class PatientsComponent implements OnInit {
 
       const data = {
         token: token,
-        pagination: this.pagination
+        offset: this.offset,
+        limit: this.limit
       }
 
       this.patientapiservice.getPatients(data).subscribe((data: any) => {
@@ -113,11 +165,8 @@ export class PatientsComponent implements OnInit {
 
   filterPatients(dataToSearch: string): void {
 
-    // console.log(dataToSearch);
-
     if (!dataToSearch) {
       this.filteredPatient = this.data.slice();
-      // console.log(this.filteredPatient);
     } else {
       const searchName = this.data.filter((dataPatientToFilter: any) =>
         dataPatientToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
@@ -145,6 +194,7 @@ export class PatientsComponent implements OnInit {
       }
 
     }
+
   }
 
   onSubmit(event: Event): void {
