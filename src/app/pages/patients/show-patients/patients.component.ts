@@ -35,6 +35,8 @@ export class PatientsComponent implements OnInit {
   maxPages: number = 0;
   currentPage: number = 1;
 
+  filter: any = undefined;
+
   constructor(
     private router: Router,
     public patientapiservice: ApiService
@@ -60,9 +62,12 @@ export class PatientsComponent implements OnInit {
   }
 
   countPatients() {
-    const token = localStorage.getItem('token')!;
+    const data = {
+      token: localStorage.getItem('token')!,
+      textFilter: this.filter,
+    };
 
-    this.patientapiservice.countPatients(token).subscribe((countRes: any) => {
+    this.patientapiservice.countPatients(data).subscribe((countRes: any) => {
       this.maxPatients = countRes.msn;
     });
 
@@ -76,6 +81,7 @@ export class PatientsComponent implements OnInit {
   generatePageNumbers(): number[] {
     const pagesArray = [];
     const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
     for (let i = 1; i <= totalPages; i++) {
       pagesArray.push(i);
     }
@@ -97,12 +103,27 @@ export class PatientsComponent implements OnInit {
       const data = {
         token: token,
         offset: this.offset,
-        limit: this.limit
+        limit: this.limit,
+        textFilter: this.filter,
       }
 
       this.patientapiservice.getPatients(data).subscribe((data: any) => {
-        this.data = data;
-        this.filteredPatient = data;
+        
+        if (data.status != 200 && this.filter != undefined) {
+          Swal.fire({
+            text: "We can't find any patient",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+        }
+        if (data.status == 200){
+          this.data = data.res;
+          this.filteredPatient = data.res;
+        }
 
       });
     } catch (error) {
@@ -165,35 +186,24 @@ export class PatientsComponent implements OnInit {
 
   filterPatients(dataToSearch: string): void {
 
-    if (!dataToSearch) {
-      this.filteredPatient = this.data.slice();
+    if (dataToSearch === "") {
+      
+      this.filter = undefined;
+      
+      this.getUser();
+      this.countPatients();
+      this.generatePageNumbers();
+      
     } else {
-      const searchName = this.data.filter((dataPatientToFilter: any) =>
-        dataPatientToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataPatientToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataPatientToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataPatientToFilter.city.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataPatientToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
-
-      );
-
-      if (searchName.length > 0) {
-        this.filteredPatient = searchName;
-      } else {
-        this.filteredPatient = this.data;
-
-        Swal.fire({
-          text: "We didn't found any patients..." ,
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-      }
-
+  
+      this.filter = dataToSearch;
+  
+      this.getUser();
+      this.countPatients();
+      this.generatePageNumbers();
+  
     }
+
 
   }
 

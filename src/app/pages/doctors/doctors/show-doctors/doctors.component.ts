@@ -1,6 +1,6 @@
 import { Component, HostListener, OnChanges, OnInit } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
-import { Router } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../../core/services/api.service';
 import { CreateDoctorComponent } from '../create-doctor/create-doctor.component';
@@ -10,7 +10,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-doctors',
   standalone: true,
-  imports: [CreateDoctorComponent, NgxPaginationModule, CommonModule],
+  imports: [CreateDoctorComponent, NgxPaginationModule, CommonModule, RouterOutlet, RouterLink, CreateDoctorComponent],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css'
 })
@@ -27,9 +27,11 @@ export class DoctorsComponent implements OnInit{
 
   offset: number = 0;
   limit: number = 11;
-  maxPatients: number = 0;
+  maxDoctors: number = 0;
   maxPages: number = 0;
   currentPage: number = 1;
+
+  filter: any = undefined;
 
   constructor(
     private router: Router,
@@ -50,6 +52,7 @@ export class DoctorsComponent implements OnInit{
 
   ngOnInit(): void {
     this.getUser();
+    this.countDoctors();
     this.onResize();
   }
 
@@ -58,6 +61,7 @@ export class DoctorsComponent implements OnInit{
     this.offset = currentOffset;
     this.currentPage = ++this.currentPage;
     this.getUser();
+    this.countDoctors();
   }
 
   previousPage(): void{
@@ -71,19 +75,21 @@ export class DoctorsComponent implements OnInit{
     const token = localStorage.getItem('token')!;
 
     this.doctorapiservice.countDoctors(token).subscribe((countRes: any) => {
-      this.maxPatients = countRes.msn;
+      console.log(countRes)
+      this.maxDoctors = countRes;
     });
 
   }
 
   totalPages(): number {
-    this.maxPages = Math.ceil(this.maxPatients / this.limit);
+    this.maxPages = Math.ceil(this.maxDoctors / this.limit);
     return this.maxPages;
   }
 
   generatePageNumbers(): number[] {
     const pagesArray = [];
     const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
     for (let i = 1; i <= totalPages; i++) {
       pagesArray.push(i);
     }
@@ -98,11 +104,33 @@ export class DoctorsComponent implements OnInit{
 
   getUser(): void {
 
+    const data = {
+      limit: this.limit, 
+      offset: this.offset, 
+      token: this.token,
+      textFilter: this.filter,
+    }
+
     try {
 
-      this.doctorapiservice.getDoctors({limit: this.limit, offset: this.offset, token: this.token}).subscribe((data: any[]) => {
-        this.data = data;
-        this.filtereddoctor = data;
+      this.doctorapiservice.getDoctors(data).subscribe((data: any) => {
+
+        if (data.status != 200 && this.filter != undefined) {
+
+          Swal.fire({
+            text: "We can't find any doctor",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.data = data.res;
+          this.filtereddoctor = data.res;
+        }
       });
     } catch (error) {
       console.log('Error while getting users: ',error);
@@ -111,6 +139,31 @@ export class DoctorsComponent implements OnInit{
   }
 
   modifydoctor(dni: string): void {
+
+    const appModify = document.getElementById('app-modify-doctor');
+    appModify?.setAttribute('dni', dni);
+
+    const $targetEl = document.getElementById('modal-edit-doctor');
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-doctor',
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
+
     this.router.navigate(['/doctors/modify-doctor', dni]);
   }
 
@@ -146,39 +199,24 @@ export class DoctorsComponent implements OnInit{
 
   filterdoctors(dataToSearch: string): void {
 
-    // console.log(dataToSearch);
-
-    if (!dataToSearch) {
-      this.filtereddoctor = this.data.slice();
-      // console.log(this.filtereddoctor);
+    if (dataToSearch === "") {
+      
+      this.filter = undefined;
+      
+      this.getUser();
+      this.countDoctors();
+      this.generatePageNumbers();
+      
     } else {
-      const searchName = this.data.filter((datadoctorToFilter: any) =>
-        datadoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.phone.toLowerCase().includes(dataToSearch.toLowerCase()) /*||
-        datadoctorToFilter.city.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        datadoctorToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())*/
-
-      );
-
-      if (searchName.length > 0) {
-        this.filtereddoctor = searchName;
-      } else {
-        this.filtereddoctor = this.data;
-
-        Swal.fire({
-          text: "We didn't found any doctors..." ,
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-      }
-
+  
+      this.filter = dataToSearch;
+  
+      this.getUser();
+      this.countDoctors();
+      this.generatePageNumbers();
+  
     }
+    
   }
 
   onSubmit(event: Event): void {

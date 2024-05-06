@@ -23,7 +23,8 @@
           </div>
           <input 
             #filter 
-            (keydown.enter)="filterPatients(filter.value)" 
+            (keydown.enter)="filterPatients(filter.value)"
+            (change)="filterPatients(filter.value)" 
             type="search" 
             id="default-search" 
             class="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300/20 rounded-lg bg-gray-300/50 focus:ring-main-purple focus:border-main-purple dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-gray-300/40 dark:focus:border-gray-300/40" placeholder="Search patient by name, dni..." />
@@ -228,8 +229,7 @@
   }
 </div>
 
-
- <!-- MODALS -->
+ <!-- CREATE PATIENT MODAL -->
  <div
     id="modal-create-patient"
     tabindex="-1"
@@ -258,6 +258,7 @@
     </div>
   </div>
 
+  <!-- EDIT PATIENT MODAL -->
   <div
     id="modal-edit-patient"
     tabindex="-1"

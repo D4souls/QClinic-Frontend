@@ -50,6 +50,8 @@ export class ModifyPatientComponent implements OnInit {
   filterActive: boolean = false;
   loading = signal<boolean>(true);
   error = signal<boolean>(true);
+  
+  filterText: any = undefined;
 
   constructor(
     private router: Router,
@@ -62,7 +64,6 @@ export class ModifyPatientComponent implements OnInit {
     this.activatedRouter.params.subscribe(req => {
 
       this.dniPatient = req['dniPatient'];
-
       this.getDataPatient(this.dniPatient);
       this.getPatientAppointments(this.dniPatient);
       this.getDoctors();
@@ -107,7 +108,7 @@ export class ModifyPatientComponent implements OnInit {
       const token = localStorage.getItem('token')!;
   
       this.apiService.countAppointments(token).subscribe((countRes: any) => {
-        this.maxAppointments = countRes.msn;
+        this.maxAppointments = countRes.res;
       });
     } else {
       this.maxAppointments = this.filterAppointmentsPatient().length;
@@ -169,6 +170,94 @@ export class ModifyPatientComponent implements OnInit {
     patientCity: new FormControl('', [Validators.nullValidator]),
   });
 
+  previewAvatar: any;
+
+  filePreview(e: any) {
+    if (e.target.files[0] != null) {
+      var reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewAvatar = e.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const files: FileList | null = event.target.files;
+    
+    if (files && files.length > 0) {
+        const file = files[0];
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+        if (fileExtension !== 'jpg') {
+            Swal.fire({
+                text: 'Only jpg images can be uploaded',
+                icon: 'error',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'bottom'
+            });
+
+            event.target.value = '';
+            return;
+        }
+
+        const renamedFile = new File([file], `${this.dniPatient}.jpg`, { type: file.type });
+
+        
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+            this.previewAvatar = e.target.result;
+        };
+        reader.readAsDataURL(renamedFile);
+
+        const newAvatar = document.getElementById('newAvatar');
+        const oldAvatar = document.getElementById('oldAvatar');
+
+        newAvatar!.style.display = 'block';
+        oldAvatar!.style.display = 'none';
+
+        this.uploadFile(renamedFile);
+
+        event.target.value = '';
+    }
+}
+
+  uploadFile(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.apiService.uploadImg({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+      
+      if (uploadRes.status != 200){
+        Swal.fire({
+          text: 'Error uploading avatar',
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      }
+
+      Swal.fire({
+        text: 'Avatar uploaded',
+        icon: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+
+    })
+  }
+
   getDataPatient(dniToFind: string){
 
     let patientData = {
@@ -228,7 +317,7 @@ export class ModifyPatientComponent implements OnInit {
     });
   }
 
-  getPatientAppointments(dni: string, payed?: boolean, date?: string) {
+  getPatientAppointments(dni: string) {
 
     const data = {
       token: localStorage.getItem('token'),
@@ -236,62 +325,42 @@ export class ModifyPatientComponent implements OnInit {
       limit: this.limit,
       offset: this.offset,
       order: this.typeOrder,
-      payed: payed,
-      date: date
+      filterText: this.filterText,
     }
 
-    // this.apiService.getUserAppointments(data).subscribe((data: any) => {
+    this.apiService.getUserAppointments(data).subscribe((data: any) => {
       
-    //   if (data) {
-    //     this.appointmentsPatient = data;
-    //     this.filterAppointmentsPatient.set(data)
-
-    //     // Get doctors info
-    //     this.appointmentsPatient.forEach((appointment: any) => {
-    //       const assigneddoctorDNI = appointment.assignedDoctor;
-
-    //       this.apiService.getDoctorByDNI({token: localStorage.getItem('token'), dni: assigneddoctorDNI}).subscribe((doctorInfo: any) => {
-    //         appointment.doctor = `${doctorInfo.firstname} ${doctorInfo.lastname}`;
-    //       }, err => {
-    //         console.error(err);
-    //       });
-
-    //       if (appointment.appointmentEnd != null && appointment.appointmentStart != null) {
-    //         const startDate = new Date(appointment.appointmentStart);
-    //         const endDate = new Date(appointment.appointmentEnd);
-    //         const hoursDiff = this.calculateHourDifference(startDate, endDate);
-    //         appointment.hoursDifference = hoursDiff;
-    //     } else {
-    //         appointment.hoursDifference = null;
-    //     }
-
-
-    //     });
-
-    //   }
-    // })
-
-    this.apiService.getUserAppointments(data).pipe(
-      timeout(10000),
-      catchError(err => {
-        this.loading.set(false);
-        this.error.set(true);
-        console.error(err.message)
-        throw throwError(err);
-      })
-    ).subscribe((data: any) => {
-      
-      if (data) {
-        this.loading.set(false);
-        this.appointmentsPatient = data;
-        this.filterAppointmentsPatient.set(data)
+      if (data.status != 200) {
+        Swal.fire({
+          text: "We dind't found any appointment",
+          icon: 'question',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      } else {
+        this.appointmentsPatient = data.res;
+        this.filterAppointmentsPatient.set(data.res)
 
         // Get doctors info
         this.appointmentsPatient.forEach((appointment: any) => {
           const assigneddoctorDNI = appointment.assignedDoctor;
 
           this.apiService.getDoctorByDNI({token: localStorage.getItem('token'), dni: assigneddoctorDNI}).subscribe((doctorInfo: any) => {
-            appointment.doctor = `${doctorInfo.firstname} ${doctorInfo.lastname}`;
+
+            const splitLastname = doctorInfo.lastname.split(' ');
+
+            if (splitLastname.length == 1) {
+              const lastNameAcron = splitLastname[0].slice(0, 3);
+              appointment.doctor = `${doctorInfo.firstname} ${lastNameAcron}.`;
+            } else {
+              const lastNameAcron = `${splitLastname[0].slice(0, 3)}.${splitLastname[1][0]}`
+              appointment.doctor = `${doctorInfo.firstname} ${lastNameAcron}.`;
+            }
+
+
           }, err => {
             console.error(err);
           });
@@ -301,9 +370,9 @@ export class ModifyPatientComponent implements OnInit {
             const endDate = new Date(appointment.appointmentEnd);
             const hoursDiff = this.calculateHourDifference(startDate, endDate);
             appointment.hoursDifference = hoursDiff;
-        } else {
+          } else {
             appointment.hoursDifference = null;
-        }
+          }
 
 
         });
@@ -312,21 +381,32 @@ export class ModifyPatientComponent implements OnInit {
     })
   }
 
+  countPatientAppointmentWithFilter(): void {
+    
+    this.apiService.countAppointmentWithFilter({token: this.token, filterText: this.filterText, dni: this.dniPatient}).subscribe((countWithFilterRes: any) => {
+      this.maxAppointments = countWithFilterRes;
+
+    });
+  }
+
   filterAppoinments(dataToSearch: string): void {
 
-    if (dataToSearch) {
-      const lowerCaseDataToSearch = dataToSearch.toLocaleLowerCase();
-  
-      if (lowerCaseDataToSearch === 'payed') {
-        this.getPatientAppointments(this.dniPatient, true, undefined);
-      } else if (lowerCaseDataToSearch === 'no payed') {
-        this.getPatientAppointments(this.dniPatient, false, undefined);
-      } else {
-        this.getPatientAppointments(this.dniPatient, undefined, dataToSearch);
-      }
-
-    } else {
+    if (dataToSearch === "") {
+      
+      this.filterText = undefined;
+      
       this.getPatientAppointments(this.dniPatient);
+      this.countPatientAppointmentWithFilter();
+      this.generatePageNumbers();
+      
+    } else {
+  
+      this.filterText = dataToSearch;
+  
+      this.getPatientAppointments(this.dniPatient);
+      this.countPatientAppointmentWithFilter();
+      this.generatePageNumbers();
+  
     }
   
   }
@@ -344,7 +424,7 @@ export class ModifyPatientComponent implements OnInit {
     const hours = Math.floor(differenceInMinutes / 60);
     const minutes = differenceInMinutes % 60;
 
-    return `${hours} hours y ${minutes} minutes`;
+    return `${hours}.${minutes}h`;
 }
 
   changeSVGIcon(){

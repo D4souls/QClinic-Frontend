@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ApiService } from '../../../../core/services/api.service';
 import Swal from 'sweetalert2';
@@ -9,11 +9,13 @@ import { dniValidator } from '../../../../shared/validators/dni.validator';
 
 import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../../shared/validators/text.validator';
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modify-doctor',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './modify-doctor.component.html',
   styleUrl: './modify-doctor.component.css',
 })
@@ -31,6 +33,20 @@ export class ModifyDoctorComponent implements OnInit {
 
   token = localStorage.getItem('token');
 
+  previewAvatar: any;
+
+  actualStatus = signal<boolean>(false);
+
+  assignedPatients = signal<any[]>([]);
+
+  offset: number = 0;
+  limit: number = 4;
+  maxAppointments: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
+  filterActive: boolean = false;
+  filterText: any = undefined;
+
   constructor(
     private router: Router,
     private apiService: ApiService,
@@ -47,7 +63,86 @@ export class ModifyDoctorComponent implements OnInit {
       this.getDataDoctor(this.dnidoctor);
       this.getDoctorsType();
       this.getDoctorSchedule();
+      this.getPatients();
+      this.countPatientAppointmentWithFilter();
+      this.assignedPatients();
     })
+  }
+
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    if (!this.filterActive) {
+      this.getPatients();
+    } else {
+
+      if(this.currentPage == 1){
+        this.assignedPatients().slice(0, this.limit + 1);
+      } else {
+
+        const startIndex = (this.currentPage - 1) * this.limit;
+        const endIndex = startIndex + this.limit;
+
+        this.assignedPatients().slice(startIndex, endIndex);
+      }
+
+
+    }
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    if (!this.filterActive) this.getPatients();
+  }
+
+  countAppointments() {
+
+    if (!this.filterActive){
+      const token = localStorage.getItem('token')!;
+
+      const data = {
+        token: localStorage.getItem('token'),
+        textFilter: this.dnidoctor
+      }
+  
+      this.apiService.countPatients(data).subscribe((countRes: any) => {
+        this.maxAppointments = countRes.msn;
+      });
+    } else {
+      this.maxAppointments = this.assignedPatients().length;
+    }
+
+
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxAppointments / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    
+    if (!this.filterActive){
+      this.getPatients();
+    } else {
+
+    }
+    
   }
 
   modifyDoctorForm = new FormGroup({
@@ -93,6 +188,8 @@ export class ModifyDoctorComponent implements OnInit {
           doctorEmail: this.dataDoctor.email,
           doctorGender: this.dataDoctor.gender,
         });
+
+        this.actualStatus.set(this.dataDoctor.isActive);
 
         if (this.dataDoctor.doctorType != null){
           this.modifyDoctorForm.patchValue({
@@ -178,6 +275,36 @@ export class ModifyDoctorComponent implements OnInit {
     });
   }
 
+  getPatients(): void{
+
+    const data = {
+      token: this.token,
+      dni: this.dnidoctor,
+      offset: this.offset,
+      limit: this.limit,
+      filterText: this.filterText
+    }
+
+    this.apiService.getPatientsByDniDoctor(data).subscribe((patientsByDoctorDniRes: any) => {
+
+      if (patientsByDoctorDniRes.status != 200){
+        Swal.fire({
+          text: "We didn't found any patien",
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+      });
+      } else {
+        this.assignedPatients.set(patientsByDoctorDniRes.res);
+      }
+
+    });
+
+  }
+
   doctorType: any = [];
 
   getDoctorsType() {
@@ -212,7 +339,61 @@ export class ModifyDoctorComponent implements OnInit {
 
 
   returnBack(){
-    this.router.navigate(['/doctors']);
+    const $targetEl = document.getElementById('modal-edit-doctor');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-doctor',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
+
+    this.router.navigate(["/doctors"]);
+  }
+  
+  onSubmit(event: Event): void {
+    event.preventDefault();
+  }
+
+  filterPatients(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterText = undefined;
+      
+      this.getPatients();
+      this.countPatientAppointmentWithFilter();
+      this.generatePageNumbers();
+      
+    } else {
+  
+      this.filterText = dataToSearch;
+  
+      this.getPatients();
+      this.countPatientAppointmentWithFilter();
+      this.generatePageNumbers();
+  
+    }
+  
+  }
+
+  countPatientAppointmentWithFilter(): void {
+    
+    this.apiService.countPatients({token: this.token, filterText: this.filterText}).subscribe((countWithFilterRes: any) => {
+      this.maxAppointments = countWithFilterRes;
+
+    });
   }
 
   saveChanges(): void {
@@ -348,4 +529,139 @@ export class ModifyDoctorComponent implements OnInit {
       }
     });
   }
+
+  filePreview(e: any) {
+    if (e.target.files[0] != null) {
+      var reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewAvatar = e.target.result;
+      };
+      reader.readAsDataURL(e.target.files[0]);
+    }
+  }
+
+  onFileSelected(event: any): void {
+    const files: FileList | null = event.target.files;
+    
+    if (files && files.length > 0) {
+        const file = files[0];
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+
+        if (fileExtension !== 'jpg') {
+            Swal.fire({
+                text: 'Only jpg images can be uploaded',
+                icon: 'error',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'bottom'
+            });
+
+            event.target.value = '';
+            return;
+        }
+
+        const renamedFile = new File([file], `${this.dnidoctor}.jpg`, { type: file.type });
+
+        
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+            this.previewAvatar = e.target.result;
+        };
+        reader.readAsDataURL(renamedFile);
+
+        const newAvatar = document.getElementById('newAvatar');
+        const oldAvatar = document.getElementById('oldAvatar');
+
+        newAvatar!.style.display = 'block';
+        oldAvatar!.style.display = 'none';
+
+        this.uploadFile(renamedFile);
+
+        event.target.value = '';
+    }
+}
+
+  uploadFile(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.apiService.uploadImg({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+      
+      if (uploadRes.status != 200){
+        Swal.fire({
+          text: 'Error uploading avatar',
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      }
+
+      Swal.fire({
+        text: 'Avatar uploaded',
+        icon: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+
+    })
+  }
+
+  changeStatusDoctor(): void {
+
+    const data = {dni: this.dnidoctor , token: this.token};
+
+    this.apiService.changeStatusDoctor(data).subscribe((changeSatusRes: any) => {
+
+    // console.log(changeSatusRes);
+
+    if (changeSatusRes.status == 200){
+
+      this.getDataDoctor(this.dnidoctor);
+
+      Swal.fire({
+        icon: 'success',
+        text: "Patient status changed!",
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        text: changeSatusRes.msn,
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+    }
+
+    }, err => {
+      Swal.fire({
+        icon: 'error',
+        text: err.message,
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+    });
+
+  }
+
 }
