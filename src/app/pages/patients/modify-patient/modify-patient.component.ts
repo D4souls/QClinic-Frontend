@@ -9,16 +9,15 @@ import { dniValidator } from '../../../shared/validators/dni.validator';
 
 import { FormatFormsInputsService } from '../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../shared/validators/text.validator';
-import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
 import { CommonModule } from '@angular/common';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { catchError, single, throwError, timeout } from 'rxjs';
 
 @Component({
   selector: 'app-modify-patient',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink, NgxPaginationModule],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink],
   templateUrl: './modify-patient.component.html',
   styleUrl: './modify-patient.component.css',
 })
@@ -43,16 +42,14 @@ export class ModifyPatientComponent implements OnInit {
 
   token = localStorage.getItem('token');
 
-  allAppointments: number = 0;
-  pagination: number = 1;
-  cantAppointmentsPerPage: number = 4;
-
   offset: number = 0;
   limit: number = 4;
   maxAppointments: number = 0;
   maxPages: number = 0;
   currentPage: number = 1;
   filterActive: boolean = false;
+  loading = signal<boolean>(true);
+  error = signal<boolean>(true);
 
   constructor(
     private router: Router,
@@ -243,9 +240,49 @@ export class ModifyPatientComponent implements OnInit {
       date: date
     }
 
-    this.apiService.getUserAppointments(data).subscribe((data: any) => {
+    // this.apiService.getUserAppointments(data).subscribe((data: any) => {
+      
+    //   if (data) {
+    //     this.appointmentsPatient = data;
+    //     this.filterAppointmentsPatient.set(data)
+
+    //     // Get doctors info
+    //     this.appointmentsPatient.forEach((appointment: any) => {
+    //       const assigneddoctorDNI = appointment.assignedDoctor;
+
+    //       this.apiService.getDoctorByDNI({token: localStorage.getItem('token'), dni: assigneddoctorDNI}).subscribe((doctorInfo: any) => {
+    //         appointment.doctor = `${doctorInfo.firstname} ${doctorInfo.lastname}`;
+    //       }, err => {
+    //         console.error(err);
+    //       });
+
+    //       if (appointment.appointmentEnd != null && appointment.appointmentStart != null) {
+    //         const startDate = new Date(appointment.appointmentStart);
+    //         const endDate = new Date(appointment.appointmentEnd);
+    //         const hoursDiff = this.calculateHourDifference(startDate, endDate);
+    //         appointment.hoursDifference = hoursDiff;
+    //     } else {
+    //         appointment.hoursDifference = null;
+    //     }
+
+
+    //     });
+
+    //   }
+    // })
+
+    this.apiService.getUserAppointments(data).pipe(
+      timeout(10000),
+      catchError(err => {
+        this.loading.set(false);
+        this.error.set(true);
+        console.error(err.message)
+        throw throwError(err);
+      })
+    ).subscribe((data: any) => {
       
       if (data) {
+        this.loading.set(false);
         this.appointmentsPatient = data;
         this.filterAppointmentsPatient.set(data)
 
@@ -276,53 +313,6 @@ export class ModifyPatientComponent implements OnInit {
   }
 
   filterAppoinments(dataToSearch: string): void {
-
-    // if (!dataToSearch) {
-    //   this.filterAppointmentsPatient.set(this.appointmentsPatient);
-    // } else {
-
-    //   if (dataToSearch == 'payed'){
-
-    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => dataPatientToFilter.payed);
-    //     this.filterAppointmentsPatient.set(searchName);
-    //     this.filterActive = true;
-    //     this.currentPage = 1;
-
-    //   } else if (dataToSearch == 'no payed'){
-
-    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) => !dataPatientToFilter.payed);
-    //     this.filterAppointmentsPatient.set(searchName);
-    //     this.filterActive = true;
-
-    //   } else {
-
-    //     const searchName = this.filterAppointmentsPatient().filter((dataPatientToFilter: any) =>
-    //       dataPatientToFilter.comment.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-    //       dataPatientToFilter.doctor.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-    //       dataPatientToFilter.appointmentDate.toLowerCase().includes(dataToSearch.toLowerCase())
-    //     );
-  
-    //     if (searchName.length > 0) {
-    //       this.filterAppointmentsPatient.set(searchName);
-    //       this.filterActive = true;
-    //     } else {
-  
-    //       this.filterAppointmentsPatient.set(this.appointmentsPatient);
-  
-    //       Swal.fire({
-    //         text: "We didn't found any appointment..." ,
-    //         icon: 'error',
-    //         toast: true,
-    //         showConfirmButton: false,
-    //         timer: 3000,
-    //         timerProgressBar: true,
-    //         position: 'bottom'
-    //       });
-    //     }
-    //   }
-      
-
-    // }
 
     if (dataToSearch) {
       const lowerCaseDataToSearch = dataToSearch.toLocaleLowerCase();
@@ -442,11 +432,6 @@ export class ModifyPatientComponent implements OnInit {
       }
 
     })
-  }
-
-  renderPage(event: number) {
-    this.pagination = event;
-    this.getPatientAppointments(this.dniPatient);
   }
 
   onSubmit(event: Event): void {
@@ -621,6 +606,8 @@ export class ModifyPatientComponent implements OnInit {
       // console.log(changeSatusRes);
 
       if (changeSatusRes.status == 200){
+
+        this.getDataPatient(this.dniPatient);
 
         Swal.fire({
           icon: 'success',

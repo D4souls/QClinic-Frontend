@@ -65,8 +65,12 @@ export class ApiService {
 
 
   // DOCTORS METHODS
-  getDoctors(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'doctor', this.configureAuthHeader(token));
+  getDoctors(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor?limit=${data.limit}&offset=${data.offset}`, this.configureAuthHeader(data.token));
+  }
+
+  countDoctors(token: string): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-count`, this.configureAuthHeader(token));
   }
 
   getDoctorByDNI(data: any): Observable<any> {

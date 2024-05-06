@@ -5,11 +5,12 @@ import Swal from 'sweetalert2';
 import { ApiService } from '../../../../core/services/api.service';
 import { CreateDoctorComponent } from '../create-doctor/create-doctor.component';
 import { NgxPaginationModule } from 'ngx-pagination';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-doctors',
   standalone: true,
-  imports: [CreateDoctorComponent, NgxPaginationModule],
+  imports: [CreateDoctorComponent, NgxPaginationModule, CommonModule],
   templateUrl: './doctors.component.html',
   styleUrl: './doctors.component.css'
 })
@@ -23,6 +24,12 @@ export class DoctorsComponent implements OnInit{
   cantdoctorsPerPage: number = 8;
 
   token = localStorage.getItem('token');
+
+  offset: number = 0;
+  limit: number = 11;
+  maxPatients: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
 
   constructor(
     private router: Router,
@@ -46,14 +53,54 @@ export class DoctorsComponent implements OnInit{
     this.onResize();
   }
 
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    this.getUser();
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    this.getUser();
+  }
+
+  countDoctors() {
+    const token = localStorage.getItem('token')!;
+
+    this.doctorapiservice.countDoctors(token).subscribe((countRes: any) => {
+      this.maxPatients = countRes.msn;
+    });
+
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxPatients / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getUser();
+  }
 
   getUser(): void {
 
     try {
 
-      const token = localStorage.getItem('token')!;
-
-      this.doctorapiservice.getDoctors(token).subscribe((data: any[]) => {
+      this.doctorapiservice.getDoctors({limit: this.limit, offset: this.offset, token: this.token}).subscribe((data: any[]) => {
         this.data = data;
         this.filtereddoctor = data;
       });

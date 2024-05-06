@@ -55,7 +55,9 @@ export class CreateAppointmentComponent implements OnInit{
 
     const data = {
       pagination: 0,
-      token: localStorage.getItem('token')
+      token: localStorage.getItem('token'),
+      offset: 0,
+      limit: 0,
     }
 
     this.apiService.getPatients(data).subscribe((data: any) => {
