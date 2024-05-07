@@ -4,23 +4,24 @@ import { ApiService } from '../../../../core/services/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { phoneNumberValidator } from '../../../../shared/validators/phone.validator';
-import { dniValidator } from '../../../../shared/validators/dni.validator';
-
 import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../../shared/validators/text.validator';
 import { dateTimeValidator } from '../../../../shared/validators/dateTime.validator';
 
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { CommonModule } from '@angular/common';
+
 @Component({
   selector: 'app-modify-doctor-schedule',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './modify-doctor-schedule.component.html',
   styleUrl: './modify-doctor-schedule.component.css',
 })
 export class ModifyDoctorScheduleComponent implements OnInit {
 
   datadoctor: any = [];
+  doctorsSchedules: any = [];
 
   idSchedule: string = '';
 
@@ -31,6 +32,14 @@ export class ModifyDoctorScheduleComponent implements OnInit {
   appointmentsdoctor: any = [];
 
   token = localStorage.getItem('token');
+
+  offset: number = 0;
+  limit: number = 11;
+  maxSchedules: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
+
+  filter: any = undefined;
 
   constructor(
     private router: Router,
@@ -45,8 +54,14 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
       this.idSchedule = req['idSchedule'];
 
-      this.getDataSchedule(this.idSchedule);
+      this.getDataSchedule();
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
     })
+  }
+
+  onSubmit(event: Event): void {
+    event.preventDefault();
   }
 
   modifyScheduleForm = new FormGroup({
@@ -56,11 +71,11 @@ export class ModifyDoctorScheduleComponent implements OnInit {
     scheduleEnd: new FormControl('', [ Validators.required, dateTimeValidator ]),
   });
 
-  getDataSchedule(idToFind: string){
+  getDataSchedule(){
 
     let doctorScheduleData = {
       token: localStorage.getItem('token'),
-      id: idToFind
+      id: this.idSchedule
     }
   
     this.apiService.getDoctorScheduleById(doctorScheduleData).subscribe((doctorScheduleResponse: any) => {
@@ -80,6 +95,27 @@ export class ModifyDoctorScheduleComponent implements OnInit {
 
 
   returnBack(){
+
+    const $targetEl = document.getElementById('modal-edit-schedule');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-schedule',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
+
     this.router.navigate(['/doctors/schedules']);
   }
 
@@ -151,7 +187,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
         if (result.isConfirmed) {
           this.apiService.modifyDoctorSchedule(data).subscribe(
             (data: any) => {
-              console.log(data);
+              // console.log(data);
   
               if (data) {
                 Swal.fire({
@@ -165,6 +201,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
                 });
       
                 setTimeout(() => {
+                  this.returnBack();
                   this.router.navigate(['/doctors/schedules']);
                 }, 3000);   
                 
@@ -258,5 +295,112 @@ export class ModifyDoctorScheduleComponent implements OnInit {
         );
       }
     });
+  }
+
+  getDoctorsSchedule(){
+
+    const data = {
+      token: localStorage.getItem('token'),
+      id: this.idSchedule,
+      limit: this.limit,
+      offset: this.offset,
+      textFilter: this.filter
+    }
+  
+    this.apiService.getDoctorsBySchedule(data).subscribe((doctorsScheduleRes: any) => {
+      if(doctorsScheduleRes.status == 200){
+        this.doctorsSchedules = doctorsScheduleRes.res;
+      } else {
+
+        Swal.fire({
+          text: "We can't find doctors",
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      }
+    });
+  }
+
+  countDoctorsSchedule() {
+    const data = {
+      token: localStorage.getItem('token'),
+      id: this.idSchedule,
+      textFilter: this.filter
+    }
+
+    this.apiService.countDoctorsBySchedule(data).subscribe((countDoctorsRes: any) => {
+      this.maxSchedules = countDoctorsRes.res;
+    });
+
+  }
+
+  // FUNCTIONS TO PAGINATION
+
+  filterSchedules(dataToSearch: string): void {
+    if (dataToSearch === "") {
+      
+      this.filter = undefined;
+      
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageNumbers();
+      
+    } else {
+  
+      this.filter = dataToSearch;
+  
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageNumbers();
+  
+    }
+  }
+
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    this.getDoctorsSchedule();
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    this.getDoctorsSchedule();
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxSchedules / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getDataSchedule();
+  }
+
+  // END FUNCTIONS TO PAGINATION
+
+  redirectToDoctor(dni: string){
+    this.returnBack();
+    this.router.navigate(["/doctors/modify-doctor", dni]);
   }
 }

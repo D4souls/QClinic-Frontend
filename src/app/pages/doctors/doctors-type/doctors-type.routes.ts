@@ -8,10 +8,12 @@ export const doctors_type: Routes = [
     path: '',
     title: 'Manage specializations',
     component: DoctorsTypeComponent,
+    children: [
+      {
+        path: 'modify-specialization/:idType',
+        title: 'Modify specialization',
+        component: ModifyDoctorTypeComponent,
+      }
+    ]
   },
-  {
-    path: 'modify-specialization/:idType',
-    title: 'Modify specialization',
-    component: ModifyDoctorTypeComponent,
-  }
 ];

@@ -64,7 +64,11 @@ export class ApiService {
   }
 
   getPatientsByDniDoctor(data: any): Observable<any>{
-    return this.httpclient.get(this.url + `patient-by-doctor-dni?offset=${data.offset}&limit=${data.limit}&dni=${data.dni}`, this.configureAuthHeader(data.token));
+    return this.httpclient.get(this.url + `patient-by-doctor-dni?offset=${data.offset}&limit=${data.limit}&dni=${data.dni}&textFilter=${data.filterText}`, this.configureAuthHeader(data.token));
+  }
+
+  countPatientsByDniDoctor(data: any): Observable<any>{
+    return this.httpclient.get(this.url + `count-patient-by-doctor-dni?dni=${data.dni}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
   }
 
 
@@ -99,8 +103,8 @@ export class ApiService {
 
 
   // DOCTOR TYPE METHODS
-  getDoctorsType(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'doctorType', this.configureAuthHeader(token));
+  getDoctorsType(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorType?limit=${data.limit}&offset=${data.offset}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
   }
 
   getDoctorTypeById(data: any): Observable<any> {
@@ -119,10 +123,14 @@ export class ApiService {
     return this.httpclient.put(this.url + 'doctorType-update', data.doctorTypeData, this.configureAuthHeader(data.token));
   }
 
+  countDoctorsType(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorType-count?textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
 
   // DOCTOR SCHEDULE METHODS
-  getDoctorsSchedule(token: string): Observable<any> {
-    return this.httpclient.get(this.url + 'doctorSchedule', this.configureAuthHeader(token));
+  getDoctorsSchedule(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorSchedule?limit=${data.limit}&offset=${data.offset}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
   }
 
   getDoctorScheduleById(data: any): Observable<any> {
@@ -139,6 +147,26 @@ export class ApiService {
 
   modifyDoctorSchedule(data: any): Observable<any> {
     return this.httpclient.put(this.url + 'doctorSchedule-update', data.doctorScheduleData, this.configureAuthHeader(data.token));
+  }
+
+  countDoctorsSchedule(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctorSchedule-count?id=${data.id}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
+  getDoctorsBySchedule(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-get-by-schedule?id=${data.id}&limit=${data.limit}&offset=${data.offset}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
+  countDoctorsBySchedule(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-count-by-schedule?id=${data.id}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
+  getDoctorsByType(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-get-by-type?id=${data.id}&limit=${data.limit}&offset=${data.offset}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
+  countDoctorsByType(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `doctor-count-by-type?id=${data.id}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
   }
 
 
@@ -170,6 +198,10 @@ export class ApiService {
 
   countAppointments(token: string): Observable<any> {
     return this.httpclient.get(this.url + `appointment-count`, this.configureAuthHeader(token));
+  }
+
+  countAppointmentsWithFilter(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `appointment-count-with-filter/?dni=${data.dni}&filterText=${data.filterText}`, this.configureAuthHeader(data.token));
   }
 
   updateAppointments(data: any): Observable<any> {

@@ -66,33 +66,46 @@ export class ModifyPatientComponent implements OnInit {
       this.dniPatient = req['dniPatient'];
       this.getDataPatient(this.dniPatient);
       this.getPatientAppointments(this.dniPatient);
-      this.getDoctors();
       this.countAppointments();
+      this.getDoctors();
+      this.modifyPatient(this.dniPatient);
+
     })
+  }
+
+  modifyPatient(dni: string): void {
+
+    const appModify = document.getElementById('app-modify-patient');
+    appModify?.setAttribute('dni', dni);
+
+    const $targetEl = document.getElementById('modal-edit-patient');
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-patient',
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
+
   }
 
   nextPage(): void{
     const currentOffset = this.offset + this.limit;
     this.offset = currentOffset;
     this.currentPage = ++this.currentPage;
-    if (!this.filterActive) {
-      this.getPatientAppointments(this.dniPatient);
-    } else {
-
-      if(this.currentPage == 1){
-        this.filterAppointmentsPatient().slice(0, this.limit + 1);
-        console.log(this.filterAppointmentsPatient())
-      } else {
-
-        const startIndex = (this.currentPage - 1) * this.limit;
-        const endIndex = startIndex + this.limit;
-
-        this.filterAppointmentsPatient().slice(startIndex, endIndex);
-        console.log(this.filterAppointmentsPatient())
-      }
-
-
-    }
+    this.getPatientAppointments(this.dniPatient);
   }
 
   previousPage(): void{
@@ -105,11 +118,17 @@ export class ModifyPatientComponent implements OnInit {
   countAppointments() {
 
     if (!this.filterActive){
-      const token = localStorage.getItem('token')!;
+      
+      const data = {
+        token: localStorage.getItem('token'),
+        dni: this.dniPatient,
+        textFilter: this.filterText,
+      }
   
-      this.apiService.countAppointments(token).subscribe((countRes: any) => {
+      this.apiService.countAppointmentsWithFilter(data).subscribe((countRes: any) => {
         this.maxAppointments = countRes.res;
       });
+      
     } else {
       this.maxAppointments = this.filterAppointmentsPatient().length;
     }
@@ -559,14 +578,17 @@ export class ModifyPatientComponent implements OnInit {
         firstname: formattedName,
         lastname: formattedLastName,
         gender: this.modifyPatientForm.value.patientGender,
-        city: formattedCity,
+        city: this.modifyPatientForm.value.patientCity ?? null,
         email: this.modifyPatientForm.value.patientEmail,
         phone: this.modifyPatientForm.value.patientPhone,
-        assigneddoctor: this.modifyPatientForm.value.patientDoctor,
+        assigneddoctor: this.modifyPatientForm.value.patientDoctor
       }
     }
 
-    // console.log(data);
+    if (data.patientData.email === '') data.patientData.email = null;
+    if (data.patientData.city === '') data.patientData.city = null;
+
+    console.log(data.patientData);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -581,7 +603,7 @@ export class ModifyPatientComponent implements OnInit {
           (data: any) => {
             // console.log(data);
 
-            if (data) {
+            if (data.status == 200) {
               Swal.fire({
                 text: 'Changes saved!',
                 icon: 'success',
@@ -593,6 +615,7 @@ export class ModifyPatientComponent implements OnInit {
               });
     
               setTimeout(() => {
+                this.returnBack();
                 this.router.navigate(['/patients']);
               }, 3000);   
               

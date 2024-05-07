@@ -4,26 +4,36 @@ import { ApiService } from '../../../../core/services/api.service';
 import Swal from 'sweetalert2';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
-import { phoneNumberValidator } from '../../../../shared/validators/phone.validator';
-import { dniValidator } from '../../../../shared/validators/dni.validator';
-
 import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 import { textValidator } from '../../../../shared/validators/text.validator';
+
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-modify-doctor-type',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './modify-doctor.component.html',
   styleUrl: './modify-doctor.component.css',
 })
 export class ModifyDoctorTypeComponent implements OnInit {
 
-  dataDoctor: any = [];
+  dataSpecialization: any = [];
 
   idType: string = '';
 
   token = localStorage.getItem('token');
+
+  allDoctors: any = [];
+
+  offset: number = 0;
+  limit: number = 11;
+  maxDoctors: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
+
+  filter: any = undefined;
 
   constructor(
     private router: Router,
@@ -39,6 +49,10 @@ export class ModifyDoctorTypeComponent implements OnInit {
       this.idType = req['idType'];
 
       this.getDataDoctorType(this.idType);
+
+      this.getDoctors();
+      this.countDoctors();
+
     })
   }
 
@@ -58,13 +72,13 @@ export class ModifyDoctorTypeComponent implements OnInit {
   
     this.apiService.getDoctorTypeById(doctorData).subscribe((doctorResponse: any) => {
       if(doctorResponse){
-        this.dataDoctor = doctorResponse;
+        this.dataSpecialization = doctorResponse;
   
         this.modifyDoctorTypeForm.patchValue({
-          id: this.dataDoctor.id,
-          name: this.dataDoctor.name,
-          description: this.dataDoctor.description,
-          salary: this.dataDoctor.salary,
+          id: this.dataSpecialization.id,
+          name: this.dataSpecialization.name,
+          description: this.dataSpecialization.description,
+          salary: this.dataSpecialization.salary,
         }); 
       }
     });
@@ -72,6 +86,27 @@ export class ModifyDoctorTypeComponent implements OnInit {
 
 
   returnBack(){
+    
+    const $targetEl = document.getElementById('modal-edit-specializations');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-specializations',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
+
     this.router.navigate(['/doctors/specializations']);
   }
 
@@ -195,5 +230,129 @@ export class ModifyDoctorTypeComponent implements OnInit {
         );
       }
     });
+  }
+
+  // GET DOCTORS
+  getDoctors(): void {
+
+    try {
+
+      const data = {
+        token: this.token,
+        limit: this.limit,
+        offset: this.offset,
+        textFilter: this.filter,
+        id: this.idType
+      }
+
+      this.apiService.getDoctorsByType(data).subscribe((getDoctorsRes: any) => {
+        
+        // console.log(getSpecialgetDoctorsResizationsRes)
+
+        if (getDoctorsRes.status == 200) {
+          this.allDoctors = getDoctorsRes.res;
+        } else {
+          Swal.fire({
+            text: "We didn't find doctors",
+            icon: 'error',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+        }
+
+      });
+    } catch (error) {
+      console.log('Error while getting doctors: ',error);
+    }
+
+  }
+
+  // COUNT DOCTORS
+  countDoctors() {
+    const data = {
+      token: localStorage.getItem('token')!,
+      textFilter: this.filter,
+      id: this.idType
+    };
+
+    this.apiService.countDoctorsByType(data).subscribe((countRes: any) => {
+      // console.log(countRes);
+      this.maxDoctors = countRes.res;
+    });
+
+  }
+
+  
+  // PAGINATION FUNCTIONS
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    this.getDoctors();
+  }
+
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    this.getDoctors();
+  }
+
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxDoctors / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getDoctors();
+  }
+
+
+  // FILTER DOCTORS
+  filterDoctors(dataToSearch: string): void {
+    if (dataToSearch === "") {
+      
+      this.filter = undefined;
+      
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageNumbers();
+      
+    } else {
+  
+      this.filter = dataToSearch;
+  
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageNumbers();
+  
+    }
+  }
+
+  // SUBMIT ACTIONS
+  onSubmit(event: Event): void {
+    event.preventDefault();
+  }
+
+  // REDIRECT TO DOCTOR
+  redirectToDoctor(dni: string){
+    this.returnBack();
+    this.router.navigate(["/doctors/modify-doctor", dni]);
   }
 }

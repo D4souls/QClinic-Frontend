@@ -75,8 +75,8 @@ export class DoctorsComponent implements OnInit{
     const token = localStorage.getItem('token')!;
 
     this.doctorapiservice.countDoctors(token).subscribe((countRes: any) => {
-      console.log(countRes)
-      this.maxDoctors = countRes;
+      // console.log(countRes)
+      this.maxPages = countRes;
     });
 
   }
@@ -90,6 +90,7 @@ export class DoctorsComponent implements OnInit{
     const pagesArray = [];
     const totalPages = this.totalPages();
     if (totalPages < 1) pagesArray.push(1);
+    
     for (let i = 1; i <= totalPages; i++) {
       pagesArray.push(i);
     }

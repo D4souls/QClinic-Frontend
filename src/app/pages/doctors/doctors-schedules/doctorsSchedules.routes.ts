@@ -8,10 +8,12 @@ export const doctorSchedules_routes: Routes = [
     path: '',
     title: 'Manage doctors schedules',
     component: DoctorsScheduleComponent,
+    children: [
+      {
+        path: 'modify-schedule/:idSchedule',
+        title: 'Modify schedule',
+        component: ModifyDoctorScheduleComponent
+      }
+    ]
   },
-  {
-    path: 'modify-schedule/:idSchedule',
-    title: 'Modify schedule',
-    component: ModifyDoctorScheduleComponent
-  }
 ];

@@ -1,80 +1,162 @@
-import { Component, HostListener } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../../core/services/api.service';
 import { CreateDoctorTypeComponent } from '../create-doctor-type/create-doctor-type.component';
-import { NgxPaginationModule } from 'ngx-pagination';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-doctors-type',
   standalone: true,
-  imports: [CreateDoctorTypeComponent, NgxPaginationModule],
+  imports: [CreateDoctorTypeComponent, CreateDoctorTypeComponent, RouterOutlet, CommonModule],
   templateUrl: './doctors-type.component.html',
   styleUrl: './doctors-type.component.css'
 })
-export class DoctorsTypeComponent {
-  data: any[] = [];
-  filteredDoctorType: any[] = [];
+export class DoctorsTypeComponent implements OnInit{
 
-  alldoctors: number = 0;
-  pagination: number = 1;
-
-  cantdoctorsPerPage: number = 11;
-
-  token = localStorage.getItem('token');
+  ngOnInit(): void {
+    this.getSpecializations();
+    this.countSpecializations();
+  }
 
   constructor(
     private router: Router,
-    public doctorapiservice: ApiService
+    private _apiService: ApiService
   ) {}
+  
+  dataSpecializations: any = [];
 
-  ngOnInit(): void {
-    this.getDoctorType();
-  }
+  token = localStorage.getItem('token');
 
-  // Change number of doctors per page
-  @HostListener('window:resize', ['$event'])
-  onResize(): void {
-    let height = window.innerHeight;
+  offset: number = 0;
+  limit: number = 11;
+  maxSpecializations: number = 0;
+  maxPages: number = 0;
+  currentPage: number = 1;
 
-    if (height < 800) {
-      this.cantdoctorsPerPage = 8;
-    } else {
-      this.cantdoctorsPerPage = 12;
-    }
-  }
+  filter: any = undefined;
 
-  getDoctorType(): void {
+  // GET SPECIALZIATIONS
+  getSpecializations(): void {
 
     try {
 
-      const token = localStorage.getItem('token')!;
+      const data = {
+        token: this.token,
+        limit: this.limit,
+        offset: this.offset,
+        textFilter: this.filter,
 
-      this.doctorapiservice.getDoctorsType(token).subscribe((data: any[]) => {
-        this.data = data;
-        this.filteredDoctorType = data;
+      }
+
+      this._apiService.getDoctorsType(data).subscribe((getSpecializationsRes: any) => {
+        
+        // console.log(getSpecializationsRes)
+
+        if (getSpecializationsRes.status == 200) {
+          this.dataSpecializations = getSpecializationsRes.res;
+        } else {
+          Swal.fire({
+            text: "We didn't find specialziations",
+            icon: 'error',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+        }
+
       });
     } catch (error) {
-      console.log('Error while getting doctor types: ',error);
+      console.log('Error while getting specializations: ',error);
     }
 
   }
 
-  modifyDoctorType(id: number): void {
-    this.router.navigate(['/doctors/specializations/modify-specialization', id]);
+
+  // COUNT SPECIALZIATIONS
+  countSpecializations() {
+    const data = {
+      token: localStorage.getItem('token')!,
+      textFilter: this.filter,
+    };
+
+    this._apiService.countDoctorsType(data).subscribe((countRes: any) => {
+      // console.log(countRes);
+      this.maxSpecializations = countRes.res;
+    });
+
   }
 
-  redirectToDoctors(): void {
-    this.router.navigate(['/doctors']);
+  // PAGINATION FUNCTIONS
+  nextPage(): void{
+    const currentOffset = this.offset + this.limit;
+    this.offset = currentOffset;
+    this.currentPage = ++this.currentPage;
+    this.getSpecializations();
   }
 
-  redirectToSchedules(): void {
-    this.router.navigate(['/doctors/schedules']);
+  previousPage(): void{
+    const currentOffset = this.offset - this.limit;
+    this.offset = currentOffset;
+    this.currentPage = --this.currentPage;
+    this.getSpecializations();
   }
 
-  newDoctorType(): void {
-    const $targetEl = document.getElementById('modal-create-doctor-type');
+  totalPages(): number {
+    this.maxPages = Math.ceil(this.maxSpecializations / this.limit);
+    return this.maxPages;
+  }
+
+  generatePageNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPages();
+    if (totalPages < 1) pagesArray.push(1);
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+
+    return pagesArray;
+  }
+
+  goToPage(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getSpecializations();
+  }
+
+
+  // FILTER SPECIALIZATIONS
+  filterSpecializations(dataToSearch: string): void {
+    if (dataToSearch === "") {
+      
+      this.filter = undefined;
+      
+      this.getSpecializations();
+      this.countSpecializations();
+      this.generatePageNumbers();
+      
+    } else {
+  
+      this.filter = dataToSearch;
+  
+      this.getSpecializations();
+      this.countSpecializations();
+      this.generatePageNumbers();
+  
+    }
+  }
+
+  // SUBMIT ACTIONS
+  onSubmit(event: Event): void {
+    event.preventDefault();
+  }
+
+  // NEW SPECIALIZATION
+  newSpecialization(): void {
+    const $targetEl = document.getElementById('modal-create-specializations');
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
@@ -85,7 +167,7 @@ export class DoctorsTypeComponent {
     
     // Modal instance options
     const instanceOptions: InstanceOptions = {
-      id: 'modal-create-doctor-type',
+      id: 'modal-create-specializations',
       override: true
     };
 
@@ -95,69 +177,29 @@ export class DoctorsTypeComponent {
     modal.show();
   }
 
-  filterDoctorType(dataToSearch: string): void {
+  // MODIFY SPECIALIZATION
+  modifySpecialziation(id: number): void {
 
-    // console.log(dataToSearch);
-
-    if (!dataToSearch) {
-      this.filteredDoctorType = this.data.slice();
-      // console.log(this.filteredDoctorType);
-    } else {
-      const searchName = this.data.filter((doctorType: any) =>
-        doctorType.name.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        doctorType.description.toLowerCase().includes(dataToSearch.toLowerCase())
-
-      );
-
-      if (searchName.length > 0) {
-        this.filteredDoctorType = searchName;
-      } else {
-        this.filteredDoctorType = this.data;
-
-        Swal.fire({
-          text: "We didn't found any specializations..." ,
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-      }
-
-    }
-  }
-
-  onSubmit(event: Event): void {
-    event.preventDefault();
-  }
-
-  renderPage(event: any) {
-    this.pagination = event;
-    this.getDoctorType();
-  }
-
-  hideModal(): void{
-    // Get modal id
-    const $targetEl = document.getElementById('show-info-appointment');
-  
+    const $targetEl = document.getElementById('modal-edit-specializations');
     // Modal Options
     const options: ModalOptions = {
       placement: 'bottom-right',
       backdrop: 'dynamic',
-      backdropClasses: 'bg-gray-900/50 dark:bg-gray-900/80 fixed inset-0 z-40',
-      closable: true,
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
     };
     
     // Modal instance options
     const instanceOptions: InstanceOptions = {
-      id: 'show-info-appointment',
+      id: 'modal-edit-specializations',
       override: true
     };
 
     const modal: Modal = new Modal($targetEl, options, instanceOptions);
-  
-    modal.hide();
 
+    
+    modal.show();
+
+    this.router.navigate(['/doctors/specializations/modify-specialization', id]);
   }
 }

@@ -64,8 +64,9 @@ export class ModifyDoctorComponent implements OnInit {
       this.getDoctorsType();
       this.getDoctorSchedule();
       this.getPatients();
-      this.countPatientAppointmentWithFilter();
+      this.countAssignedPatient();
       this.assignedPatients();
+      this.modifydoctor(this.dnidoctor);
     })
   }
 
@@ -96,26 +97,6 @@ export class ModifyDoctorComponent implements OnInit {
     this.offset = currentOffset;
     this.currentPage = --this.currentPage;
     if (!this.filterActive) this.getPatients();
-  }
-
-  countAppointments() {
-
-    if (!this.filterActive){
-      const token = localStorage.getItem('token')!;
-
-      const data = {
-        token: localStorage.getItem('token'),
-        textFilter: this.dnidoctor
-      }
-  
-      this.apiService.countPatients(data).subscribe((countRes: any) => {
-        this.maxAppointments = countRes.msn;
-      });
-    } else {
-      this.maxAppointments = this.assignedPatients().length;
-    }
-
-
   }
 
   totalPages(): number {
@@ -361,6 +342,38 @@ export class ModifyDoctorComponent implements OnInit {
 
     this.router.navigate(["/doctors"]);
   }
+
+  redirectToPatient(dni: string){
+    this.returnBack();
+    this.router.navigate(["/patients/modify-patient", dni]);
+  }
+
+  modifydoctor(dni: string): void {
+
+    const appModify = document.getElementById('app-modify-doctor');
+    appModify?.setAttribute('dni', dni);
+
+    const $targetEl = document.getElementById('modal-edit-doctor');
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-doctor',
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
+  }
   
   onSubmit(event: Event): void {
     event.preventDefault();
@@ -373,7 +386,7 @@ export class ModifyDoctorComponent implements OnInit {
       this.filterText = undefined;
       
       this.getPatients();
-      this.countPatientAppointmentWithFilter();
+      this.countAssignedPatient();
       this.generatePageNumbers();
       
     } else {
@@ -381,18 +394,17 @@ export class ModifyDoctorComponent implements OnInit {
       this.filterText = dataToSearch;
   
       this.getPatients();
-      this.countPatientAppointmentWithFilter();
+      this.countAssignedPatient();
       this.generatePageNumbers();
   
     }
   
   }
 
-  countPatientAppointmentWithFilter(): void {
-    
-    this.apiService.countPatients({token: this.token, filterText: this.filterText}).subscribe((countWithFilterRes: any) => {
-      this.maxAppointments = countWithFilterRes;
-
+  countAssignedPatient(): void {
+    this.apiService.countPatientsByDniDoctor({token: this.token, dni: this.dnidoctor, textFilter: this.filterText}).subscribe((countRes: any) => {
+      // console.log(countRes);
+      this.maxAppointments = countRes.res;
     });
   }
 
