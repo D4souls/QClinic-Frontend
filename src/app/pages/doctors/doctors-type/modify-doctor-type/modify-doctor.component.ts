@@ -52,6 +52,7 @@ export class ModifyDoctorTypeComponent implements OnInit {
 
       this.getDoctors();
       this.countDoctors();
+      this.showModal();
 
     })
   }
@@ -108,6 +109,29 @@ export class ModifyDoctorTypeComponent implements OnInit {
     modal.hide();
 
     this.router.navigate(['/doctors/specializations']);
+  }
+
+  showModal(){
+    
+    const $targetEl = document.getElementById('modal-edit-specializations');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-specializations',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
   }
 
   saveChanges(): void {

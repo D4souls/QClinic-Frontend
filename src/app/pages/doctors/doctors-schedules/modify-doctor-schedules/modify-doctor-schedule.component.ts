@@ -57,6 +57,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
       this.getDataSchedule();
       this.getDoctorsSchedule();
       this.countDoctorsSchedule();
+      this.showModal();
     })
   }
 
@@ -117,6 +118,29 @@ export class ModifyDoctorScheduleComponent implements OnInit {
     modal.hide();
 
     this.router.navigate(['/doctors/schedules']);
+  }
+
+  showModal(){
+
+    const $targetEl = document.getElementById('modal-edit-schedule');
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: 'modal-edit-schedule',
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
   }
 
   checkTimesDiferences(startTime: string, endTime: string) {
