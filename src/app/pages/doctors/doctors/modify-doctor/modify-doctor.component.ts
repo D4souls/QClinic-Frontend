@@ -270,7 +270,7 @@ export class ModifyDoctorComponent implements OnInit {
 
       if (patientsByDoctorDniRes.status != 200){
         Swal.fire({
-          text: "We didn't found any patien",
+          text: "We didn't found any patient",
           icon: 'error',
           toast: true,
           showConfirmButton: false,
@@ -642,7 +642,7 @@ export class ModifyDoctorComponent implements OnInit {
 
       Swal.fire({
         icon: 'success',
-        text: "Patient status changed!",
+        text: "Doctor status changed!",
         toast: true,
         showConfirmButton: false,
         timer: 3000,
