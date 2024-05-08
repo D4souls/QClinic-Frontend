@@ -62,7 +62,8 @@ export class ModifyDoctorComponent implements OnInit {
 
       this.getDataDoctor(this.dnidoctor);
       this.getDoctorsType();
-      this.getDoctorSchedule();
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
       this.getPatients();
       this.countAssignedPatient();
       this.assignedPatients();
@@ -176,79 +177,16 @@ export class ModifyDoctorComponent implements OnInit {
           this.modifyDoctorForm.patchValue({
             doctorType: this.dataDoctor.doctorType
           });
+
+          this.idSelectedDoctorType.set(this.dataDoctor.doctorType);
         }
 
         if (this.dataDoctor.doctorSchedule != null){
           this.modifyDoctorForm.patchValue({
             doctorSchedule: this.dataDoctor.doctorSchedule
           });
-        }
 
-        // console.log(this.modifyDoctorForm.value.doctorSchedule);
-        
-        if (doctorResponse.doctorType != null){
-          let doctorTypeData = {
-            id: doctorResponse.doctorType,
-            token: this.token
-          }
-    
-          this.apiService.getDoctorTypeById(doctorTypeData).subscribe((doctorTypeResponse: any) => {
-            if(doctorTypeResponse) {
-              // console.log(doctorResponse);
-    
-              const doctorTypeInfo = {
-                doctorTypeName: doctorTypeResponse.name,
-              };
-    
-              this.dataDoctor = doctorTypeInfo;
-              // console.log(this.dataDoctor);
-            }
-          });
-
-          
-        }
-
-        if (doctorResponse.doctorSchedule != null){
-          let doctorScheduleData = {
-            id: doctorResponse.doctorSchedule,
-            token: this.token
-          }
-  
-          this.apiService.getDoctorScheduleById(doctorScheduleData).subscribe((doctorScheduleResponse: any) => {
-            if(doctorScheduleResponse) {
-              // console.log(doctorResponse);
-    
-              const doctorScheduleInfo = {
-                doctorScheduleName: doctorScheduleResponse.name,
-                doctorScheduleStart: doctorScheduleResponse.scheduleStart,
-                doctorScheduleEnd: doctorScheduleResponse.scheduleEnd,
-              };
-    
-              this.dataDoctor = doctorScheduleInfo;
-              // console.log(this.dataDoctor);
-            }
-          });
-        }
-
-        if (doctorResponse.doctorTye != null){
-          let dataDoctorType = {
-            id: doctorResponse.doctorTye,
-            token: this.token
-          }
-  
-          this.apiService.getDoctorTypeById(dataDoctorType).subscribe((doctorTypeResponse: any) => {
-            if(doctorTypeResponse) {
-              // console.log(doctorResponse);
-    
-              const doctorTypeInfo = {
-                doctorScheduleName: doctorTypeResponse.name,
-                doctorScheduleStart: doctorTypeResponse.description,
-              };
-    
-              this.dataDoctor = doctorTypeInfo;
-              // console.log(this.dataDoctor);
-            }
-          });
+          this.idSelectedDoctorSchedule.set(this.dataDoctor.doctorSchedule);
         }
 
   
@@ -284,38 +222,6 @@ export class ModifyDoctorComponent implements OnInit {
 
     });
 
-  }
-
-  doctorType: any = [];
-
-  getDoctorsType() {
-
-    const token = localStorage.getItem('token')!;
-
-    this.apiService.getDoctorsType(token).subscribe((data: any) => {
-      if (data) {
-        this.doctorType = data;
-        // console.log(this.doctors);
-      } else {
-        console.log(data);
-      }
-    });
-  }
-
-  doctorSchedule: any = [];
-
-  getDoctorSchedule() {
-
-    const token = localStorage.getItem('token')!;
-
-    this.apiService.getDoctorsSchedule(token).subscribe((data: any) => {
-      if (data) {
-        this.doctorSchedule = data;
-        // console.log(this.doctors);
-      } else {
-        console.log(data);
-      }
-    });
   }
 
 
@@ -674,6 +580,275 @@ export class ModifyDoctorComponent implements OnInit {
       });
     });
 
+  }
+
+  // SEARCH DOCTOR
+  filteredDoctorType: any = [];
+  offsetDoctorType: number = 0;
+  limitDoctorType: number = 11;
+  maxDoctorsType: number = 0;
+  maxPagesDoctorsType: number = 0;
+  currentPageDoctorType: number = 1;
+
+  filterDoctorType: any = undefined;
+
+  idSelectedDoctorType = signal<any>("");
+
+  countDoctorsTypes() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPages = countRes;
+    });
+
+  }
+
+  nextPageDoctorType(): void{
+    const currentOffset = this.offsetDoctorType + this.limitDoctorType;
+    this.offsetDoctorType = currentOffset;
+    this.currentPageDoctorType = ++this.currentPage;
+    this.getDoctorsType();
+    this.countDoctorsTypes();
+  }
+
+  previousPageDoctorType(): void{
+    const currentOffset = this.offsetDoctorType - this.limitDoctorType;
+    this.offsetDoctorType = currentOffset;
+    this.currentPageDoctorType = --this.currentPage;
+    this.getDoctorsType();
+  }
+
+  totalPagesDoctorsType(): number {
+    this.maxPagesDoctorsType = Math.ceil(this.maxDoctorsType / this.limitDoctorType);
+    return this.maxPagesDoctorsType;
+  }
+
+  generatePageDoctorTypeNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctorsType();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctorType(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getDoctorsType();
+  }
+
+  getDoctorsType(): void {
+
+    const data = {
+      limit: this.limitDoctorType, 
+      offset: this.offsetDoctorType, 
+      token: this.token,
+      textFilter: this.filterDoctorType,
+    }
+
+    try {
+
+      this.apiService.getDoctorsType(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          console.log(data);
+
+          Swal.fire({
+            text: "We can't find any specialization",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctorType = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctorType(id: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/specializations/modify-specialization', id]);
+  }
+
+  filterDoctorsType(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctorType = undefined;
+      
+      this.getDoctorsType();
+      this.countDoctorsTypes();
+      this.generatePageDoctorTypeNumbers();
+      
+    } else {
+  
+      this.filterDoctorType = dataToSearch;
+  
+      this.getDoctorsType();
+      this.countDoctorsTypes();
+      this.generatePageDoctorTypeNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctorType(){
+    this.idSelectedDoctorType.set(null);
+    this.modifyDoctorForm.get('doctorType')?.setValue(null);
+  }
+
+  markDoctorType(id: string){
+    this.idSelectedDoctorType.set(id);
+    this.modifyDoctorForm.get('doctorType')?.setValue(id);
+  }
+
+  
+  // DOCTOR SCHEDULE
+  filteredDoctorSchedule: any = [];
+  offsetDoctorSchedule: number = 0;
+  limitDoctorSchedule: number = 11;
+  maxDoctorsSchedule: number = 0;
+  maxPagesDoctorsSchedule: number = 0;
+  currentPageDoctorSchedule: number = 1;
+
+  filterDoctorSchedule: any = undefined;
+
+  idSelectedDoctorSchedule = signal<any>("");
+
+  countDoctorsSchedule() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPages = countRes;
+    });
+
+  }
+
+  nextPageDoctorSchedule(): void{
+    const currentOffset = this.offsetDoctorSchedule + this.limitDoctorSchedule;
+    this.offsetDoctorSchedule = currentOffset;
+    this.currentPageDoctorSchedule = ++this.currentPage;
+    this.getDoctorsType();
+    this.countDoctorsTypes();
+  }
+
+  previousPageDoctorSchedule(): void{
+    const currentOffset = this.offsetDoctorSchedule - this.limitDoctorSchedule;
+    this.offsetDoctorSchedule = currentOffset;
+    this.currentPageDoctorSchedule = --this.currentPage;
+    this.getDoctorsType();
+  }
+
+  totalPagesDoctorsSchedule(): number {
+    this.maxPagesDoctorsType = Math.ceil(this.maxDoctorsType / this.limitDoctorSchedule);
+    return this.maxPagesDoctorsType;
+  }
+
+  generatePageDoctorScheduleNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctorsType();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctorSchedule(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getDoctorsType();
+  }
+
+  getDoctorsSchedule(): void {
+
+    const data = {
+      limit: this.limitDoctorSchedule, 
+      offset: this.offsetDoctorSchedule, 
+      token: this.token,
+      textFilter: this.filterDoctorSchedule,
+    }
+
+    try {
+
+      this.apiService.getDoctorsSchedule(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          console.log(data);
+
+          Swal.fire({
+            text: "We can't find any schedule",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctorSchedule = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctorSchedule(id: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/schedules/modify-schedule', id]);
+  }
+
+  filterDoctorsSchedule(dataToSearch: any): void {
+
+    console.log(dataToSearch)
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctorSchedule = undefined;
+      
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageDoctorScheduleNumbers();
+      
+    } else {
+  
+      this.filterDoctorSchedule = dataToSearch;
+  
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageDoctorScheduleNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctorSchedule(){
+    this.idSelectedDoctorSchedule.set(null);
+    this.modifyDoctorForm.get('doctorSchedule')?.setValue(null);
+  }
+
+  markDoctorSchedule(id: string){
+    this.idSelectedDoctorSchedule.set(id);
+    this.modifyDoctorForm.get('doctorSchedule')?.setValue(id);
   }
 
 }

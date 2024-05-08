@@ -68,6 +68,7 @@ export class ModifyPatientComponent implements OnInit {
       this.getPatientAppointments(this.dniPatient);
       this.countAppointments();
       this.getDoctors();
+      this.countDoctors();
       this.modifyPatient(this.dniPatient);
 
     })
@@ -301,40 +302,13 @@ export class ModifyPatientComponent implements OnInit {
           patientDoctor: patientResponse.assigneddoctor != null ? patientResponse.assigneddoctor : null,
         });
         
-        if (patientResponse.assigneddoctor){
-          let doctorData = {
-            dni: patientResponse.assigneddoctor,
-            token: this.token
-          }
-    
-          this.apiService.getDoctorByDNI(doctorData).subscribe((doctorResponse: any) => {
-            if(doctorResponse) {
-              // console.log(doctorResponse);
-    
-              const doctorInfo = {
-                doctorName: doctorResponse.firstname,
-                doctorLastname: doctorResponse.lastname
-              };
-    
-              this.dataDoctor = doctorInfo;
-              // console.log(this.dataDoctor);
-            }
-          });
-        }
+        if (patientResponse.assigneddoctor != '' && patientResponse.assigneddoctor != null) this.dniSelectedDoctor.set(patientResponse.assigneddoctor);
 
   
       }
     });
   }
 
-  getDoctors(){
-    this.apiService.getDoctors(this.token!).subscribe((data: any) => {
-      if (data){
-        this.doctors = data;
-        // console.log(this.doctors);
-      }
-    });
-  }
 
   getPatientAppointments(dni: string) {
 
@@ -588,7 +562,7 @@ export class ModifyPatientComponent implements OnInit {
     if (data.patientData.email === '') data.patientData.email = null;
     if (data.patientData.city === '') data.patientData.city = null;
 
-    console.log(data.patientData);
+    // console.log(data.patientData);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -616,7 +590,6 @@ export class ModifyPatientComponent implements OnInit {
     
               setTimeout(() => {
                 this.returnBack();
-                this.router.navigate(['/patients']);
               }, 3000);   
               
             } else {
@@ -747,4 +720,137 @@ export class ModifyPatientComponent implements OnInit {
     });
 
   }
+
+
+  // SEARCH DOCTOR
+  filteredDoctor: any = [];
+  offsetDoctor: number = 0;
+  limitDoctor: number = 11;
+  maxDoctors: number = 0;
+  maxPagesDoctors: number = 0;
+  currentPageDoctor: number = 1;
+
+  filterDoctor: any = undefined;
+
+  dniSelectedDoctor = signal<any>("");
+
+  countDoctors() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPages = countRes;
+    });
+
+  }
+
+  nextPageDoctor(): void{
+    const currentOffset = this.offsetDoctor + this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = ++this.currentPage;
+    this.getDoctors();
+    this.countDoctors();
+  }
+
+  previousPageDoctor(): void{
+    const currentOffset = this.offsetDoctor - this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = --this.currentPage;
+    this.getDoctors();
+  }
+
+  totalPagesDoctors(): number {
+    this.maxPagesDoctors = Math.ceil(this.maxDoctors / this.limitDoctor);
+    return this.maxPagesDoctors;
+  }
+
+  generatePageDoctorNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctors();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctor(page: number){
+    this.offset = ( page - 1 ) * this.limit;
+    this.currentPage = page;
+    this.getDoctors();
+  }
+
+  getDoctors(): void {
+
+    const data = {
+      limit: this.limitDoctor, 
+      offset: this.offsetDoctor, 
+      token: this.token,
+      textFilter: this.filterDoctor,
+    }
+
+    try {
+
+      this.apiService.getDoctors(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          Swal.fire({
+            text: "We can't find any doctor",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctor = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctor(dni: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/modify-doctor', dni]);
+  }
+
+  filterDoctors(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctor = undefined;
+      
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+      
+    } else {
+  
+      this.filterDoctor = dataToSearch;
+  
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctor(dni: string){
+    this.dniSelectedDoctor.set(null);
+    this.modifyPatientForm.get('patientDoctor')?.setValue(null);
+  }
+
+  markDoctor(dni: string){
+    this.dniSelectedDoctor.set(dni);
+    this.modifyPatientForm.get('patientDoctor')?.setValue(dni);
+  }
+
 }
