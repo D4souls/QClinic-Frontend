@@ -30,6 +30,8 @@ import { EditAppointmentComponent } from '../edit-appointment/edit-appointment.c
 export class AppointmentsComponent implements OnInit {
   constructor(private apiGetPatient: ApiService) {}
 
+  token: any = localStorage.getItem('token');
+
   calendarEvents: any[] = [];
 
   ngOnInit(): void {
@@ -127,6 +129,13 @@ export class AppointmentsComponent implements OnInit {
       } else {
         console.error('One or more elements were not found in the DOM');
       }
+    },
+    datesSet(arg) {
+      const calendarDate = arg.view.currentStart;
+
+      const month = (calendarDate.getMonth() + 1).toLocaleString();
+      const year = calendarDate.getFullYear();
+      
     },
   };
 
@@ -281,18 +290,27 @@ export class AppointmentsComponent implements OnInit {
   }
 
   getAppointments(): void {
-    const token = localStorage.getItem('token')!;
+    
+    const now = new Date();
+    const month = (now.getMonth() + 1).toLocaleString();
+    const year = now.getFullYear().toLocaleString();
+
+    const data = {
+      token: this.token,
+      month: month,
+      year: year
+    }
   
-    this.apiGetPatient.getAppointments(token).subscribe((appointmentsData: any) => {
-      // console.log(appointmentsData);
+    this.apiGetPatient.getAppointmentsByMonthAndYear(data).subscribe((appointmentsData: any) => {
+
       if (appointmentsData.status == 200) {
         const appointmentsObservables: Observable<any>[] = [];
   
-        appointmentsData.msn.forEach((appointment: any) => {
-          
-          const patientData$ = this.apiGetPatient.getPatientData({ dni: appointment.assignedPatient, token });
+        appointmentsData.res.forEach((appointment: any) => {
+
+          const patientData$ = this.apiGetPatient.getPatientData({ dni: appointment.assignedPatient, token: this.token });
   
-          const doctorData$ = this.apiGetPatient.getDoctorByDNI({ dni: appointment.assignedDoctor, token });
+          const doctorData$ = this.apiGetPatient.getDoctorByDNI({ dni: appointment.assignedDoctor, token: this.token});
   
           appointmentsObservables.push(patientData$);
           appointmentsObservables.push(doctorData$);
@@ -304,7 +322,7 @@ export class AppointmentsComponent implements OnInit {
           for (let i = 0; i < results.length; i += 2) {
             const patientData = results[i];
             const doctorData = results[i + 1];
-            const appointment = appointmentsData.msn[i / 2];
+            const appointment = appointmentsData.res[i / 2];
   
             const event = {
               id: appointment.id,

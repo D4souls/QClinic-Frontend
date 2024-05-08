@@ -23,7 +23,7 @@
           </div>
           <input 
             #filter 
-            (keydown.enter)="filterSpecializations(filter.value)"
+            (input)="filterSpecializations(filter.value)"
             (change)="filterSpecializations(filter.value)" 
             type="search" 
             id="default-search" 

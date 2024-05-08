@@ -184,7 +184,7 @@
               <input
                 [disabled]="idSelectedDoctorType()"
                 #filter
-                (keydown.enter)="filterDoctorsType(filter.value)"
+                (input)="filterDoctorsType(filter.value)"
                 (change)="filterDoctorsType(filter.value)"
                 type="search"
                 id="default-search"
@@ -375,7 +375,7 @@
               <input
                 [disabled]="idSelectedDoctorSchedule()"
                 #filter2
-                (keydown.enter)="filterDoctorsSchedule(filter2.value)"
+                (input)="filterDoctorsSchedule(filter2.value)"
                 (change)="filterDoctorsSchedule(filter2.value)"
                 type="search"
                 id="default-search"
@@ -621,7 +621,7 @@
                 placeholder="Search patient by dni, name, email..."
                 #filter
                 class="bg-transparent border-none w-full focus:border-0"
-                (keydown.enter)="filterPatients(filter.value)"
+                (input)="filterPatients(filter.value)"
                 (change)="filterPatients(filter.value)"
               />
             </label>

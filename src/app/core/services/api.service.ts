@@ -216,6 +216,10 @@ export class ApiService {
     return this.httpclient.put(this.url + `appointment-pay`, data.id, this.configureAuthHeader(data.token));
   };
 
+  getAppointmentsByMonthAndYear(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `appointment-get-by-month?month=${data.month}&year=${data.year}`, this.configureAuthHeader(data.token));
+  }
+
   // AI METHOD
   callAssistant(data: any): Observable<any>{
     return this.httpclient.post('http://localhost:4047/api/v1/ollama', data);

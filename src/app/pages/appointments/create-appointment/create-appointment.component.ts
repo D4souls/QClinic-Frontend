@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
@@ -7,23 +7,20 @@ import { dateTimeValidator } from '../../../shared/validators/dateTime.validator
 import { textValidator } from '../../../shared/validators/text.validator';
 import { Router } from '@angular/router';
 import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-appointment',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })
 export class CreateAppointmentComponent implements OnInit{
 
   @Input() modalId?: string;
-  
-  patients: patientsInterfaces[] = [];
-  filteredPatient: patientsInterfaces[] = [];
-  
-  doctors: any = [];
-  filteredDoctor: any [] = [];
+
+  private token = localStorage.getItem('token');
 
   constructor(
     private apiService: ApiService,
@@ -31,57 +28,25 @@ export class CreateAppointmentComponent implements OnInit{
   ) {}
 
   ngOnInit(): void {
-    this.getDoctors();
     this.getPatients();
+    this.getDoctors();
+    this.countDoctors();
+    this.countPatients();
   }
 
   createAppointmentForm = new FormGroup({
-    searchDataPatientForm: new FormGroup({
-      dataToSearch: new FormControl(''),
-      dataSelect : new FormControl('', Validators.required)
-
-    }),
-    searchDataDoctorForm: new FormGroup({
-      dataToSearch: new FormControl(''),
-      dataSelect : new FormControl('', Validators.required)
-
-    }),
+    
     dateTime: new FormControl('', [Validators.required, dateTimeValidator]),
-    appointmentComment: new FormControl('', [Validators.required, textValidator])
+    appointmentComment: new FormControl('', [Validators.required, textValidator]),
+    assignedDoctor: new FormControl('', [Validators.required]),
+    assignedPatient: new FormControl('', [Validators.required])
   });
 
 
-  getPatients(): void{
-
-    const data = {
-      pagination: 0,
-      token: localStorage.getItem('token'),
-      offset: 0,
-      limit: 0,
-    }
-
-    this.apiService.getPatients(data).subscribe((data: any) => {
-      
-      if (data){
-        this.patients = data;
-        this.filteredPatient = this.patients.slice();
-      }
-    });
+  onSubmit(event: Event): void {
+    event.preventDefault();
   }
 
-  getDoctors(){
-
-    const token = localStorage.getItem('token')!;
-
-    this.apiService.getDoctors(token).subscribe((data: any) => {
-
-      if (data){
-        this.doctors = data;
-        this.filteredDoctor = this.doctors.slice();
-      }
-
-    })
-  }
 
   createAppointment(): void {
 
@@ -91,8 +56,8 @@ export class CreateAppointmentComponent implements OnInit{
       appointmentData: {
         appointmentDate: this.createAppointmentForm.value.dateTime,
         appointmentStart: this.createAppointmentForm.value.dateTime,
-        assignedPatient: this.createAppointmentForm.value.searchDataPatientForm?.dataSelect,
-        assignedDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+        assignedPatient: this.createAppointmentForm.value.assignedPatient,
+        assignedDoctor: this.createAppointmentForm.value.assignedDoctor,
         comment: this.createAppointmentForm.value.appointmentComment,
       }
     };
@@ -151,104 +116,6 @@ export class CreateAppointmentComponent implements OnInit{
     
   }
 
-
-  filterPatients(dataToSearch: string): void{
-    if (!dataToSearch) {
-      this.filteredPatient = this.patients.slice();
-    } else {
-      const searchName = this.patients.filter((dataAppointmentToFilter: any) =>
-        dataAppointmentToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataAppointmentToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataAppointmentToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase())
-
-      );
-
-      if (searchName.length > 0) {
-
-        if (searchName.length === 1){
-
-          this.createAppointmentForm.patchValue({
-            searchDataPatientForm: {
-              dataSelect: searchName[0].dni,
-            },
-          });
-
-          this.filteredPatient = searchName;
-
-        } else {
-          this.filteredPatient = searchName;
-        }
-
-      } else {
-        this.filteredPatient = this.patients;
-
-        Swal.fire({
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom',
-          text: "We didn't found any patients..."
-        });
-      }
-
-    }
-  }
-
-  filterDoctors(dataToSearch: string): void {
-    if (!dataToSearch) {
-      this.filteredDoctor = this.doctors.slice();
-    } else {
-      const searchName = this.doctors.filter((dataDoctorToFilter: any) =>
-        dataDoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.email.toLowerCase().includes(dataToSearch.toLowerCase())
-
-      );
-
-      if (searchName.length > 0) {
-
-        if (searchName.length === 1){
-
-          this.createAppointmentForm.patchValue({
-            searchDataDoctorForm: {
-              dataSelect: searchName[0].dni,
-            },
-          });
-
-          this.filteredDoctor = searchName;
-
-        } else {
-          this.filteredDoctor = searchName;
-        }
-
-      } else {
-        this.filteredDoctor = this.doctors;
-
-        Swal.fire({
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom',
-          text: "We didn't found any doctors..."
-        });
-      }
-
-    }
-  }
-
-  onSubmitPatient(event: Event): void{
-    event.preventDefault();
-  }
-
-  onSubmitDoctor(event: Event): void{
-    event.preventDefault();
-  }
-
   returnBack(): void {
     const modalElement = document.getElementById(this.modalId!);
 
@@ -274,4 +141,263 @@ export class CreateAppointmentComponent implements OnInit{
     }
   }
 
+  // SEARCH DOCTOR
+  filteredDoctor: any = [];
+  offsetDoctor: number = 0;
+  limitDoctor: number = 11;
+  maxDoctors: number = 0;
+  maxPagesDoctors: number = 0;
+  currentPageDoctor: number = 1;
+
+  filterDoctor: any = undefined;
+
+  dniSelectedDoctor = signal<any>("");
+
+  countDoctors() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxDoctors = countRes;
+    });
+
+  }
+
+  nextPageDoctor(): void{
+    const currentOffset = this.offsetDoctor + this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = ++this.currentPageDoctor;
+    this.getDoctors();
+    this.countDoctors();
+  }
+
+  previousPageDoctor(): void{
+    const currentOffset = this.offsetDoctor - this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = --this.currentPageDoctor;
+    this.getDoctors();
+  }
+
+  totalPagesDoctors(): number {
+    this.maxPagesDoctors = Math.ceil(this.maxDoctors / this.limitDoctor);
+    return this.maxPagesDoctors;
+  }
+
+  generatePageDoctorNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctors();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctor(page: number){
+    this.offsetDoctor = ( page - 1 ) * this.limitDoctor;
+    this.currentPageDoctor = page;
+    this.getDoctors();
+  }
+
+  getDoctors(): void {
+
+    const data = {
+      limit: this.limitDoctor, 
+      offset: this.offsetDoctor, 
+      token: this.token,
+      textFilter: this.filterDoctor,
+    }
+
+    try {
+
+      this.apiService.getDoctors(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          Swal.fire({
+            text: "We can't find any doctor",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctor = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctor(dni: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/modify-doctor', dni]);
+  }
+
+  filterDoctors(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctor = undefined;
+      
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+      
+    } else {
+  
+      this.filterDoctor = dataToSearch;
+  
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctor(){
+    this.dniSelectedDoctor.set(null);
+    this.createAppointmentForm.get('assignedDoctor')?.setValue(null);
+  }
+
+  markDoctor(dni: string){
+    this.dniSelectedDoctor.set(dni);
+    this.createAppointmentForm.get('assignedDoctor')?.setValue(dni);
+  }
+
+
+  // SEARCH PATIENT
+  filteredPatient: any = [];
+  offsetPatient: number = 0;
+  limitPatient: number = 5;
+  maxPatients: number = 0;
+  maxPagesPatients: number = 0;
+  currentPagePatient: number = 1;
+
+  filterPatient: any = undefined;
+
+  dniSelectedPatient = signal<any>("");
+
+  nextPagePatient(): void{
+    const currentOffset = this.offsetPatient + this.limitPatient;
+    this.offsetPatient = currentOffset;
+    this.currentPagePatient = ++this.currentPagePatient;
+    this.getPatients();
+    this.countPatients();
+  }
+
+  previousPagePatient(): void{
+    const currentOffset = this.offsetPatient - this.limitPatient;
+    this.offsetPatient = currentOffset;
+    this.currentPagePatient = --this.currentPagePatient;
+    this.getPatients();
+  }
+
+  totalPagesPatients(): number {
+    this.maxPagesPatients = Math.ceil(this.maxPatients / this.limitPatient);
+    return this.maxPagesPatients;
+  }
+
+  generatePagePatientNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesPatients();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPagePatient(page: number){
+    this.offsetPatient = ( page - 1 ) * this.limitPatient;
+    this.currentPagePatient = page;
+    this.getPatients();
+  }
+
+  getPatients(){
+
+    let patientData = {
+      token: localStorage.getItem('token'),
+      limit: this.limitPatient,
+      offset: this.offsetPatient,
+      textFilter: this.filterPatient
+    }
+  
+    this.apiService.getPatients(patientData).subscribe((patientResponse: any) => {
+      if(patientResponse.status == 200){
+        
+        this.filteredPatient = patientResponse.res;
+  
+      } else {
+        Swal.fire({
+          text: "We can't find any patient",
+          icon: 'info',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+    });
+  }
+
+  countPatients() {
+    const data = {
+      token: localStorage.getItem('token')!,
+      textFilter: this.filterPatient,
+    };
+
+    this.apiService.countPatients(data).subscribe((countRes: any) => {
+      this.maxPatients = countRes.msn;
+    });
+
+  }
+
+  redirectToPatient(dni: string): void {
+    this.returnBack();
+    this.router.navigate(['/patients/modify-patient', dni]);
+  }
+
+  unMarkPatient(){
+    this.dniSelectedPatient.set(null);
+    this.createAppointmentForm.get('assignedPatient')?.setValue(null);
+  }
+
+  markPatient(dni: string){
+    this.dniSelectedPatient.set(dni);
+    this.createAppointmentForm.get('assignedPatient')?.setValue(dni);
+  }
+
+  filterPatients(dataToSearch: string): void {
+
+    console.log(dataToSearch);
+
+    if (dataToSearch === "") {
+      
+      this.filterPatient = undefined;
+      
+      this.getPatients();
+      this.countPatients();
+      this.generatePagePatientNumbers();
+      
+    } else {
+  
+      this.filterPatient = dataToSearch;
+  
+      this.getPatients();
+      this.countPatients();
+      this.generatePagePatientNumbers();
+  
+    }
+    
+  }
 }

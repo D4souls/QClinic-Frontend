@@ -819,7 +819,7 @@ export class ModifyDoctorComponent implements OnInit {
 
   filterDoctorsSchedule(dataToSearch: any): void {
 
-    console.log(dataToSearch)
+    // console.log(dataToSearch)
 
     if (dataToSearch === "") {
       

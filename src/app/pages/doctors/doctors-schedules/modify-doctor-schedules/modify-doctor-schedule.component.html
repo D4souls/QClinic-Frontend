@@ -120,7 +120,7 @@
             placeholder="Search appointment by status, comment, date, doctor"
             #filter
             class="bg-transparent border-none w-full focus:border-0"
-            (keydown.enter)="filterSchedules(filter.value)"
+            (input)="filterSchedules(filter.value)"
             (change)="filterSchedules(filter.value)"
           />
         </label>

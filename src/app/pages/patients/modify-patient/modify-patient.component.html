@@ -180,7 +180,7 @@
           <input
             [disabled]="dniSelectedDoctor()"
             #filter
-            (keydown.enter)="filterDoctors(filter.value)"
+            (input)="filterDoctors(filter.value)"
             (change)="filterDoctors(filter.value)"
             type="search"
             id="default-search"
@@ -485,7 +485,7 @@
             placeholder="Search appointment by status, comment, date, doctor"
             #filter
             class="bg-transparent border-none w-full focus:border-0"
-            (keydown.enter)="filterAppoinments(filter.value)"
+            (input)="filterAppoinments(filter.value)"
             (change)="filterAppoinments(filter.value)"
           />
         </label>

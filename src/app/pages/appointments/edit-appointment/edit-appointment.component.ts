@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, inject } from '@angular/core';
+import { Component, Input, OnInit, inject, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { ApiService } from '../../../core/services/api.service';
@@ -7,10 +7,12 @@ import { textValidator } from '../../../shared/validators/text.validator';
 
 // FLOWBITE MODAL
 import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './edit-appointment.component.html',
   styleUrl: './edit-appointment.component.css'
 })
@@ -28,15 +30,14 @@ export class EditAppointmentComponent implements OnInit {
   generalData: any = [];
 
   apiService = inject(ApiService);
+  router = inject(Router);
   
   // Save doctorInfo
   doctors: any = [];
-
-  // Save doctorFilter
-  filteredDoctor: any [] = [];
+  token: any = localStorage.getItem('token');
   
   ngOnInit(): void {
-    this.getDoctors();
+
   }
 
   // FormGroup to creat appointment
@@ -45,14 +46,9 @@ export class EditAppointmentComponent implements OnInit {
       date : new FormControl('', [Validators.required, dateValidator]),
       selectAppointment: new FormControl('', Validators.required),
     }),
-    patientName: new FormControl('', Validators.required),
-    patientDNI: new FormControl(''),
-    searchDataDoctorForm: new FormGroup({
-      dataToSearch: new FormControl(''),
-      dataSelect : new FormControl('', Validators.required)
-
-    }),
-    appointmentComment: new FormControl('', [Validators.required, textValidator])
+    patientDNI: new FormControl('', [Validators.required]),
+    doctorDNI: new FormControl('', [Validators.required]),
+    appointmentComment: new FormControl('', [Validators.required])
   });
 
   getAppointments(date: string): void {
@@ -66,20 +62,6 @@ export class EditAppointmentComponent implements OnInit {
     this.infoAppointmentDay = [];
     this.infoPatient = [];
     this.generalData = [];
-    
-    // Patch value to form
-    this.createAppointmentForm.patchValue({
-      searchAppointment: {
-        selectAppointment: '',
-      },
-      searchDataDoctorForm: {
-        dataToSearch: '',
-        dataSelect: '',
-      },
-      patientName: '',
-      patientDNI: '',
-      appointmentComment: '',
-    });
     
     // Fetch dayAppointmentData from API
     this.apiService.getDayAppointments(data).subscribe((appointmentPerDayDataResponse: any) => {
@@ -97,10 +79,13 @@ export class EditAppointmentComponent implements OnInit {
             if (patientDataResponse) {
               const combinedObject = Object.assign({}, appointmentPerDayDataResponse[index], patientDataResponse);
               this.generalData.push(combinedObject); 
+              // console.log(this.generalData);
             }
           });
         });
       }
+
+
     }, (error) => {
       Swal.fire({
         icon: 'error',
@@ -117,49 +102,33 @@ export class EditAppointmentComponent implements OnInit {
 
   loadData(id: string): void {
 
-    let findDoctorAppointment = this.generalData.findIndex((appointment:any) => appointment.id == id);
-    let doctorInfo = this.doctors.findIndex((doctor: any) => doctor.dni = this.infoAppointmentDay[findDoctorAppointment].assignedDoctor)
-    let infoAppointment = this.generalData[findDoctorAppointment];
-    let infoDoctor = this.doctors[doctorInfo];
+    const findIndexAppointment = this.generalData.findIndex((appointment:any) => appointment.id == id);
 
+    this.dniSelectedDoctor.set(this.generalData[findIndexAppointment].assignedDoctor);
+    this.dniSelectedPatient.set(this.generalData[findIndexAppointment].assignedPatient);
 
-    // Reset the form values
+    this.filterDoctor = this.generalData[findIndexAppointment].assignedDoctor;
+    this.filterPatient = this.generalData[findIndexAppointment].assignedPatient;
+
+    // this.createAppointmentForm.get('doctorDNI')?.setValue(this.filterDoctor);
+    // this.createAppointmentForm.get('patientDNI')?.setValue(this.filterPatient);
+    
+    const comment = this.generalData[findIndexAppointment].comment
+    console.log(comment);
+
     this.createAppointmentForm.patchValue({
-      searchDataDoctorForm: {
-        dataToSearch: '',
-        dataSelect: '',
-      },
-      patientName: '',
-      patientDNI: '',
-      appointmentComment: '',
+      patientDNI: `${this.filterPatient}`,
+      appointmentComment: `${comment}`,
+      doctorDNI: `${this.filterDoctor}`
     });
+    
 
-    // Set all values to the form
-    this.createAppointmentForm.patchValue({
-      patientName: `${infoAppointment.firstname} ${infoAppointment.lastname}`,
-      patientDNI: `${infoAppointment.dni}`,
-      appointmentComment: `${infoAppointment.comment}`,
-      searchDataDoctorForm: {
-        dataToSearch: `${infoDoctor.firstname} ${infoDoctor.lastname}`,
-        dataSelect: `${infoDoctor.dni}`
-      }
-    })
+    this.getPatients();
+    this.getDoctors();
+    this.countPatients();
+    this.countDoctors();
   }
 
-  getDoctors(): void{
-
-    const token = localStorage.getItem('token')!;
-
-    this.apiService.getDoctors(token).subscribe((data: any) => {
-
-      if (data){
-        this.doctors = data;
-        this.filteredDoctor = data;
-        // console.log(data);
-      }
-
-    });
-  }
 
   updateAppointment(): void {
 
@@ -168,12 +137,12 @@ export class EditAppointmentComponent implements OnInit {
       appointmentData: {
         id: this.createAppointmentForm.value.searchAppointment?.selectAppointment,
         assignedPatient: this.createAppointmentForm.value.patientDNI,
-        assignedDoctor: this.createAppointmentForm.value.searchDataDoctorForm?.dataSelect,
+        assignedDoctor: this.createAppointmentForm.value.doctorDNI,
         comment: this.createAppointmentForm.value.appointmentComment
       }
     }
 
-    // console.log(dataAppointment.appointmentData);
+    console.log(dataAppointment.appointmentData);
 
     Swal.fire({
       title: 'Do you want to save changes?',
@@ -225,56 +194,11 @@ export class EditAppointmentComponent implements OnInit {
      });
   }
 
-  filterDoctors(dataToSearch: string): void {
-    if (!dataToSearch) {
-      this.filteredDoctor = this.doctors.slice();
-    } else {
-      const searchName = this.doctors.filter((dataDoctorToFilter: any) =>
-        dataDoctorToFilter.firstname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.lastname.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.dni.toLowerCase().includes(dataToSearch.toLowerCase()) ||
-        dataDoctorToFilter.phone.toLowerCase().includes(dataToSearch.toLowerCase())
-
-      );
-
-      if (searchName.length > 0) {
-
-        if (searchName.length === 1){
-
-          this.createAppointmentForm.patchValue({
-            searchDataDoctorForm: {
-              dataSelect: searchName[0].dni,
-            },
-          });
-
-          this.filteredDoctor = searchName;
-
-        } else {
-          this.filteredDoctor = searchName;
-        }
-
-      } else {
-        this.filteredDoctor = this.doctors;
-
-        Swal.fire({
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom',
-          text: "We didn't found any doctors..."
-        });
-      }
-
-    }
-  }
-
   deleteAppointment(): void {
 
     const id = this.createAppointmentForm.value.searchAppointment!.selectAppointment;
 
-    console.log(id);
+    // console.log(id);
 
     Swal.fire({
       title: 'Do you want to delete this appointment?',
@@ -360,6 +284,268 @@ export class EditAppointmentComponent implements OnInit {
     } else {
       console.error('We did not found ID:', this.modalId);
     }
+  }
+
+  // SEARCH DOCTOR
+  filteredDoctor: any = [];
+  offsetDoctor: number = 0;
+  limitDoctor: number = 11;
+  maxDoctors: number = 0;
+  maxPagesDoctors: number = 0;
+  currentPageDoctor: number = 1;
+
+  filterDoctor: any = undefined;
+
+  dniSelectedDoctor = signal<any>("");
+
+  countDoctors() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiService.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxDoctors = countRes;
+    });
+
+  }
+
+  nextPageDoctor(): void{
+    const currentOffset = this.offsetDoctor + this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = ++this.currentPageDoctor;
+    this.getDoctors();
+    this.countDoctors();
+  }
+
+  previousPageDoctor(): void{
+    const currentOffset = this.offsetDoctor - this.limitDoctor;
+    this.offsetDoctor = currentOffset;
+    this.currentPageDoctor = --this.currentPageDoctor;
+    this.getDoctors();
+  }
+
+  totalPagesDoctors(): number {
+    this.maxPagesDoctors = Math.ceil(this.maxDoctors / this.limitDoctor);
+    return this.maxPagesDoctors;
+  }
+
+  generatePageDoctorNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctors();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctor(page: number){
+    this.offsetDoctor = ( page - 1 ) * this.limitDoctor;
+    this.currentPageDoctor = page;
+    this.getDoctors();
+  }
+
+  getDoctors(): void {
+
+    const data = {
+      limit: this.limitDoctor, 
+      offset: this.offsetDoctor, 
+      token: this.token,
+      textFilter: this.filterDoctor,
+    }
+
+    try {
+
+      this.apiService.getDoctors(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          Swal.fire({
+            text: "We can't find any doctor",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctor = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctor(dni: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/modify-doctor', dni]);
+  }
+
+  filterDoctors(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctor = undefined;
+      
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+      
+    } else {
+  
+      this.filterDoctor = dataToSearch;
+  
+      this.getDoctors();
+      this.countDoctors();
+      this.generatePageDoctorNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctor(){
+    this.dniSelectedDoctor.set(null);
+    this.createAppointmentForm.get('doctorDNI')?.setValue(null);
+    this.filterDoctor = undefined;
+    this.getDoctors();
+  }
+
+  markDoctor(dni: string){
+    this.dniSelectedDoctor.set(dni);
+    this.createAppointmentForm.get('doctorDNI')?.setValue(dni);
+  }
+
+
+  // SEARCH PATIENT
+  filteredPatient: any = [];
+  offsetPatient: number = 0;
+  limitPatient: number = 5;
+  maxPatients: number = 0;
+  maxPagesPatients: number = 0;
+  currentPagePatient: number = 1;
+
+  filterPatient: any = undefined;
+
+  dniSelectedPatient = signal<any>("");
+
+  nextPagePatient(): void{
+    const currentOffset = this.offsetPatient + this.limitPatient;
+    this.offsetPatient = currentOffset;
+    this.currentPagePatient = ++this.currentPagePatient;
+    this.getPatients();
+    this.countPatients();
+  }
+
+  previousPagePatient(): void{
+    const currentOffset = this.offsetPatient - this.limitPatient;
+    this.offsetPatient = currentOffset;
+    this.currentPagePatient = --this.currentPagePatient;
+    this.getPatients();
+  }
+
+  totalPagesPatients(): number {
+    this.maxPagesPatients = Math.ceil(this.maxPatients / this.limitPatient);
+    return this.maxPagesPatients;
+  }
+
+  generatePagePatientNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesPatients();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPagePatient(page: number){
+    this.offsetPatient = ( page - 1 ) * this.limitPatient;
+    this.currentPagePatient = page;
+    this.getPatients();
+  }
+
+  getPatients(){
+
+    let patientData = {
+      token: localStorage.getItem('token'),
+      limit: this.limitPatient,
+      offset: this.offsetPatient,
+      textFilter: this.filterPatient
+    }
+  
+    this.apiService.getPatients(patientData).subscribe((patientResponse: any) => {
+      if(patientResponse.status == 200){
+        
+        this.filteredPatient = patientResponse.res;
+  
+      } else {
+        Swal.fire({
+          text: "We can't find any patient",
+          icon: 'info',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+    });
+  }
+
+  countPatients() {
+    const data = {
+      token: localStorage.getItem('token')!,
+      textFilter: this.filterPatient,
+    };
+
+    this.apiService.countPatients(data).subscribe((countRes: any) => {
+      this.maxPatients = countRes.msn;
+    });
+
+  }
+
+  redirectToPatient(dni: string): void {
+    this.returnBack();
+    this.router.navigate(['/patients/modify-patient', dni]);
+  }
+
+  unMarkPatient(){
+    this.dniSelectedPatient.set(null);
+    this.createAppointmentForm.get('patientDNI')?.setValue(null);
+    this.filterPatient = undefined;
+    this.getPatients();
+  }
+
+  markPatient(dni: string){
+    this.dniSelectedPatient.set(dni);
+    this.createAppointmentForm.get('patientDNI')?.setValue(dni);
+  }
+
+  filterPatients(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterPatient = undefined;
+      
+      this.getPatients();
+      this.countPatients();
+      this.generatePagePatientNumbers();
+      
+    } else {
+  
+      this.filterPatient = dataToSearch;
+  
+      this.getPatients();
+      this.countPatients();
+      this.generatePagePatientNumbers();
+  
+    }
+    
   }
 
 }

@@ -23,7 +23,7 @@
           </div>
           <input 
             #filter 
-            (keydown.enter)="filterSchedules(filter.value)"
+            (input)="filterSchedules(filter.value)"
             (change)="filterSchedules(filter.value)" 
             type="search" 
             id="default-search" 

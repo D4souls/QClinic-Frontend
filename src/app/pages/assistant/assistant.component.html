@@ -96,7 +96,7 @@
 
     <!-- CHATBOT INPUT -->
     <div class="flex justify-center items-center gap-6 w-full">
-      <form class="w-full" [formGroup]="formAI" (ngSubmit)="onSubmit($event)" (keydown.enter)="askToAI()">
+      <form class="w-full" [formGroup]="formAI" (ngSubmit)="onSubmit($event)" (input)="askToAI()">
         <label
           for="default-search"
           class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white"

@@ -24,7 +24,7 @@
             </div>
             <input 
               #filter 
-              (keydown.enter)="filterdoctors(filter.value)"
+              (input)="filterdoctors(filter.value)"
               (change)="filterdoctors(filter.value)" 
               type="search" 
               id="default-search" 
