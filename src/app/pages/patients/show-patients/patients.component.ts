@@ -239,4 +239,30 @@ export class PatientsComponent implements OnInit {
     modal.hide();
 
   }
+
+  returnBack(modalName: string){
+    
+    const $targetEl = document.getElementById(modalName);
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: modalName,
+      override: true
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
+
+    this.router.navigate(["/patients"]);
+
+  }
 }

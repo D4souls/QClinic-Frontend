@@ -18,11 +18,6 @@ export class DoctorsComponent implements OnInit{
   data: any[] = [];
   filtereddoctor: any[] = [];
 
-  alldoctors: number = 0;
-  pagination: number = 1;
-
-  cantdoctorsPerPage: number = 8;
-
   token = localStorage.getItem('token');
 
   offset: number = 0;
@@ -44,9 +39,11 @@ export class DoctorsComponent implements OnInit{
     let height = window.innerHeight;
 
     if (height < 800) {
-      this.cantdoctorsPerPage = 8;
+      this.limit = 8;
+      this.getUser();
     } else {
-      this.cantdoctorsPerPage = 12;
+      this.limit = 11;
+      this.getUser();
     }
   }
 
@@ -222,11 +219,6 @@ export class DoctorsComponent implements OnInit{
 
   onSubmit(event: Event): void {
     event.preventDefault();
-  }
-
-  renderPage(event: any) {
-    this.pagination = event;
-    this.getUser();
   }
 
   hideModal(): void{

@@ -6,16 +6,16 @@
     [formGroup]="modifyPatientForm"
     (ngSubmit)="saveChanges()"
   >
-    <!-- MAIN INFORMATION USER FORM -->
-    <h3 class="self-start font-bold text-sm md:text-2xl">
-      General Information
-    </h3>
-    <div class="self-start flex flex-col w-full">
-      <label
+  <hr class="w-full border border-gray-300" />
+  
+  <div class="self-start flex flex-col w-full">
+
+    <label
         for="file_input"
-        class="self-start font-semibold text-sm md:text-lg"
+        class="self-start font-semibold text-sm md:text-base"
         >Upload avatar</label
       >
+
       <div class="flex flex-row justify-start gap-4 flex-shrink items-center">
         <div class="relative w-40">
           <img
@@ -147,10 +147,59 @@
           [style.view-transition-name]="'transition-patient-city-' + dniPatient"
         />
       </label>
+
+      <!-- EXTRA OPTIONS -->
+      <div class="gap-4 flex flex-col justify-center">
+        <h3 class="self-start font-semibold text-sm md:text-lg">Status</h3>
+
+        <label
+          class="inline-flex items-center cursor-pointer"
+          (click)="changeStatusPatient()"
+        >
+          @if (actualStatus()){
+          <input
+            type="checkbox"
+            value="1"
+            class="sr-only peer"
+            checked
+            id="statusPatient"
+          />
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          ></div>
+          <span
+            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+            id="statusPatientMsg"
+            >Active</span
+          >
+          } @else {
+          <input
+            type="checkbox"
+            value="1"
+            class="sr-only peer"
+            id="statusPatient"
+          />
+          <div
+            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
+          ></div>
+          <span
+            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
+            id="statusPatientMsg"
+            >Inactive</span
+          >
+          }
+        </label>
+      </div>
+
     </div>
+
+    <hr class="w-full border border-gray-300 mt-2" />
 
     <!-- ADDITIONAL INFORMATION USER FROM -->
     <div class="flex flex-col items-start justify-center gap-2">
+
+      <h3 class="self-start font-bold text-base md:text-xl">Select doctor</h3>
+
       <form (submit)="onSubmit($event)" class="self-center w-full">
         <label
           for="default-search"
@@ -358,49 +407,6 @@
           </button>
         </ul>
       </nav>
-
-      <!-- EXTRA OPTIONS -->
-      <div class="gap-4 flex flex-col justify-center">
-        <h3 class="self-start font-semibold text-sm md:text-lg">Status</h3>
-
-        <label
-          class="inline-flex items-center cursor-pointer"
-          (click)="changeStatusPatient()"
-        >
-          @if (actualStatus()){
-          <input
-            type="checkbox"
-            value="1"
-            class="sr-only peer"
-            checked
-            id="statusPatient"
-          />
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-          ></div>
-          <span
-            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-            id="statusPatientMsg"
-            >Active</span
-          >
-          } @else {
-          <input
-            type="checkbox"
-            value="1"
-            class="sr-only peer"
-            id="statusPatient"
-          />
-          <div
-            class="relative w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"
-          ></div>
-          <span
-            class="ms-3 text-sm font-medium text-gray-900 dark:text-gray-300"
-            id="statusPatientMsg"
-            >Inactive</span
-          >
-          }
-        </label>
-      </div>
     </div>
 
     <!-- FORM BUTTONS -->
