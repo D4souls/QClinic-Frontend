@@ -63,6 +63,7 @@ export class ModifyDoctorComponent implements OnInit {
       this.getDataDoctor(this.dnidoctor);
       this.getDoctorsType();
       this.getDoctorsSchedule();
+      this.countDoctorsTypes();
       this.countDoctorsSchedule();
       this.getPatients();
       this.countAssignedPatient();
@@ -406,7 +407,6 @@ export class ModifyDoctorComponent implements OnInit {
           dni: this.modifyDoctorForm.value.doctorDNI!
         }
 
-        console.log(data);
         this.apiService.deleteDoctor(data).subscribe(
           (data: any) => {
             // console.log(data);
@@ -423,7 +423,13 @@ export class ModifyDoctorComponent implements OnInit {
               });
 
               setTimeout(() => {
+                this.returnBack();
                 this.router.navigate(['/doctors']);
+
+                setTimeout(() => {
+                  window.location.reload();
+                }, 20)
+
               }, 3000);    
               
             } else {
@@ -480,7 +486,7 @@ export class ModifyDoctorComponent implements OnInit {
             return;
         }
 
-        const renamedFile = new File([file], `${this.dnidoctor}.jpg`, { type: file.type });
+        const renamedFile = new File([file], `${this.modifyDoctorForm.value.doctorDNI}.jpg`, { type: file.type });
 
         
         const reader = new FileReader();
@@ -505,7 +511,7 @@ export class ModifyDoctorComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.apiService.uploadImg({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+    this.apiService.uploadDoctorAvatar({img: formData, token: this.token}).subscribe((uploadRes: any) => {
       
       if (uploadRes.status != 200){
         Swal.fire({
@@ -582,7 +588,7 @@ export class ModifyDoctorComponent implements OnInit {
 
   }
 
-  // SEARCH DOCTOR
+  // SEARCH DOCTOR TYPE
   filteredDoctorType: any = [];
   offsetDoctorType: number = 0;
   limitDoctorType: number = 11;

@@ -8,11 +8,12 @@ import { textValidator } from '../../../shared/validators/text.validator';
 import { Router } from '@angular/router';
 import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
 import { CommonModule } from '@angular/common';
+import { FormatLastnamePipe } from '../../../core/pipe/format-lastname.pipe';
 
 @Component({
   selector: 'app-create-appointment',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormatLastnamePipe],
   templateUrl: './create-appointment.component.html',
   styleUrl: './create-appointment.component.css'
 })

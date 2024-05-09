@@ -3,25 +3,55 @@
     [formGroup]="createDoctorForm"
     (ngSubmit)="createDoctor()"
   >
-   <!-- UPLOAD USER'S AVATAR -->
-<!--   
-   <div class="flex items-center justify-center order-2 absolute top-24 right-72">
-    <label for="doctorAvatar" class="flex flex-col items-center justify-center h-32 w-32 border-2 border-gray-300 border-dashed rounded-full cursor-pointer bg-gray-50 relative overflow-hidden">
-        <div class="flex flex-col items-center justify-center pt-5 pb-6">
-            <svg class="w-4 h-4 mb-1 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-            </svg>
-            <p class="mb-2 text-xs text-gray-500 font-semibold">Click to upload</p>
-        </div>
-        <input id="doctorAvatar" type="file" class="hidden z-10" formControlName="doctorAvatar" (change)="filePreview($event)"/>
-        <img [src]="previewAvatar" class="absolute z-0 rounded-full object-cover">
-    </label>
-  </div> -->
-
-
+  
+  
   <!-- INFORMATION CONTAINER -->
   <div class="flex flex-col order-1 w-full gap-4">
+    
+    <hr class="w-full border border-gray-300" />
 
+    <div class="self-start flex flex-col w-full">
+
+      <label for="file_input" class="self-start font-semibold text-sm md:text-base dark:text-white/90">Upload avatar</label>
+      <div class="flex flex-row justify-start gap-4 flex-shrink items-center">
+        <div class="relative w-40">
+          <img
+            [src]="previewAvatar"
+            alt=""
+            class="h-32 w-32 rounded-md shadow-2xl"
+            id="newAvatar"
+            style="display: none"
+          />
+          <img
+            src="http://localhost:8080/assets/no-user-avatar.webp"
+            alt=""
+            class="h-32 w-32 rounded-md shadow-2xl"
+            id="oldAvatar"
+          />
+          <span
+            class="top-0 left-[120px] absolute w-5 h-5 bg-red-400 border-2 border-white dark:border-gray-800 rounded-full"
+          ></span>
+        </div>
+        <div class="flex flex-col gap-2 w-full justify-center">
+          <input
+            (change)="onFileSelected($event)"
+            [disabled]="!createDoctorForm.get('doctorDNI')!.valid"
+            #fileInput
+            class="{{
+              createDoctorForm.get('doctorDNI')!.valid
+                ? 'cursor-pointer'
+                : 'cursor-not-allowed'
+            }} block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-400/40 dark:text-gray-400 focus:outline-none dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400"
+            id="file_input"
+            type="file"
+          />
+          <p class="mt-1 text-sm dark:text-gray-300" id="file_input_help">
+            JPG (MAX. 800x400px).
+          </p>
+        </div>
+      </div>
+
+    </div>
 
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-rows-2 md:grid-cols-2 gap-2">
@@ -29,7 +59,7 @@
 
         <!-- DOCTOR DNI -->
         <label for="doctorDNI" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">DNI*</span>
+          <span class="dark:text-white/90">DNI {{ createDoctorForm.get("doctorDNI")!.valid ? "" : "*" }}</span>
           <input
             type="text"
             id="doctorDNI"
@@ -42,7 +72,7 @@
 
         <!-- DOCTOR FIRSTNAME -->
         <label for="doctorName" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">First name*</span>
+          <span class="dark:text-white/90">First name {{ createDoctorForm.get("doctorName")!.valid ? "" : "*" }}</span>
           <input
             type="text"
             id="doctorName"
@@ -55,7 +85,7 @@
 
         <!-- DOCTOR LASTNAME -->
         <label for="doctorLastname" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">Last name*</span>
+          <span class="dark:text-white/90">Last name {{ createDoctorForm.get("doctorLastname")!.valid ? "" : "*" }}</span>
           <input
             type="text"
             id="doctorLastname"
@@ -68,7 +98,7 @@
 
         <!-- DOCTOR PHONE NUMBER -->
         <label for="doctorPhone" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">Phone Number*</span>
+          <span class="dark:text-white/90">Phone Number {{ createDoctorForm.get("doctorPhone")!.valid ? "" : "*" }}</span>
           <input
             type="text"
             id="doctorPhone"
@@ -78,10 +108,9 @@
           />
         </label>
 
-
         <!-- DOCTOR GENDER -->
         <label for="doctorGender" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">Gender*</span>
+          <span class="dark:text-white/90">Gender {{ createDoctorForm.get("doctorGender")!.valid ? "" : "*" }}</span>
           <select name="doctorGender" id="doctorGender" formControlName="doctorGender" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
             <option value="" disabled selected>Select doctor's gender</option>
               <option value="Male">Male</option>
@@ -89,62 +118,447 @@
               <option value="No binary">No binary</option>
           </select>
         </label>
-
-
-        <!-- DOCTOR TYPE -->
-        <label for="doctorType" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">Doctor specialization*</span>
-          <select name="doctorType" id="doctorType" formControlName="doctorType" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
-            <option value="" disabled selected>Select specialization</option>
-            @for (doctorData of doctorType; track doctorType.dni){
-              <option value="{{doctorData.id}}">{{doctorData.name}}</option>
-            }
-          </select>
+        
+        <label for="doctorCity" class="flex flex-col justify-center text-md">
+          <span class="dark:text-white/90">City</span>
+          <input
+            type="text"
+            id="doctorCity"
+            placeholder="Enter doctor's city here"
+            formControlName="doctorCity"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          />
         </label>
 
 
-        <!-- DOCTOR SCHEDULE -->
-        <label for="doctorSchedule" class="flex flex-col justify-center text-md">
-          <span class="dark:text-white/90">Doctor schedule</span>
-          <select name="doctorSchedule" id="doctorSchedule" formControlName="doctorSchedule" class="text-gray-700/70 border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400">
-            <option value="" disabled selected>Select schedule</option>
-            @for (doctorData of doctorSchedule; track doctorSchedule.dni){
-              <option value="{{doctorData.id}}">{{doctorData.name}} ({{doctorData.scheduleStart}} - {{doctorData.scheduleEnd}})</option>
-            }
-          </select>
+        <label for="doctorEmail" class="flex flex-col justify-center text-md col-span-2">
+          <span class="dark:text-white/90">Email</span>
+          <input
+            type="email"
+            id="doctorEmail"
+            placeholder="Enter doctor's mail here"
+            formControlName="doctorEmail"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          />
         </label>
+        
     </div>
 
-    <!-- ADDITIONAL INFORMATION USER FROM -->
+    <hr class="w-full border border-gray-300" />
 
-    <div class="grid grid-rows-2 md:grid-cols-2 gap-2">
-      <label for="doctorEmail" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Email</span>
-        <input
-          type="email"
-          id="doctorEmail"
-          placeholder="Enter doctor's mail here"
-          formControlName="doctorEmail"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
-      <label for="doctorCity" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">City</span>
-        <input
-          type="text"
-          id="doctorCity"
-          placeholder="Enter doctor's city here"
-          formControlName="doctorCity"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
+    <!-- DOCTOR SPECIALZIATION -->
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h3 class="self-start font-bold text-base md:text-xl dark:text-white/90">Specialization</h3>
+      <form (submit)="onSubmit($event)" class="self-center w-full">
+        <label
+          for="default-search"
+          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white/90"
+          >Search</label
+        >
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+          >
+            <svg
+              class="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            [disabled]="idSelectedDoctorType()"
+            #filter
+            (input)="filterDoctorsType(filter.value)"
+            (change)="filterDoctorsType(filter.value)"
+            type="search"
+            id="default-search"
+            class="{{
+              idSelectedDoctorType() ? 'cursor-not-allowed' : 'cursor-pointer'
+            }} block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300/20 rounded-lg bg-gray-300/50 focus:ring-main-purple focus:border-main-purple dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white/90 dark:focus:ring-gray-300/40 dark:focus:border-gray-300/40"
+            placeholder="Search patient by name, dni..."
+          />
+        </div>
+      </form>
+
+      <table
+        class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr class="table-row">
+            <th scope="col" class="p-4">
+              <span class="sr-only">Select doctor</span>
+            </th>
+            <th scope="col" class="px-6 py-3 table-cell">Name</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Description</th>
+            <th scope="col" class="px-6 py-3 table-cell">
+              <span class="sr-only">Show</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="table-row-group">
+          @for (doctorType of filteredDoctorType; track filteredDoctorType.id){
+          <tr
+            class="table-row {{
+              idSelectedDoctorType() != doctorType.id
+                ? 'bg-white hover:bg-gray-50'
+                : 'bg-main-purple/20 hover:bg-main-purple/15'
+            }} border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
+          >
+            <td class="md:w-16 md:px-4 px-2">
+              <input
+                type="checkbox"
+                [checked]="idSelectedDoctorType() == doctorType.id"
+                (change)="
+                idSelectedDoctorType() == doctorType.id
+                    ? unMarkDoctorType()
+                    : markDoctorType(doctorType.id)
+                "
+              />
+            </td>
+
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white/90 inline-flex flex-row gap-2 justify-center items-center"
+            >
+              {{ doctorType.name }}
+            </th>
+            <td class="px-6 py-4 md:table-cell hidden">
+              {{ doctorType.description }}
+            </td>
+
+            <td class="px-6 py-4 text-right table-cell cursor-pointer">
+              <svg
+                (click)="redirectToDoctorType(doctorType.id)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-eye-search"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                <path
+                  d="M12 18c-.328 0 -.652 -.017 -.97 -.05c-3.172 -.332 -5.85 -2.315 -8.03 -5.95c2.4 -4 5.4 -6 9 -6c3.465 0 6.374 1.853 8.727 5.558"
+                />
+                <path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- PAGINATION -->
+      <nav aria-label="Page navigation example" class="self-center bottom-20">
+        <ul class="flex items-center -space-x-px h-10 text-base">
+          <li>
+            <button
+              (click)="previousPageDoctorType()"
+              [disabled]="offsetDoctorType === 0"
+              class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span class="sr-only">Previous</span>
+              <svg
+                class="w-3 h-3 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 6 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 1 1 5l4 4"
+                />
+              </svg>
+            </button>
+          </li>
+          <ng-container
+            *ngFor="let page of generatePageDoctorTypeNumbers(); let i = index"
+          >
+            <li>
+              <button
+                type="button"
+                (click)="goToPageDoctorType(page)"
+                [attr.aria-current]="currentPageDoctorType === page ? 'page' : null"
+                class="{{
+                  currentPageDoctorType === page
+                    ? 'z-10 flex items-center justify-center px-4 h-10 leading-tight text-main-purple border border-gray-300 bg-gray-50 hover:bg-gray-100 hover:text-main-purple dark:border-gray-700 dark:bg-gray-700 dark:text-white/90'
+                    : 'flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                }}"
+              >
+                {{ page }}
+              </button>
+            </li>
+          </ng-container>
+          <button
+            (click)="nextPageDoctorType()"
+            type="button"
+            [disabled]="offsetDoctorType >= maxDoctorsType - limitDoctorType"
+            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            <span class="sr-only">Next</span>
+            <svg
+              class="w-3 h-3 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+          </button>
+        </ul>
+      </nav>
+    </div>
+
+    <hr class="w-full border border-gray-300" />
+
+    <!-- DOCTOR SCHEDULE -->
+    <div class="flex flex-col items-center justify-center gap-2">
+      <h3 class="self-start font-bold text-base md:text-xl dark:text-white/90">Choose a schedule</h3>
+      <form (submit)="onSubmit($event)" class="self-center w-full">
+        <label
+          for="default-search"
+          class="mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white/90"
+          >Search</label
+        >
+        <div class="relative">
+          <div
+            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none"
+          >
+            <svg
+              class="w-4 h-4 text-gray-500 dark:text-gray-400"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 20 20"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z"
+              />
+            </svg>
+          </div>
+          <input
+            [disabled]="idSelectedDoctorSchedule()"
+            #filter2
+            (input)="filterDoctorsSchedule(filter2.value)"
+            (change)="filterDoctorsSchedule(filter2.value)"
+            type="search"
+            id="default-search"
+            class="{{
+              idSelectedDoctorSchedule() ? 'cursor-not-allowed' : 'cursor-pointer'
+            }} block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300/20 rounded-lg bg-gray-300/50 focus:ring-main-purple focus:border-main-purple dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white/90 dark:focus:ring-gray-300/40 dark:focus:border-gray-300/40"
+            placeholder="Search patient by name, dni..."
+          />
+        </div>
+      </form>
+
+      <table
+        class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr class="table-row">
+            <th scope="col" class="p-4">
+              <span class="sr-only">Select doctor</span>
+            </th>
+            <th scope="col" class="px-6 py-3 table-cell">Name</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Description</th>
+            <th scope="col" class="px-6 py-3 table-cell">
+              <span class="sr-only">Show</span>
+            </th>
+          </tr>
+        </thead>
+        <tbody class="table-row-group">
+          @for (DoctorSchedule of filteredDoctorSchedule; track filteredDoctorSchedule.id){
+          <tr
+            class="table-row {{
+              idSelectedDoctorSchedule() != DoctorSchedule.id
+                ? 'bg-white hover:bg-gray-50'
+                : 'bg-main-purple/20 hover:bg-main-purple/15'
+            }} border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
+          >
+            <td class="md:w-16 md:px-4 px-2">
+              <input
+                type="checkbox"
+                [checked]="idSelectedDoctorSchedule() == DoctorSchedule.id"
+                (change)="
+                idSelectedDoctorSchedule() == DoctorSchedule.id
+                    ? unMarkDoctorSchedule()
+                    : markDoctorSchedule(DoctorSchedule.id)
+                "
+              />
+            </td>
+
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white/90 inline-flex flex-row gap-2 justify-center items-center"
+            >
+              {{ DoctorSchedule.name }}
+            </th>
+            <td class="px-6 py-4 md:table-cell hidden">
+              {{ DoctorSchedule.scheduleStart.split(':').slice(0, 2).join(':') }} - {{ DoctorSchedule.scheduleEnd.split(':').slice(0, 2).join(':') }}
+            </td>
+
+            <td class="px-6 py-4 text-right table-cell cursor-pointer">
+              <svg
+                (click)="redirectToDoctorSchedule(DoctorSchedule.id)"
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-eye-search"
+              >
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                <path
+                  d="M12 18c-.328 0 -.652 -.017 -.97 -.05c-3.172 -.332 -5.85 -2.315 -8.03 -5.95c2.4 -4 5.4 -6 9 -6c3.465 0 6.374 1.853 8.727 5.558"
+                />
+                <path d="M18 18m-3 0a3 3 0 1 0 6 0a3 3 0 1 0 -6 0" />
+                <path d="M20.2 20.2l1.8 1.8" />
+              </svg>
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+
+      <!-- PAGINATION -->
+      <nav aria-label="Page navigation example" class="self-center bottom-20">
+        <ul class="flex items-center -space-x-px h-10 text-base">
+          <li>
+            <button
+              (click)="previousPageDoctorSchedule()"
+              [disabled]="offsetDoctorSchedule === 0"
+              class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+            >
+              <span class="sr-only">Previous</span>
+              <svg
+                class="w-3 h-3 rtl:rotate-180"
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 6 10"
+              >
+                <path
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M5 1 1 5l4 4"
+                />
+              </svg>
+            </button>
+          </li>
+          <ng-container
+            *ngFor="let page of generatePageDoctorScheduleNumbers(); let i = index"
+          >
+            <li>
+              <button
+                type="button"
+                (click)="goToPageDoctorSchedule(page)"
+                [attr.aria-current]="currentPageDoctorSchedule === page ? 'page' : null"
+                class="{{
+                  currentPageDoctorSchedule === page
+                    ? 'z-10 flex items-center justify-center px-4 h-10 leading-tight text-main-purple border border-gray-300 bg-gray-50 hover:bg-gray-100 hover:text-main-purple dark:border-gray-700 dark:bg-gray-700 dark:text-white/90'
+                    : 'flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white'
+                }}"
+              >
+                {{ page }}
+              </button>
+            </li>
+          </ng-container>
+          <button
+            (click)="nextPageDoctorSchedule()"
+            type="button"
+            [disabled]="offsetDoctorSchedule >= maxDoctorsSchedule - limitDoctorSchedule"
+            class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+          >
+            <span class="sr-only">Next</span>
+            <svg
+              class="w-3 h-3 rtl:rotate-180"
+              aria-hidden="true"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 6 10"
+            >
+              <path
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="m1 9 4-4-4-4"
+              />
+            </svg>
+          </button>
+        </ul>
+      </nav>
     </div>
 
     <!-- FORM BUTTONS -->
-  
     <div class="flex flex-row gap-4 items-center mt-7">
       <button type="submit" [disabled]="!createDoctorForm.valid" class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{!createDoctorForm.valid ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed' : 'bg-main-purple dark:bg-gray-700 cursor-pointer'}}">Create</button>
-      <button type="button" (click)="returnBack()" class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">Cancel</button>
+      <button
+        type="button"
+        (click)="returnBack()"
+        class="ml-auto text-main-purple/80 dark:text-white/90 font-semibold text-base px-5 py-2.5 me-2 mb-2 hover:text-main-purple"
+      >
+        <div class="flex flex-row items-center justify-center">
+          <span class="text-xs md:text-sm">Return back</span>
+          <svg
+            class="rtl:rotate-180 w-3 h-3 mx-1"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 6 10"
+          >
+            <path
+              stroke="currentColor"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="m1 9 4-4-4-4"
+            />
+          </svg>
+        </div>
+      </button>
     </div>
 
   </div>

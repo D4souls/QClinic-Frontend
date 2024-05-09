@@ -29,11 +29,6 @@ export class ApiService {
     return httpOptions;
   }
 
-  // UPLOAD IMAGES METHODS
-  uploadImg(data: any): Observable<any> {
-    return this.httpclient.post(this.url + 'patient-avatar', data.img, this.configureAuthHeader(data.token));
-  }
-
   // PATIENTS METHODS
   getPatients(data: any): Observable<any>{
     return this.httpclient.get(this.url + `patient?offset=${data.offset}&limit=${data.limit}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
@@ -71,6 +66,10 @@ export class ApiService {
     return this.httpclient.get(this.url + `count-patient-by-doctor-dni?dni=${data.dni}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
   }
 
+  uploadPatientAvatar(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'patient-avatar', data.img, this.configureAuthHeader(data.token));
+  }
+
 
   // DOCTORS METHODS
   getDoctors(data: any): Observable<any> {
@@ -99,6 +98,10 @@ export class ApiService {
 
   changeStatusDoctor(data: any): Observable<any> {
     return this.httpclient.put(this.url + `doctor-changestatus/${data.dni}`, null, this.configureAuthHeader(data.token));
+  }
+
+  uploadDoctorAvatar(data: any): Observable<any> {
+    return this.httpclient.post(this.url + 'doctor-avatar', data.img, this.configureAuthHeader(data.token));
   }
 
 

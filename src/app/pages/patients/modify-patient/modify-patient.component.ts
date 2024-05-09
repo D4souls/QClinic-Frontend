@@ -249,7 +249,7 @@ export class ModifyPatientComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.apiService.uploadImg({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+    this.apiService.uploadPatientAvatar({img: formData, token: this.token}).subscribe((uploadRes: any) => {
       
       if (uploadRes.status != 200){
         Swal.fire({

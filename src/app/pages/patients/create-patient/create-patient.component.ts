@@ -136,7 +136,7 @@ export class CreatePatientComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.apiPatient.uploadImg({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+    this.apiPatient.uploadPatientAvatar({img: formData, token: this.token}).subscribe((uploadRes: any) => {
       
       if (uploadRes.status != 200){
         Swal.fire({

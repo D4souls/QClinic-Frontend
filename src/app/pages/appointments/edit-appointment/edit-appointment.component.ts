@@ -9,10 +9,11 @@ import { textValidator } from '../../../shared/validators/text.validator';
 import { ModalOptions, InstanceOptions, Modal } from 'flowbite';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { FormatLastnamePipe } from '../../../core/pipe/format-lastname.pipe';
 @Component({
   selector: 'app-edit-appointment',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, FormatLastnamePipe],
   templateUrl: './edit-appointment.component.html',
   styleUrl: './edit-appointment.component.css'
 })
@@ -35,6 +36,9 @@ export class EditAppointmentComponent implements OnInit {
   // Save doctorInfo
   doctors: any = [];
   token: any = localStorage.getItem('token');
+
+  // to show tables
+  status = signal<boolean>(false);
   
   ngOnInit(): void {
 
@@ -127,6 +131,8 @@ export class EditAppointmentComponent implements OnInit {
     this.getDoctors();
     this.countPatients();
     this.countDoctors();
+
+    this.status.set(true);
   }
 
 

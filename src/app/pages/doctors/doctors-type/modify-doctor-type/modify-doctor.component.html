@@ -1,17 +1,20 @@
 <div
-  class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white"
+  class="flex flex-col justify-center p-6 gap-4 dark:bg-dark-main-bg dark:text-white/90"
 >
-  <span class="self-start font-bold text-2xl md:text-4xl">Doctor specialization #{{ modifyDoctorTypeForm.value.id }}</span>
 
   <form
     class="flex flex-col gap-2"
     [formGroup]="modifyDoctorTypeForm"
     (ngSubmit)="saveChanges()"
   >
+
+    <hr class="w-full border border-gray-300" />
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
+
+
       <label for="name" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Name*</span>
+        <span class="dark:text-white/90">Name {{ modifyDoctorTypeForm.get('name')!.valid ? '' : '*' }}</span>
         <input
           type="text"
           id="name"
@@ -22,7 +25,7 @@
       </label>
 
       <label for="description" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Description*</span>
+        <span class="dark:text-white/90">Description {{ modifyDoctorTypeForm.get('description')!.valid ? '' : '*' }}</span>
         <input
           type="text"
           id="description"
@@ -33,7 +36,7 @@
       </label>
 
       <label for="salary" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Salary*</span>
+        <span class="dark:text-white/90">Salary {{ modifyDoctorTypeForm.get('salary')!.valid ? '' : '*' }}</span>
         <input
           type="number"
           id="salary"
@@ -50,7 +53,7 @@
       <button
         type="submit"
         [disabled]="!modifyDoctorTypeForm.valid"
-        class="focus:outline-none text-white focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
+        class="focus:outline-none text-white/90 focus:ring-4 focus:ring-purple-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 {{
           !modifyDoctorTypeForm.valid
             ? 'bg-main-purple/30 dark:bg-gray-700/20 cursor-not-allowed'
             : 'bg-main-purple dark:bg-gray-700 cursor-pointer'
@@ -61,7 +64,7 @@
       <button
         type="button"
         (click)="deleteDoctorType()"
-        class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
+        class="focus:outline-none text-white/90 bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900"
       >
         Delete <span class="hidden md:inline-block">specialization</span>
       </button>
@@ -138,6 +141,7 @@
             <th scope="col" class="px-6 py-3 table-cell">Name</th>
             <th scope="col" class="px-6 py-3 md:table-cell hidden">Mail</th>
             <th scope="col" class="px-6 py-3 md:table-cell hidden">Phone</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden"></th>
           </tr>
         </thead>
         <tbody class="table-row-group">
@@ -163,7 +167,7 @@
           </td>
           <th
             scope="row"
-            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white/90"
           >
             {{ dataDoctor.firstname }} {{ dataDoctor.lastname }}
           </th>
@@ -184,7 +188,7 @@
       <nav aria-label="Page navigation example" class="self-center">
         <ul class="flex items-center -space-x-px h-10 text-base">
           <li>
-            <button (click)="previousPage()" [disabled]="offset === 0" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+            <button (click)="previousPage()" [disabled]="offset === 0" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white/90">
               <span class="sr-only">Previous</span>
               <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 1 1 5l4 4"/>
@@ -197,12 +201,12 @@
                 type="button" 
                 (click)="goToPage(page)"
                 [attr.aria-current]="currentPage === page ? 'page' : null"
-                class="{{ currentPage === page ? 'z-10 flex items-center justify-center px-4 h-10 leading-tight text-main-purple border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-main-purple dark:border-gray-700 dark:bg-gray-700 dark:text-white' 
-                : 'flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white' }}"
+                class="{{ currentPage === page ? 'z-10 flex items-center justify-center px-4 h-10 leading-tight text-main-purple border border-blue-300 bg-blue-50 hover:bg-blue-100 hover:text-main-purple dark:border-gray-700 dark:bg-gray-700 dark:text-white/90' 
+                : 'flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white/90' }}"
                 >{{page}}</button>
             </li>
           </ng-container>
-          <button (click)="nextPage()" type="button" [disabled]="offset >= (maxDoctors - limit)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+          <button (click)="nextPage()" type="button" [disabled]="offset >= (maxDoctors - limit)" class="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white/90">
             <span class="sr-only">Next</span>
             <svg class="w-3 h-3 rtl:rotate-180" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 6 10">
               <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4"/>

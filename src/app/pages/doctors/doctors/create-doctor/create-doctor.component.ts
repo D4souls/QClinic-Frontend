@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
@@ -18,15 +18,25 @@ import { textValidator } from '../../../../shared/validators/text.validator';
 import { FormatFormsInputsService } from '../../../../shared/services/format-forms-inputs.service';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-create-doctor',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './create-doctor.component.html',
   styleUrl: './create-doctor.component.css',
 })
 export class CreateDoctorComponent implements OnInit {
+  
+  token: string = localStorage.getItem('token')!;
+
+  // To upload avatar functions
+  avatar = signal<any>(null);
+  previewAvatar: any;
+
+  actualStatus = signal<boolean>(false);
+
   constructor(
     private router: Router,
     private apidoctor: ApiService,
@@ -35,7 +45,13 @@ export class CreateDoctorComponent implements OnInit {
 
   ngOnInit(): void {
     this.getDoctorsType();
-    this.getDoctorSchedule();
+    this.getDoctorsSchedule();
+    this.countDoctorsTypes();
+    this.countDoctorsSchedule();
+  }
+
+  onSubmit(event: Event): void {
+    event.preventDefault();
   }
 
   @Input() modalId?: string;
@@ -116,6 +132,8 @@ export class CreateDoctorComponent implements OnInit {
     this.apidoctor.createDoctor(data).subscribe(
       (response: any) => {
         if (response) {
+
+          
           Swal.fire({
             text: 'doctor created!',
             icon: 'success',
@@ -126,6 +144,8 @@ export class CreateDoctorComponent implements OnInit {
             position: 'bottom'
           });
 
+          this.uploadFile(this.avatar());
+          
           setTimeout(() => {
             this.returnBack();
             window.location.reload();
@@ -150,47 +170,349 @@ export class CreateDoctorComponent implements OnInit {
     );
   }
 
-  doctorType: any = [];
+  onFileSelected(event: any): void {
+    const files: FileList | null = event.target.files;
+    
+    if (files && files.length > 0) {
+        const file = files[0];
+        const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-  getDoctorsType() {
+        if (fileExtension !== 'jpg') {
+            Swal.fire({
+                text: 'Only jpg images can be uploaded',
+                icon: 'error',
+                toast: true,
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                position: 'bottom'
+            });
 
-    const token = localStorage.getItem('token')!;
+            event.target.value = '';
+            return;
+        }
 
-    this.apidoctor.getDoctorsType(token).subscribe((data: any) => {
-      if (data) {
-        this.doctorType = data;
-        // console.log(this.doctors);
-      } else {
-        console.log(data);
-      }
-    });
-  }
+        const renamedFile = new File([file], `${this.createDoctorForm.value.doctorDNI}.jpg`, { type: file.type });
 
-  doctorSchedule: any = [];
+        
+        const reader = new FileReader();
+        reader.onload = (e: any) => {
+            this.previewAvatar = e.target.result;
+        };
+        reader.readAsDataURL(renamedFile);
 
-  getDoctorSchedule() {
+        const newAvatar = document.getElementById('newAvatar');
+        const oldAvatar = document.getElementById('oldAvatar');
 
-    const token = localStorage.getItem('token')!;
+        newAvatar!.style.display = 'block';
+        oldAvatar!.style.display = 'none';
 
-    this.apidoctor.getDoctorsSchedule(token).subscribe((data: any) => {
-      if (data) {
-        this.doctorSchedule = data;
-        // console.log(this.doctors);
-      } else {
-        console.log(data);
-      }
-    });
-  }
+        this.avatar.set(renamedFile);
 
-  previewAvatar: any;
-
-  filePreview(e: any) {
-    if (e.target.files[0] != null) {
-      var reader = new FileReader();
-      reader.onload = (e: any) => {
-        this.previewAvatar = e.target.result;
-      };
-      reader.readAsDataURL(e.target.files[0]);
+        event.target.value = this.avatar().name;
     }
   }
+
+  uploadFile(file: File): void {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    this.apidoctor.uploadDoctorAvatar({img: formData, token: this.token}).subscribe((uploadRes: any) => {
+      
+      if (uploadRes.status != 200){
+        Swal.fire({
+          text: 'Error uploading avatar',
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+
+      }
+
+      Swal.fire({
+        text: 'Avatar uploaded',
+        icon: 'success',
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+
+    })
+  }
+  
+  // SEARCH DOCTOR TYPE
+  filteredDoctorType: any = [];
+  offsetDoctorType: number = 0;
+  limitDoctorType: number = 11;
+  maxDoctorsType: number = 0;
+  maxPagesDoctorsType: number = 0;
+  currentPageDoctorType: number = 1;
+
+  filterDoctorType: any = undefined;
+
+  idSelectedDoctorType = signal<any>("");
+
+  countDoctorsTypes() {
+    const token = localStorage.getItem('token')!;
+
+    this.apidoctor.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPagesDoctorsType = countRes;
+    });
+
+  }
+
+  nextPageDoctorType(): void{
+    const currentOffset = this.offsetDoctorType + this.limitDoctorType;
+    this.offsetDoctorType = currentOffset;
+    this.currentPageDoctorType = ++this.currentPageDoctorType;
+    this.getDoctorsType();
+    this.countDoctorsTypes();
+  }
+
+  previousPageDoctorType(): void{
+    const currentOffset = this.offsetDoctorType - this.limitDoctorType;
+    this.offsetDoctorType = currentOffset;
+    this.currentPageDoctorType = --this.currentPageDoctorType;
+    this.getDoctorsType();
+  }
+
+  totalPagesDoctorsType(): number {
+    this.maxPagesDoctorsType = Math.ceil(this.maxDoctorsType / this.limitDoctorType);
+    return this.maxPagesDoctorsType;
+  }
+
+  generatePageDoctorTypeNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctorsType();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctorType(page: number){
+    this.offsetDoctorType = ( page - 1 ) * this.limitDoctorType;
+    this.currentPageDoctorType = page;
+    this.getDoctorsType();
+  }
+
+  getDoctorsType(): void {
+
+    const data = {
+      limit: this.limitDoctorType, 
+      offset: this.offsetDoctorType, 
+      token: this.token,
+      textFilter: this.filterDoctorType,
+    }
+
+    try {
+
+      this.apidoctor.getDoctorsType(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          console.log(data);
+
+          Swal.fire({
+            text: "We can't find any specialization",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctorType = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctorType(id: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/specializations/modify-specialization', id]);
+  }
+
+  filterDoctorsType(dataToSearch: string): void {
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctorType = undefined;
+      
+      this.getDoctorsType();
+      this.countDoctorsTypes();
+      this.generatePageDoctorTypeNumbers();
+      
+    } else {
+  
+      this.filterDoctorType = dataToSearch;
+  
+      this.getDoctorsType();
+      this.countDoctorsTypes();
+      this.generatePageDoctorTypeNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctorType(){
+    this.idSelectedDoctorType.set(null);
+    this.createDoctorForm.get('doctorType')?.setValue(null);
+  }
+
+  markDoctorType(id: string){
+    this.idSelectedDoctorType.set(id);
+    this.createDoctorForm.get('doctorType')?.setValue(id);
+  }
+
+  
+  // DOCTOR SCHEDULE
+  filteredDoctorSchedule: any = [];
+  offsetDoctorSchedule: number = 0;
+  limitDoctorSchedule: number = 11;
+  maxDoctorsSchedule: number = 0;
+  maxPagesDoctorsSchedule: number = 0;
+  currentPageDoctorSchedule: number = 1;
+
+  filterDoctorSchedule: any = undefined;
+
+  idSelectedDoctorSchedule = signal<any>("");
+
+  countDoctorsSchedule() {
+    const token = localStorage.getItem('token')!;
+
+    this.apidoctor.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPagesDoctorsSchedule = countRes;
+    });
+
+  }
+
+  nextPageDoctorSchedule(): void{
+    const currentOffset = this.offsetDoctorSchedule + this.limitDoctorSchedule;
+    this.offsetDoctorSchedule = currentOffset;
+    this.currentPageDoctorSchedule = ++this.currentPageDoctorSchedule;
+    this.getDoctorsType();
+    this.countDoctorsTypes();
+  }
+
+  previousPageDoctorSchedule(): void{
+    const currentOffset = this.offsetDoctorSchedule - this.limitDoctorSchedule;
+    this.offsetDoctorSchedule = currentOffset;
+    this.currentPageDoctorSchedule = --this.currentPageDoctorSchedule;
+    this.getDoctorsType();
+  }
+
+  totalPagesDoctorsSchedule(): number {
+    this.maxPagesDoctorsType = Math.ceil(this.maxDoctorsType / this.limitDoctorSchedule);
+    return this.maxPagesDoctorsType;
+  }
+
+  generatePageDoctorScheduleNumbers(): number[] {
+    const pagesArray = [];
+    const totalPages = this.totalPagesDoctorsType();
+    if (totalPages < 1) pagesArray.push(1);
+    
+    for (let i = 1; i <= totalPages; i++) {
+      pagesArray.push(i);
+    }
+    return pagesArray;
+  }
+
+  goToPageDoctorSchedule(page: number){
+    this.offsetDoctorSchedule = ( page - 1 ) * this.limitDoctorSchedule;
+    this.currentPageDoctorSchedule = page;
+    this.getDoctorsType();
+  }
+
+  getDoctorsSchedule(): void {
+
+    const data = {
+      limit: this.limitDoctorSchedule, 
+      offset: this.offsetDoctorSchedule, 
+      token: this.token,
+      textFilter: this.filterDoctorSchedule,
+    }
+
+    try {
+
+      this.apidoctor.getDoctorsSchedule(data).subscribe((data: any) => {
+
+        if (data.status != 200) {
+
+          console.log(data);
+
+          Swal.fire({
+            text: "We can't find any schedule",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom'
+          });
+          
+        } else {
+          this.filteredDoctorSchedule = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ',error);
+    }
+
+  }
+
+  redirectToDoctorSchedule(id: string): void {
+    this.returnBack();
+    this.router.navigate(['/doctors/schedules/modify-schedule', id]);
+  }
+
+  filterDoctorsSchedule(dataToSearch: any): void {
+
+    // console.log(dataToSearch)
+
+    if (dataToSearch === "") {
+      
+      this.filterDoctorSchedule = undefined;
+      
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageDoctorScheduleNumbers();
+      
+    } else {
+  
+      this.filterDoctorSchedule = dataToSearch;
+  
+      this.getDoctorsSchedule();
+      this.countDoctorsSchedule();
+      this.generatePageDoctorScheduleNumbers();
+  
+    }
+    
+  }
+
+  unMarkDoctorSchedule(){
+    this.idSelectedDoctorSchedule.set(null);
+    this.createDoctorForm.get('doctorSchedule')?.setValue(null);
+  }
+
+  markDoctorSchedule(id: string){
+    this.idSelectedDoctorSchedule.set(id);
+    this.createDoctorForm.get('doctorSchedule')?.setValue(id);
+  }
+
 }

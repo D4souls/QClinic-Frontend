@@ -109,7 +109,7 @@
     </table>
 
     <!-- PAGINATION -->
-    <nav aria-label="Page navigation example" class="self-center absolute bottom-20">
+    <nav aria-label="Page navigation example" class="self-center absolute bottom-8">
       <ul class="flex items-center -space-x-px h-10 text-base">
         <li>
           <button (click)="previousPage()" [disabled]="offset === 0" class="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -168,11 +168,12 @@
     >
       <!-- MODAL HEADER -->
       <div
-        class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+        class="flex items-center justify-between p-4 md:p-5 rounded-t dark:border-gray-600"
       >
         <span class="font-bold text-2xl md:text-4xl dark:text-white"
           >Create doctor</span
         >
+        <svg (click)="returnBack('modal-create-doctor')" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="dark:text-white icon icon-tabler icons-tabler-outline icon-tabler-x cursor-pointer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
       </div>
 
       <!-- MODAL BODY -->
@@ -197,9 +198,10 @@
       >
         <!-- MODAL HEADER -->
         <div
-          class="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600"
+          class="flex items-center justify-between p-4 md:p-5 rounded-t dark:border-gray-600"
         >
           <span class="font-bold text-2xl md:text-4xl dark:text-white">Modify doctor</span>
+          <svg (click)="returnBack('modal-edit-doctor')" xmlns="http://www.w3.org/2000/svg"  width="24"  height="24"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="dark:text-white icon icon-tabler icons-tabler-outline icon-tabler-x cursor-pointer"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M18 6l-12 12" /><path d="M6 6l12 12" /></svg>
         </div>
 
         <!-- MODAL BODY -->

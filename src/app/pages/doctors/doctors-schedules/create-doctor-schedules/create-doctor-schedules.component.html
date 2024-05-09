@@ -3,13 +3,15 @@
   [formGroup]="createScheduleForm"
   (ngSubmit)="createDoctor()"
 >
-  <!-- INFORMATION CONTAINER -->
 
+  <!-- INFORMATION CONTAINER -->
   <div class="flex flex-col order-1 w-full gap-4">
+    <hr class="w-full border border-gray-300" />
+
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-rows-2 md:grid-cols-2 gap-2">
       <label for="scheduleName" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Name*</span>
+        <span class="dark:text-white/90">Name {{ createScheduleForm.get('scheduleName')!.valid ? '' : '*' }}</span>
         <input
           type="text"
           id="scheduleName"
@@ -26,6 +28,7 @@
           name="scheduleStart"
           id="scheduleStart"
           formControlName="scheduleStart"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
 
@@ -36,6 +39,7 @@
           name="scheduleEnd"
           id="scheduleEnd"
           formControlName="scheduleEnd"
+          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
         />
       </label>
     </div>
