@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
+import { ApiService } from '../../core/services/api.service';
 
 @Component({
   selector: 'app-home',
@@ -10,30 +11,48 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 })
 export class HomeComponent implements OnInit{
 
-  time: any = {};
+  private _apiService = inject(ApiService);
+
+  patientsStadistics = signal<any>([]);
+
+  doctorsStadistics = signal<any>([]);
+
+  appointmentsStadistics = signal<any>([]);
+
+  moneyStadistics = signal<any>([]);
+
+  token: string = localStorage.getItem('token')!;
 
   ngOnInit(): void {
-    this.showTime();
-
-    setInterval(() => {
-      this.showTime();
-    }, 1000);
+    this.getStadistics();
   }
 
-  showTime() {
-    let now: Date = new Date();
+  getStadistics(){
 
-    this.time = {
-      'hour': this.formatTime(now.getHours()),
-      'minutes': this.formatTime(now.getMinutes()),
-      'day': this.formatTime(now.getDate()),
-      'month': this.formatTime(now.getMonth() + 1),
-      'year': now.getFullYear()
-    };
-  }
+    this._apiService.getPatientsStadistics(this.token).subscribe((patientsStadisticsRes: any) => {
 
-  formatTime(value: number): string {
-    return value < 10 ? `0${value}` : value.toString();
+      if (patientsStadisticsRes.status == 200){
+        this.patientsStadistics.set(patientsStadisticsRes.res);
+      }
+
+    });
+
+    this._apiService.getDoctorsStadistics(this.token).subscribe((doctorsStadisticsRes: any) => {
+
+      if (doctorsStadisticsRes.status == 200){
+        this.doctorsStadistics.set(doctorsStadisticsRes.res)
+      }
+
+    });
+
+    this._apiService.getAppointmentsStadistics(this.token).subscribe((appointmentsStadisticsRes: any) => {
+
+      if (appointmentsStadisticsRes.status == 200){
+        this.appointmentsStadistics.set(appointmentsStadisticsRes.res)
+      }
+
+    });
+
   }
 
 }

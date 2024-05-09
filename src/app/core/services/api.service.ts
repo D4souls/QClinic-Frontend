@@ -70,6 +70,10 @@ export class ApiService {
     return this.httpclient.post(this.url + 'patient-avatar', data.img, this.configureAuthHeader(data.token));
   }
 
+  getPatientsStadistics(token: string): Observable<any>{
+    return this.httpclient.get(this.url + `patient-get-stadistics`, this.configureAuthHeader(token));
+  }
+
 
   // DOCTORS METHODS
   getDoctors(data: any): Observable<any> {
@@ -102,6 +106,10 @@ export class ApiService {
 
   uploadDoctorAvatar(data: any): Observable<any> {
     return this.httpclient.post(this.url + 'doctor-avatar', data.img, this.configureAuthHeader(data.token));
+  }
+
+  getDoctorsStadistics(token: string): Observable<any>{
+    return this.httpclient.get(this.url + `doctor-get-stadistics`, this.configureAuthHeader(token));
   }
 
 
@@ -170,6 +178,10 @@ export class ApiService {
 
   countDoctorsByType(data: any): Observable<any> {
     return this.httpclient.get(this.url + `doctor-count-by-type?id=${data.id}&textFilter=${data.textFilter}`, this.configureAuthHeader(data.token));
+  }
+
+  getAppointmentsStadistics(token: string): Observable<any>{
+    return this.httpclient.get(this.url + `appointment-get-stadistics`, this.configureAuthHeader(token));
   }
 
 

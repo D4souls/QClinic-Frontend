@@ -11,7 +11,7 @@
         for="datetimeAppointment"
         class="flex flex-col justify-center text-md"
       >
-        <span class="dark:text-white/90">Date*</span>
+        <span class="dark:text-white/90">Date {{ createAppointmentForm.get('dateTime')!.valid ? '' : '*' }}</span>
         <input
           type="datetime-local"
           id="datetimeAppointment"
@@ -21,7 +21,7 @@
         />
       </label>
       <label for="comment" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Comment*</span>
+        <span class="dark:text-white/90">Comment {{ createAppointmentForm.get('appointmentComment')!.valid ? '' : '*' }}</span>
         <textarea
           id="comment"
           rows="1"
@@ -99,11 +99,15 @@
                 dniSelectedPatient() != patient.dni
                   ? 'bg-white hover:bg-gray-50'
                   : 'bg-main-purple/20 hover:bg-main-purple/15'
-              }} border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
+              }}
+              {{ !patient.isActive ? 'cursor-not-allowed' : 'cursor-pointer' }}
+              border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
             >
               <td class="md:w-16 md:px-4 px-2">
                 <input
+                  class="{{ !patient.isActive ? 'cursor-not-allowed' : 'cursor-pointer' }}"
                   type="checkbox"
+                  [disabled] = "!patient.isActive"
                   [checked]="dniSelectedPatient() == patient.dni"
                   (change)="
                     dniSelectedPatient() == patient.dni
@@ -308,10 +312,14 @@
               dniSelectedDoctor() != doctor.dni
                 ? 'bg-white hover:bg-gray-50'
                 : 'bg-main-purple/20 hover:bg-main-purple/15'
-            }} border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
+              }} 
+              {{ !doctor.isActive ? 'cursor-not-allowed' : 'cursor-pointer' }}
+              border-b dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600"
           >
             <td class="md:w-16 md:px-4 px-2">
               <input
+                class="{{ !doctor.isActive ? 'cursor-not-allowed' : 'cursor-pointer' }}"
+                [disabled]="!doctor.isActive"
                 type="checkbox"
                 [checked]="dniSelectedDoctor() == doctor.dni"
                 (change)="

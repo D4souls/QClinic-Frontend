@@ -1,8 +1,183 @@
-<section class="p-6">
-  <div class="grid grid-cols-4 grid-rows-6">
-    <div class="flex flex-col justify-center items-center">
-        <span>{{time.hour}}:{{time.minutes}}</span>
-      <span>{{ time.day }}/{{ time.month }}/{{ time.year }}</span>
+<div class="grid grid-cols-3 grid-flow-row gap-8 p-6 animate-fade-in-up">
+  
+  <div class="col-span-2 grid grid-cols-2 grid-rows-2 gap-8 place-items-stretch place-content-stretch grid-flow-col">
+
+    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
+      <h2 class="dark:text-white/90">Total patients</h2>
+      <span class="dark:text-white/90">{{ patientsStadistics()[0].totalPatients }}</span>
+      <span class="dark:text-white/90">{{ patientsStadistics()[0].totalPatients - patientsStadistics()[0].signUpPatients }}</span>
+    </div>
+    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
+      <h2 class="dark:text-white/90">Total doctors</h2>
+      <span class="dark:text-white/90">{{ doctorsStadistics()[0].totalDoctors }}</span>
+      <span class="dark:text-white/90">{{ doctorsStadistics()[0].totalDoctors - doctorsStadistics()[0].findedDoctors }}</span>
+    </div>
+    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
+      <h2 class="dark:text-white/90">Appointments</h2>
+      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalAppointments }}</span>
+      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalAppointments - appointmentsStadistics()[0].newAppointmentsThisWeek }}</span>
+    </div>
+    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
+      <h2 class="dark:text-white/90">Earnings</h2>
+      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalMoney }} €</span>
+      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalMoney - appointmentsStadistics()[0].moneyThisWeek }} €</span>
     </div>
   </div>
-</section>
+  
+  <div class="row-span-3 col-span-1">
+    <table class="w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+              <th scope="col" class="px-6 py-3">
+                  Product name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Color
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Category
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  <span class="sr-only">Edit</span>
+              </th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Apple MacBook Pro 17"
+              </th>
+              <td class="px-6 py-4">
+                  Silver
+              </td>
+              <td class="px-6 py-4">
+                  Laptop
+              </td>
+              <td class="px-6 py-4">
+                  $2999
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Microsoft Surface Pro
+              </th>
+              <td class="px-6 py-4">
+                  White
+              </td>
+              <td class="px-6 py-4">
+                  Laptop PC
+              </td>
+              <td class="px-6 py-4">
+                  $1999
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+          <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Magic Mouse 2
+              </th>
+              <td class="px-6 py-4">
+                  Black
+              </td>
+              <td class="px-6 py-4">
+                  Accessories
+              </td>
+              <td class="px-6 py-4">
+                  $99
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="col-span-2 row-span-3">
+    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+          <tr>
+              <th scope="col" class="px-6 py-3">
+                  Product name
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Color
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Category
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  Price
+              </th>
+              <th scope="col" class="px-6 py-3">
+                  <span class="sr-only">Edit</span>
+              </th>
+          </tr>
+      </thead>
+      <tbody>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Apple MacBook Pro 17"
+              </th>
+              <td class="px-6 py-4">
+                  Silver
+              </td>
+              <td class="px-6 py-4">
+                  Laptop
+              </td>
+              <td class="px-6 py-4">
+                  $2999
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Microsoft Surface Pro
+              </th>
+              <td class="px-6 py-4">
+                  White
+              </td>
+              <td class="px-6 py-4">
+                  Laptop PC
+              </td>
+              <td class="px-6 py-4">
+                  $1999
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+          <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
+              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                  Magic Mouse 2
+              </th>
+              <td class="px-6 py-4">
+                  Black
+              </td>
+              <td class="px-6 py-4">
+                  Accessories
+              </td>
+              <td class="px-6 py-4">
+                  $99
+              </td>
+              <td class="px-6 py-4 text-right">
+                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
+              </td>
+          </tr>
+      </tbody>
+    </table>
+  </div>
+
+
+
+</div>
