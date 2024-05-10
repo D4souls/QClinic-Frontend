@@ -41,13 +41,13 @@ export class AppointmentsComponent implements OnInit {
       this.mdCalendarOptions = {
         events: this.calendarEvents,
       };
-    }, 225);
+    }, 500);
 
     setTimeout(() => {
       this.smCalendarOptions = {
         events: this.calendarEvents,
       };
-    }, 1);
+    }, 500);
   }
 
   mdCalendarOptions: CalendarOptions = {
