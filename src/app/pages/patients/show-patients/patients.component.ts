@@ -4,7 +4,6 @@ import { ApiService } from '../../../core/services/api.service';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { CommonModule } from '@angular/common';
 import Swal from 'sweetalert2';
-import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces'
 import { CreatePatientComponent } from '../create-patient/create-patient.component';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
@@ -19,7 +18,7 @@ import { ReactiveFormsModule } from '@angular/forms';
   styleUrl: './patients.component.css',
 })
 export class PatientsComponent implements OnInit {
-  data: patientsInterfaces[] = [];
+  data: any[] = [];
   filteredPatient: any[] = [];
 
   allPatients: number = 0;

@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
-import { patientsInterfaces } from '../../../core/interfaces/patients/patients-interfaces';
 import { ApiService } from '../../../core/services/api.service';
 import { dateTimeValidator } from '../../../shared/validators/dateTime.validator';
 import { textValidator } from '../../../shared/validators/text.validator';
