@@ -1,181 +1,291 @@
-<div class="grid grid-cols-3 grid-flow-row gap-8 p-6 animate-fade-in-up">
+<div class="grid grid-cols-3 grid-flow-row gap-8 p-6">
   
-  <div class="col-span-2 grid grid-cols-2 grid-rows-2 gap-8 place-items-stretch place-content-stretch grid-flow-col">
+  
+  <div class="col-span-2 flex flex-col gap-2">
 
-    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
-      <h2 class="dark:text-white/90">Total patients</h2>
-      <span class="dark:text-white/90">{{ patientsStadistics()[0].totalPatients }}</span>
-      <span class="dark:text-white/90">{{ patientsStadistics()[0].totalPatients - patientsStadistics()[0].signUpPatients }}</span>
+    <h3 class="self-start font-bold text-md md:text-2xl dark:text-white/90">Clinic stadistics</h3>
+
+    <div class="grid grid-cols-2 grid-rows-2 gap-8 place-items-stretch place-content-stretch grid-flow-col">
+      @defer {
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <div class="flex flex-col justify-center items-start ml-8 relative">
+            <h2 class="dark:text-white/90 font-semibold text-lg">Total patients</h2>
+            <span class="dark:text-white/90 text-lg font-normal">{{ patientsStadistics[0].totalPatients}}</span>
+            <span class="dark:text-white/90 text-sm text-gray-600">{{ patientsStadistics[0].totalPatients - patientsStadistics[0].signUpPatients}} patients</span>
+            
+            @if ( (patientsStadistics[0].totalPatients - patientsStadistics[0].signUpPatients) > 0 ){
+              <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+            } @else {
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>
+            }
+
+          </div>
+        </div>
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <div class="flex flex-col justify-center items-start ml-8 relative">
+            <h2 class="dark:text-white/90 font-semibold text-lg">Total doctors</h2>
+            <span class="dark:text-white/90 text-lg font-normal">{{ doctorsStadistics[0].totalDoctors}}</span>
+            <span class="dark:text-white/90 text-sm text-gray-600">{{ doctorsStadistics[0].totalDoctors - doctorsStadistics[0].findedDoctors}} doctors</span>
+
+            @if ( (doctorsStadistics[0].totalDoctors - doctorsStadistics[0].findedDoctors) > 0 ){
+              <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+            } @else {
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>
+            }
+
+          </div>
+        </div>
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <div class="flex flex-col justify-center items-start ml-8 relative">
+            <h2 class="dark:text-white/90 font-semibold text-lg">Total appointments</h2>
+            <span class="dark:text-white/90 text-lg font-normal">{{ appointmentsStadistics[0].totalAppointments}}</span>
+            <span class="dark:text-white/90 text-sm text-gray-600">{{ appointmentsStadistics[0].totalAppointments - appointmentsStadistics[0].newAppointmentsThisWeek }} new</span>
+
+            @if ( (appointmentsStadistics[0].totalAppointments - appointmentsStadistics[0].newAppointmentsThisWeek) > 0 ){
+              <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+            } @else {
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>
+            }
+
+          </div>
+        </div>
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+          <div class="flex flex-col justify-center items-start ml-8 relative">
+            <h2 class="dark:text-white/90 font-semibold text-lg">Total earnings</h2>
+            <span class="dark:text-white/90 text-lg font-normal">{{ appointmentsStadistics[0].totalMoney}}€</span>
+            <span class="dark:text-white/90 text-sm text-gray-600">{{ appointmentsStadistics[0].moneyThisWeek }}€ earnings</span>
+
+            @if ( appointmentsStadistics[0].moneyThisWeek > 0 ){
+              <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
+            } @else {
+              <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>
+            }
+
+          </div>
+        </div>
+      } @placeholder {
+        <div role="status" class="animate-pulse grid grid-cols-2 grid-rows-2 gap-8 place-items-stretch place-content-stretch grid-flow-col">
+
+          <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <div class="flex flex-col justify-center items-start ml-8 relative">
+              <h2 class="dark:text-white/90 font-semibold text-lg">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </h2>
+              <span class="dark:text-white/90 text-lg font-normal">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+              <span class="dark:text-white/90 text-sm text-gray-600">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+            </div>
+          </div>
+          <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <div class="flex flex-col justify-center items-start ml-8 relative">
+              <h2 class="dark:text-white/90 font-semibold text-lg">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </h2>
+              <span class="dark:text-white/90 text-lg font-normal">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+              <span class="dark:text-white/90 text-sm text-gray-600">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+            </div>
+          </div>
+          <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <div class="flex flex-col justify-center items-start ml-8 relative">
+              <h2 class="dark:text-white/90 font-semibold text-lg">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </h2>
+              <span class="dark:text-white/90 text-lg font-normal">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+              <span class="dark:text-white/90 text-sm text-gray-600">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+            </div>
+          </div>
+          <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+            <div class="flex flex-col justify-center items-start ml-8 relative">
+              <h2 class="dark:text-white/90 font-semibold text-lg">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </h2>
+              <span class="dark:text-white/90 text-lg font-normal">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+              <span class="dark:text-white/90 text-sm text-gray-600">
+                <div class="h-2.5 bg-gray-200 rounded-full dark:bg-gray-700 w-20 mb-4"></div>
+              </span>
+            </div>
+          </div>
+    
+        </div>
+      }
     </div>
-    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
-      <h2 class="dark:text-white/90">Total doctors</h2>
-      <span class="dark:text-white/90">{{ doctorsStadistics()[0].totalDoctors }}</span>
-      <span class="dark:text-white/90">{{ doctorsStadistics()[0].totalDoctors - doctorsStadistics()[0].findedDoctors }}</span>
-    </div>
-    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
-      <h2 class="dark:text-white/90">Appointments</h2>
-      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalAppointments }}</span>
-      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalAppointments - appointmentsStadistics()[0].newAppointmentsThisWeek }}</span>
-    </div>
-    <div class="flex flex-col justify-center items-start bg-white/90 w-full rounded-md py-2 px-4 shadow-xl">
-      <h2 class="dark:text-white/90">Earnings</h2>
-      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalMoney }} €</span>
-      <span class="dark:text-white/90">{{ appointmentsStadistics()[0].totalMoney - appointmentsStadistics()[0].moneyThisWeek }} €</span>
-    </div>
+    
   </div>
   
-  <div class="row-span-3 col-span-1">
-    <table class="w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-              <th scope="col" class="px-6 py-3">
-                  Product name
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Color
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Category
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Price
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  <span class="sr-only">Edit</span>
-              </th>
-          </tr>
-      </thead>
-      <tbody>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Apple MacBook Pro 17"
-              </th>
-              <td class="px-6 py-4">
-                  Silver
-              </td>
-              <td class="px-6 py-4">
-                  Laptop
-              </td>
-              <td class="px-6 py-4">
-                  $2999
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-          </tr>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Microsoft Surface Pro
-              </th>
-              <td class="px-6 py-4">
-                  White
-              </td>
-              <td class="px-6 py-4">
-                  Laptop PC
-              </td>
-              <td class="px-6 py-4">
-                  $1999
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-          </tr>
-          <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Magic Mouse 2
-              </th>
-              <td class="px-6 py-4">
-                  Black
-              </td>
-              <td class="px-6 py-4">
-                  Accessories
-              </td>
-              <td class="px-6 py-4">
-                  $99
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-          </tr>
-      </tbody>
-    </table>
+  <div class="row-span-3 col-span-1 flex flex-col gap-2">
+
+    <h3 class="self-start font-bold text-md md:text-2xl dark:text-white/90">Doctor's schedule</h3>
+
+    @if (doctorsDay.length > 0){
+      @for (doctor of doctorsDay; track doctorsDay.dni){
+
+        <div (click)="redirectToDoctor(doctor.doctorDni)" class="cursor-pointer flex flex-row flex-shrink rounded-md p-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-main-purple/20 dark:hover:bg-gray-600">
+  
+          <div class="flex flex-row justify-center items-center gap-2">
+            
+            <div class="relative">
+              <img class="w-14 h-14 border-2 border-white rounded-lg dark:border-gray-800" src="http://localhost:8080/doctors/avatar/{{doctor.doctorDni}}.jpg" alt="avatar-doctor{{doctor.doctorDni}}">
+              <span class="top-0 left-10 absolute w-3.5 h-3.5 {{ doctor.is_active ? 'bg-green-400' : 'bg-red-400' }} border-2 border-white dark:border-gray-800 rounded-full"></span>
+            </div>
+  
+            <div class="flex flex-col items-start justify-center">
+              <span class="dark:text-white/90 font-medium">{{ doctor.doctorFirstName }} {{ doctor.doctorLastName }}</span>
+              <span class="dark:text-white/90 text-gray-600">{{ doctor.specialization }}</span>
+            </div>
+  
+          </div>
+          <div class="flex flex-col items-end justify-center ml-auto">
+            <span class="dark:text-white/90 self-start text-gray-600">{{ doctor.scheduleName }}</span>
+            <span class="dark:text-white/90 text-gray-600">{{ doctor.scheduleStart.split(':').splice(0, 2).join(':') }} - {{ doctor.scheduleEnd.split(':').splice(0, 2).join(':') }}</span>
+          </div>
+  
+        </div>
+  
+        <hr class="w-full border border-gray-300/50" />
+  
+      }
+    } @else {
+      <div class="flex flex-row items-center justify-center mt-[50%]">
+        <img
+          src="/assets/images/question-flatline.png"
+          alt="earch-engine"
+          width="150"
+          height="150"
+        />
+        <p class="text-gray-500">Ups! There are no logins today</p>
+      </div>
+    }
+    
+    
+
   </div>
 
-  <div class="col-span-2 row-span-3">
-    <table class="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-      <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-          <tr>
-              <th scope="col" class="px-6 py-3">
-                  Product name
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Color
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Category
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  Price
-              </th>
-              <th scope="col" class="px-6 py-3">
-                  <span class="sr-only">Edit</span>
-              </th>
+  <div class="col-span-2 row-span-3 flex flex-col gap-2">
+    <h3 class="self-start font-bold text-md md:text-2xl dark:text-white/90">Next appointments</h3>
+
+    @if(appointmentsDay().length > 0){
+      <table
+        class="w-full text-sm text-left table-auto rtl:text-right text-gray-500 dark:text-gray-400"
+      >
+        <thead
+          class="table-header-group text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
+        >
+          <tr class="table-row">
+            <th scope="col" class="p-4">
+              <span class="sr-only">Avatar</span>
+            </th>
+            <th scope="col" class="px-6 py-3 table-cell">Patient</th>
+            <th scope="col" class="px-6 py-3 table-cell">Patient phone</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Date</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Doctor</th>
+            <th scope="col" class="p-4">
+              <span class="sr-only">Payed</span>
+            </th>
           </tr>
-      </thead>
-      <tbody>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Apple MacBook Pro 17"
-              </th>
+        </thead>
+        <tbody class="table-row-group">
+          @for (appointment of appointmentsDay(); track appointmentsDay().dni){
+          <tr
+            class="table-row bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+          >
+            <td>
+              <div class="flex -space-x-2 rtl:space-x-reverse">
+                  <div class="relative z-10">
+                      <img class="w-10 h-10 border-2 border-white rounded-lg dark:border-gray-800" src="http://localhost:8080/patients/avatar/{{appointment.patientInfo.dni}}.jpg" alt="">
+                      <span class="top-0 left-7 absolute w-3.5 h-3.5 {{ appointment.patientInfo.isActive ? 'bg-green-400' : 'bg-red-400' }} border-2 border-white dark:border-gray-800 rounded-full"></span>
+                  </div>
+                  <div class="relative">
+                      <img class="w-10 h-10 border-2 border-white rounded-lg dark:border-gray-800" src="http://localhost:8080/doctors/avatar/{{appointment.doctorInfo.dni}}.jpg" alt="">
+                      <span class="top-0 left-7 absolute w-3.5 h-3.5 {{ appointment.doctorInfo.isActive ? 'bg-green-400' : 'bg-red-400' }} border-2 border-white dark:border-gray-800 rounded-full"></span>
+                  </div>
+              </div>
+            </td>
+            <th
+              scope="row"
+              class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+            >
+              {{ appointment.patientInfo.firstname }} {{ appointment.patientInfo.lastname }}
+            </th>
+  
+            <td class="px-6 py-4 md:table-cell hidden">{{ appointment.patientInfo.phone }}</td>
+  
+            <td class="px-6 py-4 md:table-cell hidden">{{ appointment.appointmentInfo.appointmentStart | date: 'dd/MM/yyyy h:mm a' }}</td>
+  
+            <td class="px-6 py-4 md:table-cell hidden">{{ appointment.doctorInfo.firstname }} {{ appointment.doctorInfo.lastname }}</td>
+  
+            @if (appointment.appointmentInfo.payed) {
               <td class="px-6 py-4">
-                  Silver
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#1daa39"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-currency-euro"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M17.2 7a6 7 0 1 0 0 10" />
+                  <path d="M13 10h-8m0 4h8" />
+                </svg>
               </td>
-              <td class="px-6 py-4">
-                  Laptop
+              } @else {
+              <td
+                class="px-6 py-4 cursor-pointer"
+                (click)="updateStatusPayment(appointment.appointmentInfo.id)"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="15"
+                  height="15"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#aa1d1d"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="icon icon-tabler icons-tabler-outline icon-tabler-currency-euro-off"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path
+                    d="M17.2 7c-1.977 -2.26 -4.954 -2.602 -7.234 -1.04m-1.913 2.079c-1.604 2.72 -1.374 6.469 .69 8.894c2.292 2.691 6 2.758 8.356 .18"
+                  />
+                  <path d="M10 10h-5m0 4h8" />
+                  <path d="M3 3l18 18" />
+                </svg>
               </td>
-              <td class="px-6 py-4">
-                  $2999
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
+              }
+  
           </tr>
-          <tr class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Microsoft Surface Pro
-              </th>
-              <td class="px-6 py-4">
-                  White
-              </td>
-              <td class="px-6 py-4">
-                  Laptop PC
-              </td>
-              <td class="px-6 py-4">
-                  $1999
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-          </tr>
-          <tr class="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-              <th scope="row" class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                  Magic Mouse 2
-              </th>
-              <td class="px-6 py-4">
-                  Black
-              </td>
-              <td class="px-6 py-4">
-                  Accessories
-              </td>
-              <td class="px-6 py-4">
-                  $99
-              </td>
-              <td class="px-6 py-4 text-right">
-                  <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</a>
-              </td>
-          </tr>
-      </tbody>
-    </table>
+          }
+        </tbody>
+      </table>
+    } @else {
+      <div class="flex flex-row items-center justify-center mt-[50%]">
+        <img
+          src="/assets/images/calendar-flatline.png"
+          alt="earch-engine"
+          width="150"
+        />
+        <span class="text-gray-500">We didn't find any appointments</span>
+      </div>
+    }
   </div>
 
 

@@ -303,7 +303,7 @@
                 }
               </div>
               {{ doctor.firstname }}
-              {{ doctor.lastname.split(0, doctor.lastname.lenght - 2) }}
+              {{ doctor.lastname | formatLastname }}
             </th>
             <td class="px-6 py-4 md:table-cell hidden">
               {{ doctor.email || "No gender" }}

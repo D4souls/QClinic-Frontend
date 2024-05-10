@@ -112,6 +112,10 @@ export class ApiService {
     return this.httpclient.get(this.url + `doctor-get-stadistics`, this.configureAuthHeader(token));
   }
 
+  getDoctorsSignUp(token: string): Observable<any>{
+    return this.httpclient.get(this.url + `doctor-get-today`, this.configureAuthHeader(token));
+  }
+
 
   // DOCTOR TYPE METHODS
   getDoctorsType(data: any): Observable<any> {

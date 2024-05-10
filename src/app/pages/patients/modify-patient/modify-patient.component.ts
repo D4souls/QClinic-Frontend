@@ -13,11 +13,12 @@ import { CommonModule } from '@angular/common';
 
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 import { catchError, single, throwError, timeout } from 'rxjs';
+import { FormatLastnamePipe } from '../../../core/pipe/format-lastname.pipe';
 
 @Component({
   selector: 'app-modify-patient',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, RouterLink],
+  imports: [ReactiveFormsModule, CommonModule, RouterLink, FormatLastnamePipe],
   templateUrl: './modify-patient.component.html',
   styleUrl: './modify-patient.component.css',
 })

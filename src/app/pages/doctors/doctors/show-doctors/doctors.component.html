@@ -82,19 +82,11 @@
             {{ doctor.firstname }} {{ doctor.lastname }}
           </th>
 
-          @if (doctor.city){
-          <td class="px-6 py-4 md:table-cell hidden">{{ doctor.city }}</td>
-          } @else {
-          <td class="px-6 py-4 md:table-cell hidden">No city</td>
-          }
+          <td class="px-6 py-4 md:table-cell hidden">{{ doctor.city || 'No city' }}</td>
 
           <td class="px-6 py-4 md:table-cell hidden">{{ doctor.gender }}</td>
 
-          @if (doctor.email){
-          <td class="px-6 py-4 md:table-cell hidden">{{ doctor.email }}</td>
-          } @else {
-          <td class="px-6 py-4 md:table-cell hidden">No email</td>
-          }
+          <td class="px-6 py-4 md:table-cell hidden">{{ doctor.email || 'No email' }}</td>
 
           <td class="px-6 py-4 text-right table-cell">
             <a
