@@ -52,7 +52,8 @@ export class EditAppointmentComponent implements OnInit {
     }),
     patientDNI: new FormControl('', [Validators.required]),
     doctorDNI: new FormControl('', [Validators.required]),
-    appointmentComment: new FormControl('', [Validators.required])
+    appointmentComment: new FormControl('', [Validators.required]),
+    payed: new FormControl(''),
   });
 
   getAppointments(date: string): void {
@@ -83,7 +84,7 @@ export class EditAppointmentComponent implements OnInit {
             if (patientDataResponse) {
               const combinedObject = Object.assign({}, appointmentPerDayDataResponse[index], patientDataResponse);
               this.generalData.push(combinedObject); 
-              // console.log(this.generalData);
+              console.log(this.generalData);
             }
           });
         });
@@ -123,8 +124,11 @@ export class EditAppointmentComponent implements OnInit {
     this.createAppointmentForm.patchValue({
       patientDNI: `${this.filterPatient}`,
       appointmentComment: `${comment}`,
-      doctorDNI: `${this.filterDoctor}`
+      doctorDNI: `${this.filterDoctor}`,
+      payed: this.generalData[findIndexAppointment].payed
     });
+
+    console.log(this.generalData[findIndexAppointment].payed)
     
 
     this.getPatients();
