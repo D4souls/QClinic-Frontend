@@ -7,7 +7,7 @@
 
     <div class="grid grid-cols-2 grid-rows-2 gap-8 place-items-stretch place-content-stretch grid-flow-col">
       @defer {
-        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 hover:scale-105 transition-all ease-in-out">
           <div class="flex flex-col justify-center items-start ml-8 relative">
             <h2 class="dark:text-white/90 font-semibold text-lg">Total patients</h2>
             <span class="dark:text-white/90 text-lg font-normal">{{ patientsStadistics[0].totalPatients}}</span>
@@ -21,7 +21,7 @@
 
           </div>
         </div>
-        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 hover:scale-105 transition-all ease-in-out">
           <div class="flex flex-col justify-center items-start ml-8 relative">
             <h2 class="dark:text-white/90 font-semibold text-lg">Total doctors</h2>
             <span class="dark:text-white/90 text-lg font-normal">{{ doctorsStadistics[0].totalDoctors}}</span>
@@ -35,7 +35,7 @@
 
           </div>
         </div>
-        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 hover:scale-105 transition-all ease-in-out">
           <div class="flex flex-col justify-center items-start ml-8 relative">
             <h2 class="dark:text-white/90 font-semibold text-lg">Total appointments</h2>
             <span class="dark:text-white/90 text-lg font-normal">{{ appointmentsStadistics[0].totalAppointments}}</span>
@@ -49,7 +49,7 @@
 
           </div>
         </div>
-        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+        <div class="bg-white/90 w-full rounded-md py-2 px-4 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 hover:scale-105 transition-all ease-in-out">
           <div class="flex flex-col justify-center items-start ml-8 relative">
             <h2 class="dark:text-white/90 font-semibold text-lg">Total earnings</h2>
             <span class="dark:text-white/90 text-lg font-normal">{{ appointmentsStadistics[0].totalMoney}}€</span>
@@ -132,7 +132,7 @@
     @if (doctorsDay.length > 0){
       @for (doctor of doctorsDay; track doctorsDay.dni){
 
-        <div (click)="redirectToDoctor(doctor.doctorDni)" class="cursor-pointer flex flex-row flex-shrink rounded-md p-4 bg-white dark:bg-gray-800 dark:border-gray-700 hover:bg-main-purple/20 dark:hover:bg-gray-600">
+        <div (click)="redirectToDoctor(doctor.doctorDni)" class="cursor-pointer flex flex-row flex-shrink rounded-md p-4 bg-white dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-600 hover:scale-105 transition-all ease-in-out">
   
           <div class="flex flex-row justify-center items-center gap-2">
             
