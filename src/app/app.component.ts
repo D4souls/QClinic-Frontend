@@ -7,11 +7,10 @@ import { NavBarComponent } from './pages/nav-bar/nav-bar.component';
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NavBarComponent, HttpClientModule],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  templateUrl: './app.component.html'
 })
 export class AppComponent{
 
-  title = 'consultorio-medico';
+  title = 'QClinic | Dashboard';
 
 }
