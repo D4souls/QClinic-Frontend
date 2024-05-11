@@ -1,6 +1,110 @@
-#mainDiv {
-    background-color: #faf7fc;
-    background-image: url(/assets/images/imageLogin.svg);
-    background-repeat: no-repeat;
-    background-size: cover;
+.wrapper {
+  position: absolute;
+  top: -30%;
+  left: -50%;
+  width: 1000px;
+  height: 500px;
+  transform: translate(-50%, -50%);
+  border-radius: 5px;
+  rotate: -90deg;
+}
+
+.wave1 {
+  width: 1150px;
+  height: 1100px;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -500px;
+  border-radius: 35%;
+  background: #854cff;
+  animation: wave 50s infinite linear;
+}
+
+.wave2 {
+  width: 1150px;
+  height: 1200px;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -500px;
+  border-radius: 35%;
+  background: #a571ff;
+  animation: wave 40s infinite linear;
+}
+
+.wave3 {
+  width: 1150px;
+  height: 1300px;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -500px;
+  border-radius: 35%;
+  background: #bf94ff;
+  animation: wave 29s infinite linear;
+}
+
+.wave4 {
+  width: 1150px;
+  height: 1400px;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -500px;
+  border-radius: 35%;
+  background: #d6b8ff;
+  animation: wave 22s infinite linear;
+}
+
+.wave5 {
+  width: 1150px;
+  height: 1500px;
+  position: absolute;
+  top: -25%;
+  left: 50%;
+  margin-left: -500px;
+  margin-top: -500px;
+  border-radius: 35%;
+  background: #ecdbff;
+  animation: wave 15s infinite linear;
+}
+
+@keyframes wave {
+  from {
+    transform: rotate(0deg);
+  }
+  from {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 450px) {
+    .wave1 .wave2 .wave3 .wave4 .wave5 {
+        width: 100px;
+    }
+
+    .wave1 {
+        height: 750px;
+    }
+
+    .wave2 {
+        height: 800px;
+    }
+
+    .wave3 {
+        height: 850px;
+    }
+
+    .wave4 {
+        height: 900px;
+    }
+
+    .wave5 {
+        height: 934px;
+    }
 }

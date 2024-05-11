@@ -1,19 +1,28 @@
-<div class="w-screen h-screen flex justify-center items-center md:grid md:grid-cols-2">
-  <img src="/assets/images/imageLogin.svg" alt="logoLogin" class="hidden md:block">
-  <div class="w-full h-screen flex flex-row items-center justify-center bg-white dark:bg-dark-main-bg">
+<div class="flex flex-row relative overflow-hidden">
+  <!-- <img src="/assets/images/imageLogin.svg" alt="logoLogin" class="hidden md:block"> -->
+  <div class="relative">
+    <div class="wrapper">
+      <div class="wave5"></div>
+      <div class="wave4"></div>
+      <div class="wave3"></div>
+      <div class="wave2"></div>
+      <div class="wave1"></div>
+    </div>
+  </div>
+  
+  <div class="w-[1000px] ml-auto h-screen flex flex-row items-center justify-center z-10">
     <form
       [formGroup]="formLogin"
       (ngSubmit)="login()"
-      class="w-full flex flex-col gap-4 justify-center md:w-2/5 p-4 rounded-md"
+      class=" flex flex-col gap-4 justify-center mx-10 sm:mx-auto sm:w-2/5 p-4 rounded-md bg-white dark:bg-dark-main-bg shadow-2xl md:shadow-none"
     >
       <img
         src="/assets/images/mini-logo.png"
         alt="logoQClinic"
-        width="100"
-        class="self-center"
+        class="self-center w-20 md:w-[100px]"
         [style.view-transition-name]="'logoQClinic'"
       />
-      <h2 class="text-5xl font-medium self-center">Hello again!</h2>
+      <h2 class="text-3xl sm:text-5xl font-medium self-center">Hello again!</h2>
       <p class="text-gray-700/80 text-pretty text-center self-center">Please introduce your credentials to access to dashboard</p>
       <label
         for="user"
@@ -39,7 +48,7 @@
           type="text"
           formControlName="username"
           placeholder="Username"
-          class="border-none focus:ring-0"
+          class="border-none focus:ring-0 w-full"
         />
       </label>
 
@@ -67,7 +76,7 @@
           type="password"
           formControlName="password"
           placeholder="Password"
-          class="border-none focus:ring-0"
+          class="border-none focus:ring-0 w-full"
         />
 
         <button type="button" (click)="showPassword()" [disabled]="!formLogin.valid" class="absolute right-2 {{!formLogin.valid ? 'cursor-not-allowed opacity-40' : 'cursor-pointer opacity-100'}}">
