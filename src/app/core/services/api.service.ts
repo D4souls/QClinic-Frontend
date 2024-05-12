@@ -116,6 +116,14 @@ export class ApiService {
     return this.httpclient.get(this.url + `doctor-get-today`, this.configureAuthHeader(token));
   }
 
+  getDoctorStadistics(data: any): Observable<any>{
+    return this.httpclient.get(this.url + `doctor-stadistics/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
+  getDoctorByWebloginId(data: any): Observable<any>{
+    return this.httpclient.get(this.url + `doctor-by-web-login/${data.id}`, this.configureAuthHeader(data.token));
+  }
+
 
   // DOCTOR TYPE METHODS
   getDoctorsType(data: any): Observable<any> {
@@ -205,6 +213,10 @@ export class ApiService {
 
   getDayAppointments(data: any): Observable<any> {
     return this.httpclient.get(this.url + `appointment-info-day/${data.date}`, this.configureAuthHeader(data.token));
+  }
+
+  getDayAppointmentsByDoctor(data: any): Observable<any> {
+    return this.httpclient.get(this.url + `appointment-info-day-by-doctor?day=${data.date}&dni=${data.dni}`, this.configureAuthHeader(data.token));
   }
 
   countDayAppointments(data: any): Observable<any> {
