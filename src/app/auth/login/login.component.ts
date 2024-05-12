@@ -48,7 +48,8 @@ export class LoginComponent implements OnInit{
         })
 
       } else {
-        localStorage.setItem('token', data.res);
+        localStorage.setItem('token', data.res.token);
+        localStorage.setItem('role', data.res.role);
         this.router.navigate(['/']);
       }
     }, (error: any) =>{
