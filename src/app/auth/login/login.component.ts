@@ -50,6 +50,7 @@ export class LoginComponent implements OnInit{
       } else {
         localStorage.setItem('token', data.res.token);
         localStorage.setItem('role', data.res.role);
+        localStorage.setItem('webLogin', data.res.id);
         this.router.navigate(['/']);
       }
     }, (error: any) =>{
