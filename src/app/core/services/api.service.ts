@@ -243,4 +243,9 @@ export class ApiService {
   callAssistant(data: any): Observable<any>{
     return this.httpclient.post('http://localhost:4047/api/v1/ollama', data);
   }
+
+  // WEBLOGIN METHODS
+  createDoctorWebLogin(data: any): Observable<any> {
+    return this.httpclient.post(this.url + `register/${data.dni}`, data.webLogin, this.configureAuthHeader(data.token));
+  }
 }
