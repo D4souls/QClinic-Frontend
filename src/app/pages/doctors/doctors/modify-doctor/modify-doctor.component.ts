@@ -414,7 +414,7 @@ export class ModifyDoctorComponent implements OnInit {
             if (data) {
               Swal.fire({
                 icon: 'success',
-                text: data.msn,
+                text: "Doctor deleted!",
                 toast: true,
                 showConfirmButton: false,
                 timer: 3000,

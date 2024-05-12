@@ -131,11 +131,11 @@ export class CreateDoctorComponent implements OnInit {
 
     this.apidoctor.createDoctor(data).subscribe(
       (response: any) => {
-        if (response) {
+        if (response.status == 200) {
 
           
           Swal.fire({
-            text: 'doctor created!',
+            text: 'Doctor created!',
             icon: 'success',
             toast: true,
             showConfirmButton: false,
@@ -145,6 +145,8 @@ export class CreateDoctorComponent implements OnInit {
           });
 
           this.uploadFile(this.avatar());
+
+          this.crateDoctorWeblogin(data.doctorData.firstname, data.doctorData.phone!, data.doctorData.dni)
           
           setTimeout(() => {
             this.returnBack();
@@ -155,7 +157,7 @@ export class CreateDoctorComponent implements OnInit {
           Swal.fire({
             icon: 'error',
             title: 'Oops...',
-            text: response.message,
+            text: response.res,
           });
         }
       },
@@ -168,6 +170,42 @@ export class CreateDoctorComponent implements OnInit {
         });
       }
     );
+  }
+
+  crateDoctorWeblogin(username: string, phone: string, dni: string): void {
+
+    const now = new Date();
+
+    const userName = `${username.slice(0, 3)}.doc${now.getDate()}${now.getMonth() + 1}`;
+    const password = `${username[0]}${dni}%${phone.slice(-3)}`;
+
+    const data = {
+      dni: dni,
+      token: this.token,
+      webLogin: {
+        Username: userName,
+        Passwd: password,
+        WebRol: 2,
+        isActive: true
+      }
+    }
+
+    this.apidoctor.createDoctorWebLogin(data).subscribe((webLoginRes: any) => {
+      if (webLoginRes.status != 200){
+        Swal.fire({
+          text: 'Error creating web login',
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+    });
+
+    
   }
 
   onFileSelected(event: any): void {
