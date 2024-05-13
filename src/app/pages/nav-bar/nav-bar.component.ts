@@ -15,6 +15,8 @@ export class NavBarComponent implements OnInit{
 
   router = inject(Router);
 
+  role = localStorage.getItem('role');
+
   ngOnInit(): void {
     this.changeButton()
   }

@@ -251,6 +251,11 @@ export class ApiService {
     return this.httpclient.get(this.url + `appointment-get-by-month?month=${data.month}&year=${data.year}`, this.configureAuthHeader(data.token));
   }
 
+  updateAppointmentEnd(data: any): Observable<any> {
+    return this.httpclient.put(this.url + `appointment-end`, data.appoinment, this.configureAuthHeader(data.token));
+  };
+
+
   // AI METHOD
   callAssistant(data: any): Observable<any>{
     return this.httpclient.post('http://localhost:4047/api/v1/ollama', data);
@@ -259,5 +264,9 @@ export class ApiService {
   // WEBLOGIN METHODS
   createDoctorWebLogin(data: any): Observable<any> {
     return this.httpclient.post(this.url + `register/${data.dni}`, data.webLogin, this.configureAuthHeader(data.token));
+  }
+
+  updateCredentials(data: any): Observable<any> {
+    return this.httpclient.put(this.url + `update-credentials`, data.newCredentials, this.configureAuthHeader(data.token));
   }
 }

@@ -5,10 +5,14 @@ import { ApiService } from '../../../core/services/api.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
+import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormatTimesPipe } from '../../../core/pipe/format-times.pipe';
+
 @Component({
   selector: 'app-doctor-portal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ReactiveFormsModule, FormatTimesPipe],
   templateUrl: './doctor-portal.component.html',
   styleUrl: './doctor-portal.component.css'
 })
@@ -21,11 +25,14 @@ export class DoctorPortalComponent {
 
   doctorStadistics: any = [];
   doctorInfo: any = [];
+  doctorSpecialization: any = [];
+  doctorSchedule: any = [];
 
   appointmentsStadistics: any = [];
   appointmentsDay = signal<any>([]);
 
-  moneyStadistics: any = [];
+  appointmentSelected: number | undefined = undefined;
+
 
   token: string = localStorage.getItem('token')!;
   webLogin: string = localStorage.getItem('webLogin')!;
@@ -35,7 +42,6 @@ export class DoctorPortalComponent {
   ngOnInit(): void {
     this.getStadistics();
     this.getDoctor();
-    // this.getAppointments();
   }
 
   getStadistics(){
@@ -55,9 +61,10 @@ export class DoctorPortalComponent {
     const data = {
       token: this.token,
       date: new Date().toISOString().split('T')[0],
+      dni: this.doctorInfo.dni,
     }
 
-    this._apiService.getDayAppointments(data).subscribe((appointmentsRes: any) => {
+    this._apiService.getDayAppointmentsByDoctor(data).subscribe((appointmentsRes: any) => {
       if (appointmentsRes) {
 
         const appointmentsObservables: Observable<any>[] = [];
@@ -97,62 +104,247 @@ export class DoctorPortalComponent {
 
   }
 
-  updateStatusPaymentSignal(id: number): void {
-    
-    const appointmentToUpdate = this.appointmentsDay().find((a: any) => a.appointmentInfo.id === id);
-
-    if (appointmentToUpdate) appointmentToUpdate.appointmentInfo.payed = true;
-
-    this.getStadistics();
-
-  }
-  
-
-  updateStatusPayment(id: number){
-    
-    this._apiService.updatePaymentStatus({id: id, token: localStorage.getItem('token')}).subscribe((updatePayStatusRes: any) => {
-
-      if (updatePayStatusRes.status == 200) {
-
-        this.updateStatusPaymentSignal(id);
-
-        Swal.fire({
-          text: 'Now appoinment is payed',
-          icon: 'success',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-
-      } else {
-        Swal.fire({
-          text: updatePayStatusRes.msn,
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-      }
-
-    })
-  }
 
   // GET DOCTOR
   getDoctor(){
 
-    this._apiService.getDoctorByWebloginId({token: this.token, id: this.webLogin, date: new Date().toISOString().split('T')[0],}).subscribe((doctorsSignRes: any) => {
+    this._apiService.getDoctorByWebloginId({token: this.token, id: this.webLogin}).subscribe((doctorsSignRes: any) => {
       if (doctorsSignRes.status == 200 && doctorsSignRes.res.length > 0){
         this.doctorInfo = doctorsSignRes.res[0];
+
+        // console.log(this.doctorInfo);
+
+        this.getAppointments();
+        this.getSpecialization();
+        this.getSchedule();
+
       }
     });
 
   }
 
+  getSpecialization(): void {
+    this._apiService.getDoctorTypeById({token: this.token, id: this.doctorInfo.doctorType}).subscribe((doctorTypeRes: any) => {
+      if (!doctorTypeRes){
+        Swal.fire({
+          icon: 'error',
+          text: "Error getting doctor specialization",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+      this.doctorSpecialization = doctorTypeRes;
+
+    });
+  }
+
+  getSchedule(): void {
+    this._apiService.getDoctorScheduleById({token: this.token, id: this.doctorInfo.doctorSchedule}).subscribe((doctorScheduleRes: any) => {
+      // console.log(doctorScheduleRes);
+
+      if (!doctorScheduleRes){
+        Swal.fire({
+          icon: 'error',
+          text: "Error getting doctor schedule",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+      this.doctorSchedule = doctorScheduleRes;
+
+    });
+  }
+
+  updateAppointment(){
+
+    const textArea = document.getElementById('commentAppointment') as HTMLTextAreaElement;
+    const now = new Date();
+    const day = now.getDate();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    const formattedDate = `${year}-${month < 10 ? '0' + month : month}-${day < 10 ? '0' + day : day}`;
+
+    const formattedTime = `${hours < 10 ? '0' + hours : hours}:${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+
+    const dateTime = `${formattedDate} ${formattedTime}`;
+
+    const data = {
+      token: this.token,
+      appoinment: {
+        id: this.appointmentSelected,
+        AppointmentEnd: dateTime,
+        comment: textArea.value
+      }
+    }
+
+    this._apiService.updateAppointmentEnd(data).subscribe((endAppointmentRes: any) => {
+      console.log(endAppointmentRes);
+
+      if (endAppointmentRes.status != 200){
+        Swal.fire({
+          icon: 'error',
+          text: "Error updating appointment",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+      Swal.fire({
+        icon: 'success',
+        text: "Appointment finished",
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+    });
+
+  }
+
+  userWebForm = new FormGroup({
+    username: new FormControl('', Validators.required),
+    password: new FormControl('', Validators.required)
+  })
+
+  updateCredentials(){
+    
+    const data = {
+      token: this.token,
+      newCredentials: {
+        id: localStorage.getItem('webLogin'),
+        username: this.userWebForm.value.username,
+        passwd: this.userWebForm.value.password,
+      }
+    }
+
+    this._apiService.updateCredentials(data).subscribe((credentialsRes: any) => {
+      // console.log(credentialsRes);
+
+      if (credentialsRes.status != 200){
+        Swal.fire({
+          icon: 'error',
+          text: "Error updating credentials...",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+      Swal.fire({
+        icon: 'success',
+        text: credentialsRes.msn,
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+    });
+
+  }
+  
+
+  showPassword(): void {
+
+    const showPassword = document.getElementById('openEye');
+    const noShowPassword = document.getElementById('closeEye');
+
+    const inputPassword = document.getElementById('passwd');
+
+    if (showPassword?.style.display == 'none') {
+
+      inputPassword?.setAttribute('type', 'text');
+      
+      showPassword!.style.display = 'block';
+      noShowPassword!.style.display = 'none';
+
+      
+      noShowPassword!.classList.remove('animate-pop');
+      showPassword!.classList.add('animate-pop');
+
+    } else {
+
+      inputPassword?.setAttribute('type', 'password');
+
+      showPassword!.style.display = 'none';
+      noShowPassword!.style.display = 'block';
+
+      noShowPassword!.classList.add('animate-pop');
+      showPassword!.classList.remove('animate-pop');
+    }
+
+  }
+
   redirectToDoctor(dni: string): void{
     this._router.navigate(["/doctors/modify-doctor", dni]);
+  }
+
+  openModal(appointmentID: number | null, modalName: string): void {
+    const $targetEl = document.getElementById(modalName);
+
+    if (appointmentID != null) this.appointmentSelected = appointmentID;
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: modalName,
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.show();
+  }
+
+  returnBack(modalName: string) {
+
+    const $targetEl = document.getElementById(modalName);
+
+    // Modal Options
+    const options: ModalOptions = {
+      placement: 'bottom-right',
+      backdrop: 'dynamic',
+      backdropClasses: 'bg-gray-900/50 fixed inset-0 z-40',
+      closable: false,
+    };
+    
+    // Modal instance options
+    const instanceOptions: InstanceOptions = {
+      id: modalName,
+      override: true,
+    };
+
+    const modal: Modal = new Modal($targetEl, options, instanceOptions);
+
+    
+    modal.hide();
   }
 }

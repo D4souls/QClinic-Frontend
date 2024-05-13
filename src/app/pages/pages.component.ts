@@ -14,6 +14,7 @@ import { AssistantComponent } from './assistant/assistant.component';
 export class PagesComponent implements OnInit{
 
   token = localStorage.getItem('token');
+  role = localStorage.getItem('role');
 
   ngOnInit(): void {
     initFlowbite();
