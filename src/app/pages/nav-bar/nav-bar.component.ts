@@ -19,6 +19,11 @@ export class NavBarComponent implements OnInit{
 
   ngOnInit(): void {
     this.changeButton()
+
+    if (this.role != "1"){
+      document.getElementById('links')!.style.display = 'none';
+    }
+
   }
 
   changeButton(): void {

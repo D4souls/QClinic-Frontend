@@ -128,6 +128,9 @@ export class EditAppointmentComponent implements OnInit {
       payed: this.generalData[findIndexAppointment].payed
     });
 
+    const commentHTML = document.getElementById('appointmentComment') as HTMLTextAreaElement;
+    commentHTML.value = comment;
+
     console.log(this.generalData[findIndexAppointment].payed)
     
 
@@ -142,13 +145,15 @@ export class EditAppointmentComponent implements OnInit {
 
   updateAppointment(): void {
 
+    const commentHTML = document.getElementById('appointmentComment') as HTMLTextAreaElement;
+
     const dataAppointment = {
       token: localStorage.getItem('token'),
       appointmentData: {
         id: this.createAppointmentForm.value.searchAppointment?.selectAppointment,
         assignedPatient: this.createAppointmentForm.value.patientDNI,
         assignedDoctor: this.createAppointmentForm.value.doctorDNI,
-        comment: this.createAppointmentForm.value.appointmentComment
+        comment: commentHTML.value
       }
     }
 
