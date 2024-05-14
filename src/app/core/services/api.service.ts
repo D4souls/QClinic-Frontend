@@ -269,4 +269,8 @@ export class ApiService {
   updateCredentials(data: any): Observable<any> {
     return this.httpclient.put(this.url + `update-credentials`, data.newCredentials, this.configureAuthHeader(data.token));
   }
+
+  logOut(data: any): Observable<any> {
+    return this.httpclient.put(this.url + `log-out?scheduleRecordId=${data.scheduleRecordId}`,{}, this.configureAuthHeader(data.token));
+  }
 }

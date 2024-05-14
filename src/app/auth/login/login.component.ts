@@ -36,7 +36,18 @@ export class LoginComponent implements OnInit{
 
     this.api.login(dataLogin).subscribe((data: any) => {
       // console.log(data);
-      if (data.status != 200) {
+      if (data.status == 400) {
+        Swal.fire({
+          timer: 4000,
+          position: "bottom",
+          timerProgressBar: true,
+          showConfirmButton: false,
+          text: 'You are out of working schedule',
+          icon: 'error',
+          toast: true
+        });
+
+      } else if (data.status != 200){
         Swal.fire({
           timer: 4000,
           position: "bottom",
@@ -45,12 +56,12 @@ export class LoginComponent implements OnInit{
           text: 'Password or username invalid...',
           icon: 'error',
           toast: true
-        })
-
+        });
       } else {
         localStorage.setItem('token', data.res.token);
         localStorage.setItem('role', data.res.role);
         localStorage.setItem('webLogin', data.res.id);
+        localStorage.setItem('register', data.res.register);
         this.router.navigate(['/']);
       }
     }, (error: any) =>{

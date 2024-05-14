@@ -4,6 +4,8 @@ import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/rou
 
 // FLOWBITE
 import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
+import { ApiService } from '../../core/services/api.service';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-nav-bar',
   standalone: true,
@@ -14,6 +16,7 @@ import { InstanceOptions, Modal, ModalOptions } from 'flowbite';
 export class NavBarComponent implements OnInit{
 
   router = inject(Router);
+  private _apiService = inject(ApiService);
 
   role = localStorage.getItem('role');
 
@@ -22,6 +25,7 @@ export class NavBarComponent implements OnInit{
 
     if (this.role != "1"){
       document.getElementById('links')!.style.display = 'none';
+      document.getElementById('punchIn')!.style.display = 'block';
     }
 
   }
@@ -162,6 +166,7 @@ export class NavBarComponent implements OnInit{
     modal.hide();
 
     localStorage.removeItem('token');
+    localStorage.removeItem('register');
     this.router.navigate(["/login"]);
     
   }
@@ -186,5 +191,45 @@ export class NavBarComponent implements OnInit{
     const modal: Modal = new Modal($targetEl, options, instanceOptions);
 
     modal.show();
-  }  
+  }
+  
+  leave(): void {
+
+    const data = {
+      token: localStorage.getItem('token'),
+      scheduleRecordId: parseInt(localStorage.getItem('register')!)
+    }
+
+    console.log(data);
+
+    this._apiService.logOut(data).subscribe((logOutRes: any) => {
+      
+      if (logOutRes.status != 200) {
+        Swal.fire({
+          icon: 'error',
+          text: "Error on log-out. Please contact with the admin.",
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom'
+        });
+      }
+
+      Swal.fire({
+        icon: 'success',
+        text: "See you tomorrow! 👋",
+        toast: true,
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        position: 'bottom'
+      });
+
+      setTimeout(() => {
+        this.logout();
+      }, 3000)
+
+    });
+  }
 }
