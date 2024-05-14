@@ -296,6 +296,7 @@ export class ModifyDoctorScheduleComponent implements OnInit {
               });
 
               setTimeout(() => {
+                this.returnBack();
                 this.router.navigate(['/doctors/schedules']);
               }, 3000);    
               

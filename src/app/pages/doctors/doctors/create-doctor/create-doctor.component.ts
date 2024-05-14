@@ -270,16 +270,6 @@ export class CreateDoctorComponent implements OnInit {
 
       }
 
-      Swal.fire({
-        text: 'Avatar uploaded',
-        icon: 'success',
-        toast: true,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        position: 'bottom'
-      });
-
 
     })
   }
