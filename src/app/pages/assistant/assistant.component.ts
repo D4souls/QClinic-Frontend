@@ -88,38 +88,75 @@ export class AssistantComponent implements OnInit{
     this.formAI.reset();
 
     this.apiService.callAssistant(dataToSend).subscribe((responseAI: any) => {
+
+      console.log(responseAI);
+
       if (responseAI.status == 200){
+
+        if (responseAI.type == 'SELECT'){
+          
+          let prompt = '';
+
+          responseAI.data.forEach((item: any, index: number) => {
+            
+            for (let key in item) {
+              if (item.hasOwnProperty(key)) {
+                prompt += `${key}: ${item[key]}\n`;
+              }
+            }
+
+            prompt += "\n";
+
+          });
+
+          
+          // Crear un nuevo objeto para el mensaje
+          const aiRole = {
+            role: "assistant",
+            prompt: prompt,
+            date: responseAI.data.created
+          };
+
+          // Agregar al chatData
+          this.chatData.update((messages: any) => ([...messages, aiRole]));
+      
+          // Establecer el estado para mostrar carga
+          this.statusAIResponse.set(true);
+
+        } else {
+
+          // Create new object
+          const aiRole = {
+            role: "assistant",
+            prompt: responseAI.data.response,
+            date: responseAI.data.created
+          }
+
+          // Agregar al chatData
+          this.chatData.update((messages: any) => ([...messages, aiRole]));
+      
+          // Establecer el estado para mostrar carga
+          this.statusAIResponse.set(true);
+        }
+
         
-        // Create new object
-        const aiRole = {
-          role: "assistant",
-          prompt: responseAI.data.response,
-          date: responseAI.data.created
-        }
-
-        // Add to chatData
-        this.chatData.update((messages: any) => ([...messages, aiRole]));
-
-        // Set status to show loading
-        this.statusAIResponse.set(true);
-
+        
       } else {
-
-        // Create new object
+        // Crear un nuevo objeto para el mensaje de error
         const aiRole = {
           role: "assistant",
-          prompt: "Ups... An error ocurred while asking to the AI",
+          prompt: "Ups... Ocurrió un error al consultar a la IA.",
           date: this.currentTimeStamp()
-        }
-
-        // Add to chatData
+        };
+    
+        // Agregar al chatData
         this.chatData.update((messages: any) => ([...messages, aiRole]));
-
-        // Set status to show loading
+    
+        // Establecer el estado para mostrar carga
         this.statusAIResponse.set(true);
-
       }
-    })
+    });
+    
     
   }
 
