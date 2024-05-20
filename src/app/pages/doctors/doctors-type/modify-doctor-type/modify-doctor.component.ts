@@ -60,7 +60,7 @@ export class ModifyDoctorTypeComponent implements OnInit {
   modifyDoctorTypeForm = new FormGroup({
     id: new FormControl('', [Validators.required]),
     name: new FormControl('', [Validators.required, textValidator]),
-    description: new FormControl('', [Validators.required, textValidator]),
+    description: new FormControl('', [Validators.required]),
     salary: new FormControl('', [Validators.required])
   });
 

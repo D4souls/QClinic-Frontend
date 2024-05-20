@@ -12,19 +12,31 @@
     <!-- MAIN INFORMATION USER FORM -->
     <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
 
+      <div class="md:col-span-3 col-span-2 grid grid-cols-2 gap-2">
+        <label for="name" class="flex flex-col justify-center text-md">
+          <span class="dark:text-white/90">Name {{ modifyDoctorTypeForm.get('name')!.valid ? '' : '*' }}</span>
+          <input
+            type="text"
+            id="name"
+            placeholder="Enter specialziation's name here"
+            formControlName="name"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          />
+        </label>
+  
+        <label for="salary" class="flex flex-col justify-center text-md">
+          <span class="dark:text-white/90">Salary {{ modifyDoctorTypeForm.get('salary')!.valid ? '' : '*' }}</span>
+          <input
+            type="number"
+            id="salary"
+            placeholder="Enter specialziation's salary here"
+            formControlName="salary"
+            class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
+          />
+        </label>
+      </div>
 
-      <label for="name" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Name {{ modifyDoctorTypeForm.get('name')!.valid ? '' : '*' }}</span>
-        <input
-          type="text"
-          id="name"
-          placeholder="Enter specialziation's name here"
-          formControlName="name"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
-
-      <label for="description" class="flex flex-col justify-center text-md">
+      <label for="description" class="md:col-span-3 col-span-2 flex flex-col justify-center text-md">
         <span class="dark:text-white/90">Description {{ modifyDoctorTypeForm.get('description')!.valid ? '' : '*' }}</span>
         <input
           type="text"
@@ -35,16 +47,7 @@
         />
       </label>
 
-      <label for="salary" class="flex flex-col justify-center text-md">
-        <span class="dark:text-white/90">Salary {{ modifyDoctorTypeForm.get('salary')!.valid ? '' : '*' }}</span>
-        <input
-          type="number"
-          id="salary"
-          placeholder="Enter specialziation's salary here"
-          formControlName="salary"
-          class="border border-gray-400/40 dark:bg-gray-700 dark:text-white/90 rounded-md focus:ring-main-purple/80 focus:border-main-purple/80 dark:focus:ring-gray-400 dark:focus:border-gray-400"
-        />
-      </label>
+      
     </div>
 
     <!-- FORM BUTTONS -->
@@ -99,10 +102,11 @@
     @if (allDoctors.length > 0){
           
       <!-- SEARCH BAR -->
+      <h3 class="self-start font-bold text-base md:text-xl">Assigned doctors</h3>
       <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
         <label
           for="filterPatient"
-          class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
+          class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md p-2 flex flex-row items-center gap-2 w-full text-gray-700/80"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -120,7 +124,7 @@
           </svg>
           <input
             type="search"
-            placeholder="Search appointment by status, comment, date, doctor"
+            placeholder="Search doctor by dni, name, city..."
             #filter
             class="bg-transparent border-none w-full focus:border-0"
             (input)="filterDoctors(filter.value)"
@@ -139,8 +143,8 @@
           <tr class="table-row">
             <th scope="col" class="px-6 py-3 table-cell"></th>
             <th scope="col" class="px-6 py-3 table-cell">Name</th>
-            <th scope="col" class="px-6 py-3 md:table-cell hidden">Mail</th>
             <th scope="col" class="px-6 py-3 md:table-cell hidden">Phone</th>
+            <th scope="col" class="px-6 py-3 md:table-cell hidden">Mail</th>
             <th scope="col" class="px-6 py-3 md:table-cell hidden"></th>
           </tr>
         </thead>

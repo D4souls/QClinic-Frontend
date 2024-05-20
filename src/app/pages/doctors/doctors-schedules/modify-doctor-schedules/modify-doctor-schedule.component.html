@@ -9,8 +9,8 @@
     (ngSubmit)="saveChanges()"
   >
     <!-- MAIN INFORMATION USER FORM -->
-    <div class="grid grid-cols-2 md:grid-cols-3 md:grid-rows-2 gap-2">
-      <label for="scheduleName" class="flex flex-col justify-center text-md">
+    <div class="grid grid-cols-2 md:grid-rows-2 gap-2">
+      <label for="scheduleName" class="col-span-2 flex flex-col justify-center text-md">
         <span class="dark:text-white/90"
           >Name
           {{ modifyScheduleForm.get("scheduleName")!.valid ? "" : "*" }}</span
@@ -108,7 +108,7 @@
     <form (submit)="onSubmit($event)" class="flex flex-row items-center w-full">
       <label
         for="filterPatient"
-        class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md px-2 py-1.8 flex flex-row items-center gap-2 w-full text-gray-700/80"
+        class="bg-gray-400/20 dark:bg-gray-700 dark:text-white/90 rounded-md p-2 flex flex-row items-center gap-2 w-full text-gray-700/80"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -127,7 +127,7 @@
         <input
           type="search"
           name="filterPatient"
-          placeholder="Search appointment by status, comment, date, doctor"
+          placeholder="Search doctors by dni, name, city..."
           #filter
           class="bg-transparent border-none w-full focus:border-0"
           (input)="filterSchedules(filter.value)"

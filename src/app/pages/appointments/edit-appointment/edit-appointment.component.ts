@@ -84,7 +84,7 @@ export class EditAppointmentComponent implements OnInit {
             if (patientDataResponse) {
               const combinedObject = Object.assign({}, appointmentPerDayDataResponse[index], patientDataResponse);
               this.generalData.push(combinedObject); 
-              console.log(this.generalData);
+              // console.log(this.generalData);
             }
           });
         });
@@ -119,7 +119,7 @@ export class EditAppointmentComponent implements OnInit {
     // this.createAppointmentForm.get('patientDNI')?.setValue(this.filterPatient);
     
     const comment = this.generalData[findIndexAppointment].comment
-    console.log(comment);
+    // console.log(comment);
 
     this.createAppointmentForm.patchValue({
       patientDNI: `${this.filterPatient}`,
@@ -131,7 +131,7 @@ export class EditAppointmentComponent implements OnInit {
     const commentHTML = document.getElementById('appointmentComment') as HTMLTextAreaElement;
     commentHTML.value = comment;
 
-    console.log(this.generalData[findIndexAppointment].payed)
+    // console.log(this.generalData[findIndexAppointment].payed)
     
 
     this.getPatients();
@@ -427,6 +427,7 @@ export class EditAppointmentComponent implements OnInit {
     this.createAppointmentForm.get('doctorDNI')?.setValue(null);
     this.filterDoctor = undefined;
     this.getDoctors();
+    this.countDoctors();
   }
 
   markDoctor(dni: string){
@@ -534,6 +535,7 @@ export class EditAppointmentComponent implements OnInit {
     this.createAppointmentForm.get('patientDNI')?.setValue(null);
     this.filterPatient = undefined;
     this.getPatients();
+    this.countPatients();
   }
 
   markPatient(dni: string){
