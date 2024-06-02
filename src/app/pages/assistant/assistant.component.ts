@@ -89,7 +89,7 @@ export class AssistantComponent implements OnInit{
 
     this.apiService.callAssistant(dataToSend).subscribe((responseAI: any) => {
 
-      console.log(responseAI);
+      // console.log(responseAI);
 
       if (responseAI.status == 200){
 
