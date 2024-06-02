@@ -64,6 +64,43 @@ export class CreatePatientComponent implements OnInit {
 
   @Input() modalId?: string;
 
+  getDoctors(): void {
+    const data = {
+      limit: this.limit,
+      offset: this.offset,
+      token: this.token,
+      textFilter: this.filter,
+    };
+
+    try {
+      this.apiPatient.getDoctors(data).subscribe((data: any) => {
+        if (data.status != 200) {
+          Swal.fire({
+            text: "We can't find any doctor",
+            icon: 'info',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom',
+          });
+        } else {
+          this.dataDoctor = data.res;
+        }
+      });
+    } catch (error) {
+      console.log('Error while getting users: ', error);
+    }
+  }
+  
+  countDoctors() {
+    const token = localStorage.getItem('token')!;
+
+    this.apiPatient.countDoctors(token).subscribe((countRes: any) => {
+      // console.log(countRes)
+      this.maxPages = countRes;
+    });
+  }
   createPatientForm = new FormGroup({
     patientDNI: new FormControl('', [Validators.required, dniValidator]),
     patientName: new FormControl('', [Validators.required, textValidator]),
@@ -78,7 +115,6 @@ export class CreatePatientComponent implements OnInit {
     patientCity: new FormControl('', Validators.nullValidator),
   });
 
-
   filePreview(e: any) {
     if (e.target.files[0] != null) {
       var reader = new FileReader();
@@ -91,44 +127,47 @@ export class CreatePatientComponent implements OnInit {
 
   onFileSelected(event: any): void {
     const files: FileList | null = event.target.files;
-    
+
     if (files && files.length > 0) {
-        const file = files[0];
-        const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const file = files[0];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
 
-        if (fileExtension !== 'jpg') {
-            Swal.fire({
-                text: 'Only jpg images can be uploaded',
-                icon: 'error',
-                toast: true,
-                showConfirmButton: false,
-                timer: 3000,
-                timerProgressBar: true,
-                position: 'bottom'
-            });
+      if (fileExtension !== 'jpg') {
+        Swal.fire({
+          text: 'Only jpg images can be uploaded',
+          icon: 'error',
+          toast: true,
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          position: 'bottom',
+        });
 
-            event.target.value = '';
-            return;
-        }
+        event.target.value = '';
+        return;
+      }
 
-        const renamedFile = new File([file], `${this.createPatientForm.value.patientDNI}.jpg`, { type: file.type });
+      const renamedFile = new File(
+        [file],
+        `${this.createPatientForm.value.patientDNI}.jpg`,
+        { type: file.type }
+      );
 
-        
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-            this.previewAvatar = e.target.result;
-        };
-        reader.readAsDataURL(renamedFile);
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewAvatar = e.target.result;
+      };
+      reader.readAsDataURL(renamedFile);
 
-        const newAvatar = document.getElementById('newAvatar');
-        const oldAvatar = document.getElementById('oldAvatar');
+      const newAvatar = document.getElementById('newAvatar');
+      const oldAvatar = document.getElementById('oldAvatar');
 
-        newAvatar!.style.display = 'block';
-        oldAvatar!.style.display = 'none';
+      newAvatar!.style.display = 'block';
+      oldAvatar!.style.display = 'none';
 
-        this.avatar.set(renamedFile);
+      this.avatar.set(renamedFile);
 
-        event.target.value = this.avatar().name;
+      event.target.value = this.avatar().name;
     }
   }
 
@@ -136,22 +175,21 @@ export class CreatePatientComponent implements OnInit {
     const formData = new FormData();
     formData.append('file', file);
 
-    this.apiPatient.uploadPatientAvatar({img: formData, token: this.token}).subscribe((uploadRes: any) => {
-      
-      if (uploadRes.status != 200){
-        Swal.fire({
-          text: 'Error uploading avatar',
-          icon: 'error',
-          toast: true,
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          position: 'bottom'
-        });
-
-      }
-
-    })
+    this.apiPatient
+      .uploadPatientAvatar({ img: formData, token: this.token })
+      .subscribe((uploadRes: any) => {
+        if (uploadRes.status != 200) {
+          Swal.fire({
+            text: 'Error uploading avatar',
+            icon: 'error',
+            toast: true,
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            position: 'bottom',
+          });
+        }
+      });
   }
 
   returnBack(): void {
@@ -202,7 +240,7 @@ export class CreatePatientComponent implements OnInit {
         email: this.createPatientForm.value.patientEmail,
         phone: this.createPatientForm.value.patientPhone,
         assignedDoctor: this.createPatientForm.value.patientDoctor,
-      }
+      },
     };
 
     if (data.patientData.email === '') data.patientData.email = null;
@@ -213,7 +251,6 @@ export class CreatePatientComponent implements OnInit {
     this.apiPatient.createPatient(data).subscribe(
       (response: any) => {
         if (response) {
-
           this.uploadFile(this.avatar());
 
           Swal.fire({
@@ -223,14 +260,13 @@ export class CreatePatientComponent implements OnInit {
             showConfirmButton: false,
             timer: 3000,
             timerProgressBar: true,
-            position: 'bottom'
+            position: 'bottom',
           });
 
           setTimeout(() => {
             this.returnBack();
             window.location.reload();
-          }, 3000);     
-
+          }, 3000);
         } else {
           Swal.fire({
             icon: 'error',
@@ -252,78 +288,29 @@ export class CreatePatientComponent implements OnInit {
 
   doctors: any = [];
 
-  getDoctors(): void {
-
-    const data = {
-      limit: this.limit, 
-      offset: this.offset, 
-      token: this.token,
-      textFilter: this.filter,
-    }
-
-    try {
-
-      this.apiPatient.getDoctors(data).subscribe((data: any) => {
-
-        if (data.status != 200) {
-
-          Swal.fire({
-            text: "We can't find any doctor",
-            icon: 'info',
-            toast: true,
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            position: 'bottom'
-          });
-          
-        } else {
-          this.dataDoctor = data.res;
-        }
-      });
-    } catch (error) {
-      console.log('Error while getting users: ',error);
-    }
-
-  }
-
-  countDoctors() {
-    const token = localStorage.getItem('token')!;
-
-    this.apiPatient.countDoctors(token).subscribe((countRes: any) => {
-      // console.log(countRes)
-      this.maxPages = countRes;
-    });
-
-  }
+  
   filterdoctors(dataToSearch: string): void {
-
-    if (dataToSearch === "") {
-      
+    if (dataToSearch === '') {
       this.filter = undefined;
-      
+
       this.getDoctors();
       this.countDoctors();
       this.generatePageNumbers();
-      
     } else {
-  
       this.filter = dataToSearch;
-  
+
       this.getDoctors();
       this.countDoctors();
       this.generatePageNumbers();
-  
     }
-    
   }
 
-  unMarkDoctor(){
+  unMarkDoctor() {
     this.dniSelectedDoctor.set(null);
     this.createPatientForm.get('patientDoctor')?.setValue(null);
   }
 
-  markDoctor(dni: string){
+  markDoctor(dni: string) {
     this.dniSelectedDoctor.set(dni);
     this.createPatientForm.get('patientDoctor')?.setValue(dni);
   }
@@ -337,20 +324,20 @@ export class CreatePatientComponent implements OnInit {
     const pagesArray = [];
     const totalPages = this.totalPages();
     if (totalPages < 1) pagesArray.push(1);
-    
+
     for (let i = 1; i <= totalPages; i++) {
       pagesArray.push(i);
     }
     return pagesArray;
   }
 
-  goToPage(page: number){
-    this.offset = ( page - 1 ) * this.limit;
+  goToPage(page: number) {
+    this.offset = (page - 1) * this.limit;
     this.currentPage = page;
     this.getDoctors();
   }
 
-  nextPage(): void{
+  nextPage(): void {
     const currentOffset = this.offset + this.limit;
     this.offset = currentOffset;
     this.currentPage = ++this.currentPage;
@@ -358,7 +345,7 @@ export class CreatePatientComponent implements OnInit {
     this.countDoctors();
   }
 
-  previousPage(): void{
+  previousPage(): void {
     const currentOffset = this.offset - this.limit;
     this.offset = currentOffset;
     this.currentPage = --this.currentPage;
@@ -369,6 +356,4 @@ export class CreatePatientComponent implements OnInit {
     this.returnBack();
     this.router.navigate(['/doctors/modify-doctor', dni]);
   }
-
-
 }

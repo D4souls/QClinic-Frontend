@@ -6,11 +6,10 @@
     [formGroup]="modifyPatientForm"
     (ngSubmit)="saveChanges()"
   >
-  <hr class="w-full border border-gray-300" />
-  
-  <div class="self-start flex flex-col w-full">
+    <hr class="w-full border border-gray-300" />
 
-    <label
+    <div class="self-start flex flex-col w-full">
+      <label
         for="file_input"
         class="self-start font-semibold text-sm md:text-base"
         >Upload avatar</label
@@ -32,7 +31,9 @@
             id="oldAvatar"
           />
           <span
-            class="top-0 left-[120px] absolute w-5 h-5 {{ actualStatus() ? 'bg-green-400' : 'bg-red-400' }} border-2 border-white dark:border-gray-800 rounded-full"
+            class="top-0 left-[120px] absolute w-5 h-5 {{
+              actualStatus() ? 'bg-green-400' : 'bg-red-400'
+            }} border-2 border-white dark:border-gray-800 rounded-full"
           ></span>
         </div>
         <div class="flex flex-col gap-2 w-full justify-center">
@@ -190,14 +191,12 @@
           }
         </label>
       </div>
-
     </div>
 
     <hr class="w-full border border-gray-300 mt-2" />
 
     <!-- ADDITIONAL INFORMATION USER FROM -->
     <div class="flex flex-col items-start justify-center gap-2">
-
       <h3 class="self-start font-bold text-base md:text-xl">Select doctor</h3>
 
       <form (submit)="onSubmit($event)" class="self-center w-full">

@@ -14,9 +14,9 @@
             <div class="flex flex-col justify-center items-start ml-8 relative">
               <h2 class="dark:text-white/90 font-semibold text-lg">Total patients</h2>
               <span class="dark:text-white/90 text-lg font-normal">{{ patientsStadistics[0].totalPatients}}</span>
-              <span class="dark:text-white/90 text-sm text-gray-600">{{ patientsStadistics[0].totalPatients - patientsStadistics[0].signUpPatients}} patients</span>
+              <span class="dark:text-white/90 text-sm text-gray-600">{{ patientsStadistics[0].signUpPatients}} patients</span>
               
-              @if ( (patientsStadistics[0].totalPatients - patientsStadistics[0].signUpPatients) > 0 ){
+              @if ( patientsStadistics[0].signUpPatients > 0 ){
                 <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
               } @else {
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>
@@ -31,7 +31,7 @@
             <div class="flex flex-col justify-center items-start ml-8 relative">
               <h2 class="dark:text-white/90 font-semibold text-lg">Total doctors</h2>
               <span class="dark:text-white/90 text-lg font-normal">{{ doctorsStadistics[0].totalDoctors}}</span>
-              <span class="dark:text-white/90 text-sm text-gray-600">{{ doctorsStadistics[0].totalDoctors - doctorsStadistics[0].findedDoctors}} doctors</span>
+              <span class="dark:text-white/90 text-sm text-gray-600">{{ doctorsStadistics[0].signUpDoctors}} doctors</span>
   
               @if ( (doctorsStadistics[0].totalDoctors - doctorsStadistics[0].findedDoctors) > 0 ){
                 <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
@@ -48,9 +48,9 @@
             <div class="flex flex-col justify-center items-start ml-8 relative">
               <h2 class="dark:text-white/90 font-semibold text-lg">Total appointments</h2>
               <span class="dark:text-white/90 text-lg font-normal">{{ appointmentsStadistics[0].totalAppointments}}</span>
-              <span class="dark:text-white/90 text-sm text-gray-600">{{ appointmentsStadistics[0].totalAppointments - appointmentsStadistics[0].newAppointmentsThisWeek }} new</span>
+              <span class="dark:text-white/90 text-sm text-gray-600">{{ appointmentsStadistics[0].newAppointmentsThisWeek }} new</span>
   
-              @if ( (appointmentsStadistics[0].totalAppointments - appointmentsStadistics[0].newAppointmentsThisWeek) > 0 ){
+              @if ( appointmentsStadistics[0].newAppointmentsThisWeek > 0 ){
                 <svg class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-up" xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#1DAA39"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round" ><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 17l6 -6l4 4l8 -8" /><path d="M14 7l7 0l0 7" /></svg>
               } @else {
                 <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20"  viewBox="0 0 24 24"  fill="none"  stroke="#AF2929"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="absolute bottom-0 -left-7 icon icon-tabler icons-tabler-outline icon-tabler-trending-down"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M3 7l6 6l4 -4l8 8" /><path d="M21 10l0 7l-7 0" /></svg>

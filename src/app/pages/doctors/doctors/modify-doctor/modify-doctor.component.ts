@@ -320,7 +320,7 @@ export class ModifyDoctorComponent implements OnInit {
         lastname: formattedLastName,
         gender: this.modifyDoctorForm.value.doctorGender,
         city: formattedCity,
-        email: this.modifyDoctorForm.value.doctorEmail,
+        email: this.modifyDoctorForm.value.doctorEmail == "" ? null : this.modifyDoctorForm.value.doctorEmail,
         phone: this.modifyDoctorForm.value.doctorPhone,
         doctorType: this.modifyDoctorForm.value.doctorType,
         doctorSchedule: this.modifyDoctorForm.value.doctorSchedule,
@@ -354,6 +354,7 @@ export class ModifyDoctorComponent implements OnInit {
               });
 
               setTimeout(() => {
+                this.returnBack();
                 this.router.navigate(['/doctors']);
               }, 3000);
             } else {

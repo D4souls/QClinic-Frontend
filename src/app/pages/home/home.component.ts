@@ -59,7 +59,7 @@ export class HomeComponent implements OnInit{
     });
 
     this._apiService.getAppointmentsStadistics(this.token).subscribe((appointmentsStadisticsRes: any) => {
-
+      
       if (appointmentsStadisticsRes.status == 200){
         this.appointmentsStadistics = appointmentsStadisticsRes.res;
       }
